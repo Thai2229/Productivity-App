@@ -1,5 +1,6 @@
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import TimerRing from '../components/TimerRing'
+import { playChime, prepareAlerts, showNotification } from '../utils/alerts'
 
 type Mode = 'work' | 'break' | 'longBreak'
 
@@ -49,11 +50,22 @@ function getNextSession(
   return { mode: 'break', completedSessions: updatedSessions }
 }
 
+function getAlertMessage(nextMode: Mode) {
+  if (nextMode === 'break') {
+    return { title: 'Work session complete', body: 'Time for a 5 minute rest.' }
+  }
+  if (nextMode === 'longBreak') {
+    return { title: 'Work session complete', body: 'Time for a 30 minute rest.' }
+  }
+  return { title: 'Rest is over', body: 'Ready for the next work session.' }
+}
+
 export default function Pomodoro() {
   const [mode, setMode] = useState<Mode>('work')
   const [secondsLeft, setSecondsLeft] = useState(WORK_SECONDS)
   const [isRunning, setIsRunning] = useState(false)
   const [completedSessions, setCompletedSessions] = useState(0)
+  const endTimeRef = useRef(0)
 
   const isActive = isRunning && secondsLeft > 0
 
@@ -62,23 +74,32 @@ export default function Pomodoro() {
       return undefined
     }
 
-    const id = setTimeout(() => {
-      if (secondsLeft > 1) {
-        setSecondsLeft(secondsLeft - 1)
+    const id = setInterval(() => {
+      const remaining = Math.ceil((endTimeRef.current - Date.now()) / 1000)
+      if (remaining > 0) {
+        setSecondsLeft(remaining)
         return
       }
 
       const next = getNextSession(mode, completedSessions)
+      const message = getAlertMessage(next.mode)
+      playChime()
+      showNotification(message.title, message.body)
+
       setMode(next.mode)
       setCompletedSessions(next.completedSessions)
       setSecondsLeft(getDuration(next.mode))
       setIsRunning(false)
-    }, 1000)
+    }, 250)
 
-    return () => clearTimeout(id)
-  }, [isActive, secondsLeft, mode, completedSessions])
+    return () => clearInterval(id)
+  }, [isActive, mode, completedSessions])
 
   function handleStartPause() {
+    if (!isRunning) {
+      prepareAlerts()
+      endTimeRef.current = Date.now() + secondsLeft * 1000
+    }
     setIsRunning(!isRunning)
   }
 
