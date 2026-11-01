@@ -1,20 +1,22 @@
-.navbar {
+.timer {
+  text-align: center;
+}
+
+.timer-clock {
+  font-size: 5rem;
+  font-weight: bold;
+  margin: 0.5rem 0 1.5rem;
+}
+
+.timer-controls {
   display: flex;
   gap: 1rem;
-  padding: 1rem 2rem;
-  border-bottom: 1px solid #ccc;
+  justify-content: center;
+  margin-bottom: 1.5rem;
 }
 
-.nav-link {
-  text-decoration: none;
-  color: #555;
-}
-
-.nav-link.active {
-  color: #000;
-  font-weight: bold;
-}
-
-.page {
-  padding: 2rem;
+.timer-controls button {
+  padding: 0.5rem 1.5rem;
+  font-size: 1rem;
+  cursor: pointer;
 }
