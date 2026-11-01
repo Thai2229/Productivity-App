@@ -18,24 +18,24 @@ export function playChime() {
   }
 
   const context = audioContext
-  const notes = [660, 880, 1100]
+  const notes = [660, 880, 1100, 660, 880, 1100, 660, 880, 1100]
 
   notes.forEach((frequency, index) => {
     const oscillator = context.createOscillator()
     const gain = context.createGain()
-    const noteStart = context.currentTime + index * 0.25
+    const noteStart = context.currentTime + index * 0.5
 
     oscillator.type = 'sine'
     oscillator.frequency.value = frequency
 
     gain.gain.setValueAtTime(0.0001, noteStart)
     gain.gain.exponentialRampToValueAtTime(0.3, noteStart + 0.02)
-    gain.gain.exponentialRampToValueAtTime(0.0001, noteStart + 0.4)
+    gain.gain.exponentialRampToValueAtTime(0.0001, noteStart + 0.45)
 
     oscillator.connect(gain)
     gain.connect(context.destination)
     oscillator.start(noteStart)
-    oscillator.stop(noteStart + 0.45)
+    oscillator.stop(noteStart + 0.5)
   })
 }
 
