@@ -1,10 +1,11 @@
 import { useEffect, useState } from 'react'
+import TimerRing from '../components/TimerRing'
 
 type Mode = 'work' | 'break' | 'longBreak'
 
 const WORK_SECONDS = 25 * 60
 const BREAK_SECONDS = 5 * 60
-const LONG_BREAK_SECONDS = 15 * 60
+const LONG_BREAK_SECONDS = 30 * 60
 const SESSIONS_PER_LONG_BREAK = 4
 
 function getDuration(mode: Mode) {
@@ -94,11 +95,17 @@ export default function Pomodoro() {
   const sessionsUntilLongBreak =
     SESSIONS_PER_LONG_BREAK - (completedSessions % SESSIONS_PER_LONG_BREAK)
 
+  const progress = secondsLeft / getDuration(mode)
+
   return (
     <div className="timer">
       <h1>Pomodoro Timer</h1>
-      <p className="timer-mode">{getLabel(mode)}</p>
-      <p className="timer-clock">{formatTime(secondsLeft)}</p>
+      <TimerRing
+        mode={mode}
+        progress={progress}
+        timeText={formatTime(secondsLeft)}
+        label={getLabel(mode)}
+      />
       <div className="timer-controls">
         <button onClick={handleStartPause}>{buttonLabel}</button>
         <button onClick={handleReset}>Reset</button>
