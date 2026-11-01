@@ -1,4 +1,5 @@
 import { NavLink } from 'react-router-dom'
+import ThemeToggle from './ThemeToggle'
 
 function getLinkClass({ isActive }: { isActive: boolean }) {
   if (isActive) {
@@ -14,6 +15,7 @@ export default function Navbar() {
       <NavLink to="/internships" className={getLinkClass}>Internships</NavLink>
       <NavLink to="/habits" className={getLinkClass}>Habits</NavLink>
       <NavLink to="/roadmap" className={getLinkClass}>Roadmap</NavLink>
+      <ThemeToggle />
     </nav>
   )
 }
