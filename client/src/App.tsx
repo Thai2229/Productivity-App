@@ -1,5 +1,6 @@
 import { Navigate, Route, Routes } from 'react-router-dom'
 import Navbar from './components/Navbar'
+import ServerStatus from './components/ServerStatus'
 import Pomodoro from './pages/Pomodoro'
 import Internships from './pages/Internships'
 import Habits from './pages/Habits'
@@ -19,6 +20,7 @@ export default function App() {
           <Route path="/roadmap" element={<Roadmap />} />
         </Routes>
       </main>
+      <ServerStatus />
     </>
   )
 }
