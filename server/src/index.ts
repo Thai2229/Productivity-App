@@ -1,5 +1,6 @@
+import 'dotenv/config'
 import cors from 'cors'
-import express from 'express'
+import express, { type NextFunction, type Request, type Response } from 'express'
 import { fromNodeHeaders, toNodeHandler } from 'better-auth/node'
 import { auth } from './lib/auth.js'
 import { prisma } from './lib/prisma.js'
@@ -7,7 +8,7 @@ import { prisma } from './lib/prisma.js'
 const app = express()
 const PORT = 3001
 
-app.use(cors({ origin: 'http://localhost:5173', credentials: true }))
+app.use(cors({ origin: process.env.BETTER_AUTH_URL, credentials: true }))
 
 // Better Auth must come before express.json(), or its requests hang
 app.all('/api/auth/*splat', toNodeHandler(auth))
@@ -37,6 +38,17 @@ app.get('/api/me', async (request, response) => {
   response.json({ user: session.user })
 })
 
-app.listen(PORT, () => {
-  console.log('Server running on http://localhost:' + PORT)
+// Catches any error a route didn't handle, so the server answers instead of hanging
+app.use((error: unknown, _request: Request, response: Response, _next: NextFunction) => {
+  console.error(error)
+  response.status(500).json({ error: 'Something went wrong' })
 })
+
+// On Vercel, the exported app is run for each request; locally, we start a server
+if (!process.env.VERCEL) {
+  app.listen(PORT, () => {
+    console.log('Server running on http://localhost:' + PORT)
+  })
+}
+
+export default app
