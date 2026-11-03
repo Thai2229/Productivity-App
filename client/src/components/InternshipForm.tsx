@@ -69,7 +69,7 @@ export default function InternshipForm({ initial, onSave, onCancel }: Props) {
 
     const link = draft.link.trim()
     if (draft.company.trim() === '' || draft.role.trim() === '') {
-      setError('Company and role are required.')
+      setError('Company and title are required.')
       return
     }
     if (link !== '' && !link.startsWith('http://') && !link.startsWith('https://')) {
@@ -103,12 +103,11 @@ export default function InternshipForm({ initial, onSave, onCancel }: Props) {
         </label>
 
         <label className="auth-field">
-          <span>Role</span>
+          <span>Title</span>
           <input
             value={draft.role}
             onChange={(event) => update('role', event.target.value)}
             maxLength={100}
-            placeholder="Software Engineering Intern"
             required
           />
         </label>
@@ -142,7 +141,6 @@ export default function InternshipForm({ initial, onSave, onCancel }: Props) {
             value={draft.location}
             onChange={(event) => update('location', event.target.value)}
             maxLength={100}
-            placeholder="San Diego, CA or Remote"
           />
         </label>
 

@@ -79,7 +79,6 @@ export default function FlowChart({ internships }: Props) {
     <section className="flow-card">
       <div className="flow-header">
         <h2 className="flow-title">Application flow</h2>
-        <p className="flow-subtitle">Where your applications went</p>
         <p className="flow-hint">Swipe sideways to see the whole chart</p>
       </div>
 

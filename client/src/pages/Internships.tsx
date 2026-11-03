@@ -39,18 +39,18 @@ export default function Internships() {
   const [actionError, setActionError] = useState('')
   const [searchParams, setSearchParams] = useSearchParams()
 
-  // The view lives in the address (?view=flow) so refresh and the back button keep it
+  // The view lives in the address (?view=chart) so refresh and the back button keep it
   let view = 'board'
-  if (searchParams.get('view') === 'flow') {
-    view = 'flow'
+  if (searchParams.get('view') === 'chart') {
+    view = 'chart'
   }
 
   function showBoard() {
     setSearchParams({})
   }
 
-  function showFlow() {
-    setSearchParams({ view: 'flow' })
+  function showChart() {
+    setSearchParams({ view: 'chart' })
   }
 
   async function load() {
@@ -201,18 +201,27 @@ export default function Internships() {
         />
       )}
 
-      <div className="view-toggle" role="group" aria-label="Choose a view">
+      <div className="view-toggle" data-view={view} role="group" aria-label="Choose a view">
+        <span className="view-toggle-thumb" aria-hidden="true" />
         <button type="button" aria-pressed={view === 'board'} onClick={showBoard}>
+          <svg viewBox="0 0 16 16" aria-hidden="true">
+            <rect x="2" y="2.5" width="12" height="11" rx="2" />
+            <path d="M6 2.5v11M10 2.5v11" />
+          </svg>
           Board
         </button>
-        <button type="button" aria-pressed={view === 'flow'} onClick={showFlow}>
-          Flow
+        <button type="button" aria-pressed={view === 'chart'} onClick={showChart}>
+          <svg viewBox="0 0 16 16" aria-hidden="true">
+            <path d="M2.5 2.5v11h11" />
+            <path d="M5 10.5l2.5-3 2 2 3.5-4.5" />
+          </svg>
+          Chart
         </button>
       </div>
 
-      {view === 'flow' && internships.length > 0 && <FlowChart internships={internships} />}
+      {view === 'chart' && internships.length > 0 && <FlowChart internships={internships} />}
 
-      {view === 'flow' && internships.length === 0 && (
+      {view === 'chart' && internships.length === 0 && (
         <div className="tracker-empty">
           <p>Add a job to see where your applications go.</p>
         </div>
@@ -251,8 +260,8 @@ export default function Internships() {
               type="search"
               value={search}
               onChange={(event) => setSearch(event.target.value)}
-              placeholder="Search company or role"
-              aria-label="Search company or role"
+              placeholder="Search company or title"
+              aria-label="Search company or title"
             />
           )}
 
