@@ -8,15 +8,16 @@ datasource db {
 }
 
 model User {
-  id            String    @id
+  id            String       @id
   name          String
   email         String
-  emailVerified Boolean   @default(false)
+  emailVerified Boolean      @default(false)
   image         String?
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  createdAt     DateTime     @default(now())
+  updatedAt     DateTime     @default(now()) @updatedAt
   sessions      Session[]
   accounts      Account[]
+  internships   Internship[]
 
   @@unique([email])
   @@map("user")
@@ -64,8 +65,36 @@ model Verification {
   value      String
   expiresAt  DateTime
   createdAt  DateTime @default(now())
-  updatedAt  DateTime @updatedAt
+  updatedAt  DateTime @default(now()) @updatedAt
 
   @@index([identifier])
   @@map("verification")
+}
+
+// The steps an application moves through, in order
+enum InternshipStage {
+  APPLIED
+  SCREENING
+  EARLY_INTERVIEW
+  FINAL_INTERVIEW
+  OFFER
+  REJECTED
+}
+
+model Internship {
+  id        String          @id @default(cuid())
+  company   String
+  role      String
+  stage     InternshipStage @default(APPLIED)
+  location  String?
+  link      String?
+  appliedOn DateTime?
+  notes     String?
+  createdAt DateTime        @default(now())
+  updatedAt DateTime        @updatedAt
+  userId    String
+  user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("internship")
 }

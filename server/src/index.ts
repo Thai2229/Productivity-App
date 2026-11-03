@@ -4,6 +4,7 @@ import express, { type NextFunction, type Request, type Response } from 'express
 import { fromNodeHeaders, toNodeHandler } from 'better-auth/node'
 import { auth } from './lib/auth.js'
 import { prisma } from './lib/prisma.js'
+import { internshipsRouter } from './routes/internships.js'
 
 const app = express()
 const PORT = 3001
@@ -37,6 +38,8 @@ app.get('/api/me', async (request, response) => {
 
   response.json({ user: session.user })
 })
+
+app.use('/api/internships', internshipsRouter)
 
 // Catches any error a route didn't handle, so the server answers instead of hanging
 app.use((error: unknown, _request: Request, response: Response, _next: NextFunction) => {
