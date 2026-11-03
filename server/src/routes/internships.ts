@@ -118,16 +118,25 @@ function readInternship(body: unknown, partial: boolean) {
   return { data, errors }
 }
 
+// Sent with every internship: the stages it has entered, oldest first
+const withHistory = {
+  history: {
+    select: { stage: true, changedAt: true },
+    orderBy: { changedAt: 'asc' },
+  },
+} as const
+
 // List: only this user's rows, newest first
 internshipsRouter.get('/', async (_request, response) => {
   const internships = await prisma.internship.findMany({
     where: { userId: response.locals.userId },
     orderBy: { createdAt: 'desc' },
+    include: withHistory,
   })
   response.json({ internships })
 })
 
-// Create: the owner is always the logged-in user
+// Create: the owner is always the logged-in user, and the starting stage is logged
 internshipsRouter.post('/', async (request, response) => {
   const { data, errors } = readInternship(request.body, false)
 
@@ -136,17 +145,24 @@ internshipsRouter.post('/', async (request, response) => {
     return
   }
 
+  let stage: InternshipStage = InternshipStage.APPLIED
+  if (data.stage) {
+    stage = data.stage
+  }
+
   const internship = await prisma.internship.create({
     data: {
       company: data.company as string,
       role: data.role as string,
-      stage: data.stage,
+      stage,
       location: data.location,
       link: data.link,
       appliedOn: data.appliedOn,
       notes: data.notes,
       userId: response.locals.userId,
+      history: { create: { stage } },
     },
+    include: withHistory,
   })
   response.status(201).json({ internship })
 })
@@ -160,15 +176,26 @@ internshipsRouter.patch('/:id', async (request, response) => {
     return
   }
 
-  const where = { id: request.params.id, userId: response.locals.userId }
-  const result = await prisma.internship.updateMany({ where, data })
+  const existing = await prisma.internship.findFirst({
+    where: { id: request.params.id, userId: response.locals.userId },
+  })
 
-  if (result.count === 0) {
+  if (!existing) {
     response.status(404).json({ error: 'Internship not found' })
     return
   }
 
-  const internship = await prisma.internship.findFirst({ where })
+  // Only log a history row when the stage actually changes
+  const changes: Parameters<typeof prisma.internship.update>[0]['data'] = { ...data }
+  if (data.stage && data.stage !== existing.stage) {
+    changes.history = { create: { stage: data.stage } }
+  }
+
+  const internship = await prisma.internship.update({
+    where: { id: existing.id },
+    data: changes,
+    include: withHistory,
+  })
   response.json({ internship })
 })
 

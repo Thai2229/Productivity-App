@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import FlowChart from '../components/FlowChart'
 import InternshipForm from '../components/InternshipForm'
 import {
   STAGES,
@@ -183,6 +184,8 @@ export default function Internships() {
           onCancel={closeForm}
         />
       )}
+
+      {internships.length > 0 && <FlowChart internships={internships} />}
 
       <div className="pipeline" role="group" aria-label="Filter by stage">
         <button

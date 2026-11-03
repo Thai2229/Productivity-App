@@ -94,7 +94,20 @@ model Internship {
   updatedAt DateTime        @updatedAt
   userId    String
   user      User            @relation(fields: [userId], references: [id], onDelete: Cascade)
+  history   StageChange[]
 
   @@index([userId])
   @@map("internship")
+}
+
+// One row each time an internship enters a stage, so the flow chart knows its path
+model StageChange {
+  id           String          @id @default(cuid())
+  stage        InternshipStage
+  changedAt    DateTime        @default(now())
+  internshipId String
+  internship   Internship      @relation(fields: [internshipId], references: [id], onDelete: Cascade)
+
+  @@index([internshipId])
+  @@map("stage_change")
 }

@@ -19,6 +19,7 @@ export type Internship = {
   notes: string | null
   createdAt: string
   updatedAt: string
+  history: { stage: Stage; changedAt: string }[]
 }
 
 // What the form sends. Blank strings tell the server to clear a field.

@@ -10,6 +10,7 @@
   --stage-final: #94610f;
   --stage-offer: #157a6b;
   --stage-rejected: #b42318;
+  --stage-waiting: #a3adb8;
 }
 
 :root[data-theme='dark'] {
@@ -19,6 +20,7 @@
   --stage-final: #e0a84a;
   --stage-offer: #4cc9b0;
   --stage-rejected: #ff8f86;
+  --stage-waiting: #5d6875;
 }
 
 [data-stage='APPLIED'] { --stage: var(--stage-applied); }
@@ -199,6 +201,67 @@
   margin: 0;
 }
 
+/* Application flow chart */
+.flow-card {
+  padding: 1.25rem 1.5rem 1rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+}
+
+.flow-header {
+  margin-bottom: 0.75rem;
+}
+
+.flow-title {
+  margin: 0;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.flow-subtitle {
+  margin: 0.2rem 0 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.flow-hint {
+  display: none;
+  margin: 0.2rem 0 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.flow-chart {
+  width: 100%;
+  min-height: 2rem;
+  overflow-x: auto;
+}
+
+.flow-chart svg {
+  display: block;
+}
+
+.flow-links path {
+  fill: none;
+  stroke-opacity: 0.35;
+  transition: stroke-opacity 0.15s;
+}
+
+.flow-links path:hover {
+  stroke-opacity: 0.6;
+}
+
+.flow-label {
+  fill: var(--ink);
+  font-size: 0.8rem;
+  font-weight: 500;
+  paint-order: stroke;
+  stroke: var(--surface);
+  stroke-width: 3px;
+  stroke-linejoin: round;
+}
+
 /* One row per application */
 .tracker-list {
   display: flex;
@@ -358,6 +421,14 @@
 
   .tracker-header .btn {
     padding: 0.6rem 1rem;
+  }
+
+  .flow-card {
+    padding: 1rem;
+  }
+
+  .flow-hint {
+    display: block;
   }
 
   .tracker-form-grid {
