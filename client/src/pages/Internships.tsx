@@ -1,4 +1,5 @@
 import { useEffect, useState } from 'react'
+import { useSearchParams } from 'react-router-dom'
 import FlowChart from '../components/FlowChart'
 import InternshipForm from '../components/InternshipForm'
 import {
@@ -36,6 +37,21 @@ export default function Internships() {
   const [editing, setEditing] = useState<Internship | null>(null)
   const [confirmingId, setConfirmingId] = useState('')
   const [actionError, setActionError] = useState('')
+  const [searchParams, setSearchParams] = useSearchParams()
+
+  // The view lives in the address (?view=flow) so refresh and the back button keep it
+  let view = 'board'
+  if (searchParams.get('view') === 'flow') {
+    view = 'flow'
+  }
+
+  function showBoard() {
+    setSearchParams({})
+  }
+
+  function showFlow() {
+    setSearchParams({ view: 'flow' })
+  }
 
   async function load() {
     try {
@@ -132,13 +148,13 @@ export default function Internships() {
   }
 
   if (loadState === 'loading') {
-    return <p className="auth-loading">Loading your internships…</p>
+    return <p className="auth-loading">Loading your jobs…</p>
   }
 
   if (loadState === 'error') {
     return (
       <div className="tracker tracker-empty">
-        <p>Couldn't load your internships. Check your connection and try again.</p>
+        <p>Couldn't load your jobs. Check your connection and try again.</p>
         <button type="button" className="btn btn-secondary" onClick={retry}>
           Try again
         </button>
@@ -148,7 +164,7 @@ export default function Internships() {
 
   let emptyMessage = ''
   if (internships.length === 0) {
-    emptyMessage = 'No internships yet. Add the first one you applied to.'
+    emptyMessage = 'No jobs yet. Add the first one you applied to.'
   } else if (visible.length === 0 && searchText !== '') {
     emptyMessage = 'Nothing matches "' + search.trim() + '".'
   } else if (visible.length === 0) {
@@ -164,14 +180,14 @@ export default function Internships() {
     <div className="tracker">
       <header className="tracker-header">
         <div>
-          <h1 className="tracker-title">Internship Tracker</h1>
+          <h1 className="tracker-title">Job Tracker</h1>
           <p className="tracker-subtitle">
             {countText}
           </p>
         </div>
         {!formOpen && (
           <button type="button" className="btn btn-primary" onClick={openNew}>
-            Add internship
+            Add job
           </button>
         )}
       </header>
@@ -185,120 +201,139 @@ export default function Internships() {
         />
       )}
 
-      {internships.length > 0 && <FlowChart internships={internships} />}
-
-      <div className="pipeline" role="group" aria-label="Filter by stage">
-        <button
-          type="button"
-          className="pipeline-step"
-          aria-pressed={filter === 'ALL'}
-          onClick={() => setFilter('ALL')}
-        >
-          <span className="pipeline-count">{internships.length}</span>
-          <span className="pipeline-label">All</span>
+      <div className="view-toggle" role="group" aria-label="Choose a view">
+        <button type="button" aria-pressed={view === 'board'} onClick={showBoard}>
+          Board
         </button>
-        {STAGES.map((stage) => (
-          <button
-            key={stage.value}
-            type="button"
-            className="pipeline-step"
-            data-stage={stage.value}
-            aria-pressed={filter === stage.value}
-            onClick={() => setFilter(stage.value)}
-          >
-            <span className="pipeline-count">{countFor(stage.value)}</span>
-            <span className="pipeline-label">{stage.label}</span>
-          </button>
-        ))}
+        <button type="button" aria-pressed={view === 'flow'} onClick={showFlow}>
+          Flow
+        </button>
       </div>
 
-      {internships.length > 0 && (
-        <input
-          className="tracker-search"
-          type="search"
-          value={search}
-          onChange={(event) => setSearch(event.target.value)}
-          placeholder="Search company or role"
-          aria-label="Search company or role"
-        />
-      )}
+      {view === 'flow' && internships.length > 0 && <FlowChart internships={internships} />}
 
-      {actionError && <p className="auth-error" role="alert">{actionError}</p>}
-
-      {emptyMessage && (
+      {view === 'flow' && internships.length === 0 && (
         <div className="tracker-empty">
-          <p>{emptyMessage}</p>
+          <p>Add a job to see where your applications go.</p>
         </div>
       )}
 
-      <ul className="tracker-list">
-        {visible.map((row) => (
-          <li key={row.id} className="tracker-item" data-stage={row.stage}>
-            <div className="tracker-main">
-              <p className="tracker-company">{row.company}</p>
-              <p className="tracker-role">{row.role}</p>
-              <p className="tracker-meta">
-                {row.location && <span>{row.location}</span>}
-                {row.appliedOn && <span>Applied {formatDate(row.appliedOn)}</span>}
-                {row.link && (
-                  <a href={row.link} target="_blank" rel="noopener noreferrer">
-                    Job posting ↗
-                  </a>
-                )}
-              </p>
-              {row.notes && <p className="tracker-notes">{row.notes}</p>}
+      {view === 'board' && (
+        <>
+          <div className="pipeline" role="group" aria-label="Filter by stage">
+            <button
+              type="button"
+              className="pipeline-step"
+              aria-pressed={filter === 'ALL'}
+              onClick={() => setFilter('ALL')}
+            >
+              <span className="pipeline-count">{internships.length}</span>
+              <span className="pipeline-label">All</span>
+            </button>
+            {STAGES.map((stage) => (
+              <button
+                key={stage.value}
+                type="button"
+                className="pipeline-step"
+                data-stage={stage.value}
+                aria-pressed={filter === stage.value}
+                onClick={() => setFilter(stage.value)}
+              >
+                <span className="pipeline-count">{countFor(stage.value)}</span>
+                <span className="pipeline-label">{stage.label}</span>
+              </button>
+            ))}
+          </div>
+
+          {internships.length > 0 && (
+            <input
+              className="tracker-search"
+              type="search"
+              value={search}
+              onChange={(event) => setSearch(event.target.value)}
+              placeholder="Search company or role"
+              aria-label="Search company or role"
+            />
+          )}
+
+          {actionError && <p className="auth-error" role="alert">{actionError}</p>}
+
+          {emptyMessage && (
+            <div className="tracker-empty">
+              <p>{emptyMessage}</p>
             </div>
+          )}
 
-            <div className="tracker-side">
-              <label className="stage-select">
-                <span className="stage-dot" aria-hidden="true" />
-                <select
-                  value={row.stage}
-                  onChange={(event) => changeStage(row, event.target.value as Stage)}
-                  aria-label={'Stage for ' + row.company}
-                >
-                  {STAGES.map((stage) => (
-                    <option key={stage.value} value={stage.value}>
-                      {stage.label}
-                    </option>
-                  ))}
-                </select>
-              </label>
-
-              {confirmingId === row.id && (
-                <div className="tracker-actions">
-                  <span className="tracker-confirm">Delete?</span>
-                  <button
-                    type="button"
-                    className="link-btn link-btn-danger"
-                    onClick={() => handleDelete(row.id)}
-                  >
-                    Yes, delete
-                  </button>
-                  <button type="button" className="link-btn" onClick={() => setConfirmingId('')}>
-                    Cancel
-                  </button>
+          <ul className="tracker-list">
+            {visible.map((row) => (
+              <li key={row.id} className="tracker-item" data-stage={row.stage}>
+                <div className="tracker-main">
+                  <p className="tracker-company">{row.company}</p>
+                  <p className="tracker-role">{row.role}</p>
+                  <p className="tracker-meta">
+                    {row.location && <span>{row.location}</span>}
+                    {row.appliedOn && <span>Applied {formatDate(row.appliedOn)}</span>}
+                    {row.link && (
+                      <a href={row.link} target="_blank" rel="noopener noreferrer">
+                        Job posting ↗
+                      </a>
+                    )}
+                  </p>
+                  {row.notes && <p className="tracker-notes">{row.notes}</p>}
                 </div>
-              )}
 
-              {confirmingId !== row.id && (
-                <div className="tracker-actions">
-                  <button type="button" className="link-btn" onClick={() => openEdit(row)}>
-                    Edit
-                  </button>
-                  <button
-                    type="button"
-                    className="link-btn link-btn-danger"
-                    onClick={() => setConfirmingId(row.id)}
-                  >
-                    Delete
-                  </button>
+                <div className="tracker-side">
+                  <label className="stage-select">
+                    <span className="stage-dot" aria-hidden="true" />
+                    <select
+                      value={row.stage}
+                      onChange={(event) => changeStage(row, event.target.value as Stage)}
+                      aria-label={'Stage for ' + row.company}
+                    >
+                      {STAGES.map((stage) => (
+                        <option key={stage.value} value={stage.value}>
+                          {stage.label}
+                        </option>
+                      ))}
+                    </select>
+                  </label>
+
+                  {confirmingId === row.id && (
+                    <div className="tracker-actions">
+                      <span className="tracker-confirm">Delete?</span>
+                      <button
+                        type="button"
+                        className="link-btn link-btn-danger"
+                        onClick={() => handleDelete(row.id)}
+                      >
+                        Yes, delete
+                      </button>
+                      <button type="button" className="link-btn" onClick={() => setConfirmingId('')}>
+                        Cancel
+                      </button>
+                    </div>
+                  )}
+
+                  {confirmingId !== row.id && (
+                    <div className="tracker-actions">
+                      <button type="button" className="link-btn" onClick={() => openEdit(row)}>
+                        Edit
+                      </button>
+                      <button
+                        type="button"
+                        className="link-btn link-btn-danger"
+                        onClick={() => setConfirmingId(row.id)}
+                      >
+                        Delete
+                      </button>
+                    </div>
+                  )}
                 </div>
-              )}
-            </div>
-          </li>
-        ))}
-      </ul>
+              </li>
+            ))}
+          </ul>
+        </>
+      )}
     </div>
   )
 }

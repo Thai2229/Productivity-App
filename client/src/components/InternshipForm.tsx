@@ -49,8 +49,8 @@ export default function InternshipForm({ initial, onSave, onCancel }: Props) {
   const [error, setError] = useState('')
   const [saving, setSaving] = useState(false)
 
-  let title = 'Add internship'
-  let submitText = 'Add internship'
+  let title = 'Add job'
+  let submitText = 'Add job'
   if (initial) {
     title = 'Edit ' + initial.company
     submitText = 'Save changes'

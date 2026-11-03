@@ -119,6 +119,44 @@
   opacity: 0.7;
 }
 
+/* Board / Flow switch */
+.view-toggle {
+  display: inline-flex;
+  align-self: flex-start;
+  gap: 0.25rem;
+  padding: 0.25rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 0.625rem;
+}
+
+.view-toggle button {
+  padding: 0.45rem 1.1rem;
+  background: transparent;
+  border: none;
+  border-radius: 0.45rem;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+}
+
+.view-toggle button:hover {
+  color: var(--ink);
+}
+
+.view-toggle button[aria-pressed='true'] {
+  background: var(--bg);
+  box-shadow: 0 0 0 1px var(--line);
+  color: var(--ink);
+}
+
+.view-toggle button:focus-visible {
+  outline: 2px solid var(--work);
+  outline-offset: 2px;
+}
+
 /* Stage summary: one button per stage, doubles as the filter */
 .pipeline {
   display: grid;

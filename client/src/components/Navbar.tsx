@@ -43,7 +43,7 @@ export default function Navbar() {
   return (
     <nav className="navbar">
       <NavLink to="/pomodoro" className={getLinkClass}>Pomodoro</NavLink>
-      <NavLink to="/internships" className={getLinkClass}>Internships</NavLink>
+      <NavLink to="/internships" className={getLinkClass}>Jobs</NavLink>
       <NavLink to="/habits" className={getLinkClass}>Habits</NavLink>
       <NavLink to="/roadmap" className={getLinkClass}>Roadmap</NavLink>
       <div className="nav-actions">
