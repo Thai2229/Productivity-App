@@ -1,4 +1,5 @@
 import { Router, type NextFunction, type Request, type Response } from 'express'
+import { rateLimit } from 'express-rate-limit'
 import { fromNodeHeaders } from 'better-auth/node'
 import { auth } from '../lib/auth.js'
 import { prisma } from '../lib/prisma.js'
@@ -26,6 +27,19 @@ async function requireUser(request: Request, response: Response, next: NextFunct
 }
 
 internshipsRouter.use(requireUser)
+
+// At most 120 requests a minute per account: plenty for clicking around,
+// but stops a script from flooding the database
+internshipsRouter.use(
+  rateLimit({
+    windowMs: 60 * 1000,
+    limit: 120,
+    keyGenerator: (_request, response) => response.locals.userId,
+    standardHeaders: 'draft-8',
+    legacyHeaders: false,
+    message: { error: 'Too many requests, please slow down' },
+  }),
+)
 
 type InternshipInput = {
   company?: string

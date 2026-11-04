@@ -111,3 +111,12 @@ model StageChange {
   @@index([internshipId])
   @@map("stage_change")
 }
+// Used by Better Auth to count login attempts, so rate limits work on Vercel
+model RateLimit {
+  id          String @id @default(cuid())
+  key         String @unique
+  count       Int
+  lastRequest BigInt
+
+  @@map("rateLimit")
+}
