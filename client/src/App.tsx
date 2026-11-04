@@ -8,6 +8,7 @@ import Habits from './pages/Habits'
 import Login from './pages/Login'
 import SignUp from './pages/SignUp'
 import Settings from './pages/Settings'
+import Landing from './pages/Landing'
 import './App.css'
 import './auth.css'
 
@@ -20,11 +21,11 @@ export default function App() {
       <Navbar />
       <main className="page">
         <Routes>
-          <Route path="/" element={<Navigate to="/pomodoro" replace />} />
-          <Route path="/pomodoro" element={<Pomodoro />} />
+          <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/signup" element={<SignUp />} />
           <Route element={<RequireAuth />}>
+            <Route path="/pomodoro" element={<Pomodoro />} />
             <Route path="/internships" element={<Internships />} />
             <Route path="/habits" element={<Habits />} />
             <Route path="/settings" element={<Settings />} />
@@ -37,6 +38,7 @@ export default function App() {
               }
             />
           </Route>
+          <Route path="*" element={<Navigate to="/" replace />} />
         </Routes>
       </main>
     </>

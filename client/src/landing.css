@@ -1,0 +1,275 @@
+/* Landing page for logged-out visitors: a simple hero, one app preview, and a short story */
+.page:has(.landing) {
+  max-width: none;
+  padding: 0;
+}
+
+.landing {
+  --phase: var(--work);
+  --habit-done: var(--rest);
+  --habit-fire: #e8590c;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding-bottom: 4rem;
+  background: linear-gradient(180deg, var(--landing-blue) 0%, var(--landing-pink) 38%, var(--bg) 78%);
+  --landing-blue: #dbe7ff;
+  --landing-pink: #fde8f1;
+}
+
+:root[data-theme='dark'] .landing {
+  --landing-blue: #172544;
+  --landing-pink: #2a1a28;
+}
+
+:root[data-theme='dark'] .landing {
+  --habit-fire: #ff8a4c;
+}
+
+.landing-hero {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  max-width: 40rem;
+  padding: 4.5rem 1.5rem 2.5rem;
+  text-align: center;
+}
+
+.landing-title {
+  margin: 0;
+  font-size: clamp(2.3rem, 6vw, 3.5rem);
+  font-weight: 700;
+  line-height: 1.08;
+  letter-spacing: -0.03em;
+}
+
+.landing-lead {
+  margin: 0;
+  color: var(--muted);
+  font-size: 1.15rem;
+  line-height: 1.6;
+}
+
+.landing-cta {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0.85rem;
+  margin-top: 0.75rem;
+}
+
+.landing .btn {
+  display: inline-block;
+  min-width: 8.5rem;
+  border-radius: 999px;
+  text-align: center;
+  text-decoration: none;
+}
+
+.btn-outline {
+  background: transparent;
+  border: 1px solid var(--work);
+  color: var(--work);
+}
+
+.btn-outline:hover {
+  background: color-mix(in srgb, var(--work) 8%, transparent);
+}
+
+/* The app preview */
+.landing-showcase {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 1rem;
+  width: 100%;
+  max-width: 62rem;
+  padding: 0 1.5rem;
+  box-sizing: border-box;
+}
+
+.landing-tabs {
+  position: relative;
+  display: inline-grid;
+  grid-template-columns: repeat(4, 1fr);
+  padding: 0.25rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+}
+
+/* The blue pill slides under whichever preview is chosen */
+.landing-tabs-thumb {
+  position: absolute;
+  top: 0.25rem;
+  bottom: 0.25rem;
+  left: 0.25rem;
+  width: calc((100% - 0.5rem) / 4);
+  background: var(--work);
+  border-radius: 999px;
+  transition: transform 0.3s ease;
+}
+
+.landing-tabs[data-active='1'] .landing-tabs-thumb { transform: translateX(100%); }
+.landing-tabs[data-active='2'] .landing-tabs-thumb { transform: translateX(200%); }
+.landing-tabs[data-active='3'] .landing-tabs-thumb { transform: translateX(300%); }
+
+.landing-tabs button {
+  position: relative;
+  padding: 0.45rem 1.1rem;
+  background: transparent;
+  border: none;
+  border-radius: 999px;
+  color: var(--muted);
+  font: inherit;
+  font-size: 0.9rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: color 0.2s;
+}
+
+.landing-tabs button:hover {
+  color: var(--ink);
+}
+
+.landing-tabs button[aria-pressed='true'] {
+  color: var(--on-accent);
+}
+
+.landing-tabs button:focus-visible {
+  outline: 2px solid var(--work);
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .landing-tabs-thumb,
+  .landing-tabs button {
+    transition: none;
+  }
+}
+
+.landing-window {
+  width: 100%;
+  overflow: hidden;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 1.25rem;
+  box-shadow: 0 24px 60px -20px rgb(15 23 42 / 0.25);
+}
+
+.landing-window-bar {
+  display: flex;
+  gap: 0.4rem;
+  padding: 0.85rem 1rem;
+  border-bottom: 1px solid var(--line);
+}
+
+.landing-window-bar span {
+  width: 0.65rem;
+  height: 0.65rem;
+  background: var(--line);
+  border-radius: 50%;
+}
+
+.landing-window-body {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 26rem;
+  padding: 1.5rem;
+  background: var(--bg);
+}
+
+.landing-window-body > * {
+  width: 100%;
+}
+
+.landing-window-body .flow-card {
+  border: none;
+}
+
+.preview-timer {
+  max-width: 19rem;
+  padding: 1.5rem 1.25rem;
+}
+
+.preview-timer .ring {
+  margin-bottom: 1rem;
+}
+
+.preview-timer .session-dots {
+  margin-top: 0;
+}
+
+.habits-preview {
+  max-width: 44rem;
+}
+
+.preview-habit-name {
+  margin: 0;
+}
+
+.landing-window .landing-roadmap {
+  height: 24rem;
+}
+
+.landing-note {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+/* Why I built this */
+.landing-story {
+  max-width: 38rem;
+  margin-top: 4rem;
+  padding: 0 1.5rem;
+  text-align: center;
+}
+
+.landing-story h2 {
+  margin: 0;
+  font-size: 1.35rem;
+  font-weight: 600;
+}
+
+.landing-story p {
+  margin: 0.75rem 0 0;
+  color: var(--muted);
+  font-size: 1.05rem;
+  line-height: 1.7;
+}
+
+@media (max-width: 40rem) {
+  .landing-hero {
+    padding-top: 3rem;
+  }
+
+  .landing-showcase {
+    padding: 0 1rem;
+  }
+
+  .landing-tabs button {
+    padding: 0.4rem 0.6rem;
+  }
+
+  .landing-window-body {
+    min-height: 0;
+    padding: 1rem 0.75rem;
+  }
+
+  .landing-window .landing-roadmap {
+    height: 15rem;
+  }
+
+  .habits-preview .habit-row {
+    flex-wrap: wrap;
+  }
+
+  .habits-preview .habit-days {
+    grid-template-columns: repeat(7, 1fr);
+    justify-items: center;
+    width: 100%;
+  }
+}

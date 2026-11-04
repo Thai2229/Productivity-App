@@ -10,7 +10,8 @@ export default function RequireAuth() {
   }
 
   if (!session) {
-    return <Navigate to="/login" replace state={{ from: location.pathname }} />
+    // Logged-out visitors see the landing page first
+    return <Navigate to="/" replace state={{ from: location.pathname }} />
   }
 
   return <Outlet />

@@ -51,7 +51,7 @@ export default function ProfileMenu({ name, email }: Props) {
   async function handleLogout() {
     setOpen(false)
     await authClient.signOut()
-    navigate('/pomodoro')
+    navigate('/')
   }
 
   return (
