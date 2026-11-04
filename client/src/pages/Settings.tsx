@@ -107,6 +107,10 @@ function ChangePasswordForm() {
     if (changeError) {
       if (changeError.code === 'INVALID_PASSWORD') {
         setError('Your current password is incorrect.')
+      } else if (changeError.code === 'CREDENTIAL_ACCOUNT_NOT_FOUND') {
+        setError(
+          'You sign in with Google, so this account has no password yet. To add one, log out and use "Forgot password?" on the log in page.',
+        )
       } else if (changeError.status === 429) {
         setError('Too many attempts. Wait a few seconds and try again.')
       } else {

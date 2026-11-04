@@ -143,3 +143,105 @@
 .turnstile-box {
   min-height: 65px;
 }
+
+/* "Continue with Google" and the "or" line under it */
+.auth-google {
+  display: flex;
+  flex-direction: column;
+  gap: 0.9rem;
+  margin-bottom: 0.9rem;
+}
+
+.auth-google-button {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.6rem;
+  width: 100%;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  color: var(--ink);
+  font-weight: 500;
+}
+
+.auth-google-button:hover {
+  background: var(--bg);
+}
+
+.auth-google-button:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.auth-divider {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.auth-divider::before,
+.auth-divider::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--line);
+}
+
+/* Password label with "Forgot password?" on the right */
+.auth-label-row {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 0.75rem;
+}
+
+.auth-forgot {
+  color: var(--work);
+  font-size: 0.8rem;
+  font-weight: 500;
+  text-decoration: none;
+}
+
+.auth-forgot:hover {
+  text-decoration: underline;
+}
+
+/* Plain text on the forgot / reset password pages */
+.auth-text {
+  margin: 0 0 1rem;
+  color: var(--ink);
+  font-size: 0.95rem;
+  line-height: 1.5;
+}
+
+.auth-text-muted {
+  color: var(--muted);
+  font-size: 0.875rem;
+}
+
+.auth-link-button {
+  display: block;
+  box-sizing: border-box;
+  text-align: center;
+  text-decoration: none;
+}
+
+/* Privacy / Terms links under the landing, log in and sign up pages */
+.legal-links {
+  margin: 1.25rem 0 0;
+  color: var(--muted);
+  font-size: 0.8rem;
+  line-height: 1.5;
+  text-align: center;
+}
+
+.legal-links a {
+  color: var(--muted);
+  text-decoration: underline;
+}
+
+.legal-links a:hover {
+  color: var(--ink);
+}

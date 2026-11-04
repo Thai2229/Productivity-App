@@ -2,6 +2,7 @@ import { betterAuth } from 'better-auth'
 import { APIError } from 'better-auth/api'
 import { prismaAdapter } from 'better-auth/adapters/prisma'
 import { captcha } from 'better-auth/plugins'
+import { sendPasswordResetEmail } from './mailer.js'
 import { prisma } from './prisma.js'
 
 // Cloudflare Turnstile: sign-ups must pass a "real person" check first.
@@ -21,6 +22,24 @@ function botCheckPlugins() {
   ]
 }
 
+// "Continue with Google": only switched on when both Google keys are set
+function googleProvider() {
+  const clientId = process.env.GOOGLE_CLIENT_ID
+  const clientSecret = process.env.GOOGLE_CLIENT_SECRET
+  if (!clientId || !clientSecret) {
+    console.warn('GOOGLE_CLIENT_ID / GOOGLE_CLIENT_SECRET are not set, so Google sign-in is off')
+    return {}
+  }
+  return {
+    google: {
+      clientId,
+      clientSecret,
+      // Always let people pick which Google account to use
+      prompt: 'select_account' as const,
+    },
+  }
+}
+
 // Names are only ever shown as text, but there's no reason to accept huge ones
 function checkName(name: unknown) {
   if (typeof name === 'string' && (name.trim() === '' || name.length > 100)) {
@@ -38,6 +57,22 @@ export const auth = betterAuth({
     enabled: true,
     minPasswordLength: 8,
     maxPasswordLength: 128,
+    // "Forgot password?": emails a link that works once and expires after an hour.
+    // Resetting signs the account out everywhere, in case someone else was logged in.
+    sendResetPassword: async ({ user, url }) => {
+      await sendPasswordResetEmail(user.email, user.name, url)
+    },
+    resetPasswordTokenExpiresIn: 60 * 60,
+    revokeSessionsOnPasswordReset: true,
+  },
+  socialProviders: googleProvider(),
+  // Signing in with Google using the same email as an existing account opens that account.
+  // Google has already confirmed the person owns that email.
+  account: {
+    accountLinking: {
+      enabled: true,
+      trustedProviders: ['google'],
+    },
   },
   // Limits how fast anyone can hit the login endpoints. Counts are kept in the
   // database so they hold across Vercel's separate server instances.

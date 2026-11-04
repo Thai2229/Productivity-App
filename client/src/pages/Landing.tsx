@@ -3,6 +3,7 @@ import { Link, Navigate } from 'react-router-dom'
 import { HabitsPreview, JobsPreview, PomodoroPreview } from '../components/LandingPreviews'
 import { authClient } from '../lib/auth-client'
 import '../internships.css'
+import LegalLinks from '../components/LegalLinks'
 import '../landing.css'
 
 // The roadmap example uses the large React Flow library, so it loads on its own
@@ -92,6 +93,8 @@ export default function Landing() {
           habit streaks and roadmaps, behind a paywall. So I built my own and made all of it free.
         </p>
       </section>
+
+      <LegalLinks />
     </div>
   )
 }

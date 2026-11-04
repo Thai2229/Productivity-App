@@ -1,0 +1,39 @@
+/* Privacy Policy and Terms of Service pages: easy-to-read text */
+.legal {
+  color: var(--ink);
+  font-size: 0.95rem;
+  line-height: 1.65;
+}
+
+.legal h1 {
+  margin: 0;
+  font-size: 1.75rem;
+}
+
+.legal h2 {
+  margin: 2rem 0 0.5rem;
+  font-size: 1.1rem;
+}
+
+.legal p,
+.legal ul {
+  margin: 0 0 0.9rem;
+}
+
+.legal ul {
+  padding-left: 1.25rem;
+}
+
+.legal li {
+  margin-bottom: 0.4rem;
+}
+
+.legal a {
+  color: var(--work);
+  font-weight: 500;
+}
+
+.legal-updated {
+  color: var(--muted);
+  font-size: 0.85rem;
+}

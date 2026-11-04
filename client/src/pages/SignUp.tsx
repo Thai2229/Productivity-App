@@ -1,7 +1,9 @@
 import { useState, type FormEvent } from 'react'
 import { Link, Navigate } from 'react-router-dom'
 import Turnstile from '../components/Turnstile'
+import GoogleButton from '../components/GoogleButton'
 import { authClient } from '../lib/auth-client'
+import LegalLinks from '../components/LegalLinks'
 
 const MIN_PASSWORD_LENGTH = 8
 
@@ -68,6 +70,7 @@ export default function SignUp() {
   return (
     <div className="auth-card">
       <h1 className="auth-title">Create an account</h1>
+      <GoogleButton />
       <form className="auth-form" onSubmit={handleSubmit} noValidate>
         <label className="auth-field">
           <span>Name</span>
@@ -116,6 +119,7 @@ export default function SignUp() {
       <p className="auth-switch">
         Already have an account? <Link to="/login">Log in</Link>
       </p>
+      <LegalLinks forSignUp />
     </div>
   )
 }

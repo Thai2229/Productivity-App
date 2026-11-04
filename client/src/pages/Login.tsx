@@ -1,13 +1,22 @@
 import { useState, type FormEvent } from 'react'
-import { Link, Navigate, useLocation } from 'react-router-dom'
+import { Link, Navigate, useLocation, useSearchParams } from 'react-router-dom'
+import GoogleButton from '../components/GoogleButton'
 import { authClient } from '../lib/auth-client'
+import LegalLinks from '../components/LegalLinks'
 
 export default function Login() {
   const { data: session, isPending } = authClient.useSession()
   const location = useLocation()
+  const [searchParams] = useSearchParams()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
-  const [error, setError] = useState('')
+  // Google sends people back here with ?error=... if sign-in didn't work
+  const [error, setError] = useState(() => {
+    if (searchParams.get('error')) {
+      return "Google sign-in didn't work. Try again, or log in with your email."
+    }
+    return ''
+  })
   const [isSubmitting, setIsSubmitting] = useState(false)
 
   let destination = '/pomodoro'
@@ -53,6 +62,7 @@ export default function Login() {
   return (
     <div className="auth-card">
       <h1 className="auth-title">Log in</h1>
+      <GoogleButton />
       <form className="auth-form" onSubmit={handleSubmit} noValidate>
         <label className="auth-field">
           <span>Email</span>
@@ -64,7 +74,12 @@ export default function Login() {
           />
         </label>
         <label className="auth-field">
-          <span>Password</span>
+          <span className="auth-label-row">
+            Password
+            <Link className="auth-forgot" to="/forgot-password">
+              Forgot password?
+            </Link>
+          </span>
           <input
             type="password"
             value={password}
@@ -84,6 +99,7 @@ export default function Login() {
       <p className="auth-switch">
         No account yet? <Link to="/signup">Sign up</Link>
       </p>
+      <LegalLinks />
     </div>
   )
 }
