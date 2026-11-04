@@ -1,10 +1,10 @@
 import 'dotenv/config'
 import cors from 'cors'
 import express, { type NextFunction, type Request, type Response } from 'express'
-import helmet from 'helmet'
 import { fromNodeHeaders, toNodeHandler } from 'better-auth/node'
 import { auth } from './lib/auth.js'
 import { prisma } from './lib/prisma.js'
+import { securityHeaders } from './lib/security-headers.js'
 import { habitsRouter } from './routes/habits.js'
 import { internshipsRouter } from './routes/internships.js'
 
@@ -19,8 +19,9 @@ for (const name of ['DATABASE_URL', 'BETTER_AUTH_SECRET', 'BETTER_AUTH_URL']) {
 const app = express()
 const PORT = 3001
 
-// Security headers on every response, and hides the "X-Powered-By: Express" header
-app.use(helmet())
+// Security headers on every response, and hide the "X-Powered-By: Express" header
+app.disable('x-powered-by')
+app.use(securityHeaders)
 
 // Only the site itself may call this API from a browser, with cookies
 app.use(cors({ origin: process.env.BETTER_AUTH_URL, credentials: true }))
