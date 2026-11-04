@@ -87,14 +87,27 @@ export function activityStats(rows: Internship[]): ActivityStats {
     }
   }
 
-  // Averages are spread over every day from the first application through today
+  // Averages use only real applications: the total divided by how many days,
+  // weeks, months and years have started since the first one (including the current one).
   let perDay = 0
+  let perWeek = 0
+  let perMonth = 0
+  let perYear = 0
   if (rows.length > 0) {
     const firstKey = [...counts.keys()].sort()[0]
-    const first = Date.parse(firstKey + 'T00:00:00')
-    const today = Date.parse(localDateKey(Date.now()) + 'T00:00:00')
-    const spanDays = Math.max(1, Math.round((today - first) / DAY_MS) + 1)
-    perDay = rows.length / spanDays
+    const first = new Date(firstKey + 'T12:00:00')
+    const today = new Date(localDateKey(Date.now()) + 'T12:00:00')
+    const days = Math.max(1, Math.round((today.getTime() - first.getTime()) / DAY_MS) + 1)
+    // Weeks start on Sunday, matching the calendars elsewhere in the app
+    const firstSunday = first.getTime() - first.getDay() * DAY_MS
+    const thisSunday = today.getTime() - today.getDay() * DAY_MS
+    const weeks = Math.max(1, Math.round((thisSunday - firstSunday) / (7 * DAY_MS)) + 1)
+    const months = Math.max(1, (today.getFullYear() - first.getFullYear()) * 12 + today.getMonth() - first.getMonth() + 1)
+    const years = Math.max(1, today.getFullYear() - first.getFullYear() + 1)
+    perDay = rows.length / days
+    perWeek = rows.length / weeks
+    perMonth = rows.length / months
+    perYear = rows.length / years
   }
 
   return {
@@ -102,9 +115,9 @@ export function activityStats(rows: Internship[]): ActivityStats {
     busiestDay,
     busiestCount,
     perDay,
-    perWeek: perDay * 7,
-    perMonth: perDay * (365.25 / 12),
-    perYear: perDay * 365.25,
+    perWeek,
+    perMonth,
+    perYear,
   }
 }
 

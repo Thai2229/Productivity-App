@@ -122,10 +122,7 @@ export default function Analytics({ internships }: Props) {
           </div>
           <div className="stat">
             <dt>Per year</dt>
-            <dd>
-              {Math.round(activity.perYear)}
-              <span className="stat-note">at this pace</span>
-            </dd>
+            <dd>{oneDecimal(activity.perYear)}</dd>
           </div>
         </dl>
       </section>
