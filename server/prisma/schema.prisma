@@ -19,6 +19,7 @@ model User {
   accounts      Account[]
   internships   Internship[]
   habits        Habit[]
+  roadmaps      Roadmap[]
 
   @@unique([email])
   @@map("user")
@@ -147,4 +148,60 @@ model HabitCheck {
 
   @@unique([habitId, date])
   @@map("habit_check")
+}
+
+// How far along a skill on a roadmap is
+enum SkillStatus {
+  LEARNED
+  LEARNING
+  PLANNED
+}
+
+// A named roadmap, like "Cybersecurity" or "AI and machine learning"
+model Roadmap {
+  id        String      @id @default(cuid())
+  name      String
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  userId    String
+  user      User        @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skills    Skill[]
+  links     SkillLink[]
+
+  @@index([userId])
+  @@map("roadmap")
+}
+
+// One block on a roadmap, with where it sits on the canvas
+model Skill {
+  id        String      @id @default(cuid())
+  name      String
+  status    SkillStatus @default(PLANNED)
+  x         Float
+  y         Float
+  createdAt DateTime    @default(now())
+  updatedAt DateTime    @updatedAt
+  roadmapId String
+  roadmap   Roadmap     @relation(fields: [roadmapId], references: [id], onDelete: Cascade)
+  linksOut  SkillLink[] @relation("LinkFrom")
+  linksIn   SkillLink[] @relation("LinkTo")
+
+  @@index([roadmapId])
+  @@map("skill")
+}
+
+// An arrow from one skill to the next
+model SkillLink {
+  id        String   @id @default(cuid())
+  createdAt DateTime @default(now())
+  roadmapId String
+  roadmap   Roadmap  @relation(fields: [roadmapId], references: [id], onDelete: Cascade)
+  fromId    String
+  from      Skill    @relation("LinkFrom", fields: [fromId], references: [id], onDelete: Cascade)
+  toId      String
+  to        Skill    @relation("LinkTo", fields: [toId], references: [id], onDelete: Cascade)
+
+  @@unique([fromId, toId])
+  @@index([roadmapId])
+  @@map("skill_link")
 }

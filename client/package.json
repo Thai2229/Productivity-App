@@ -10,6 +10,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
+    "@xyflow/react": "^12.12.1",
     "better-auth": "^1.7.15",
     "d3-sankey": "^0.12.3",
     "react": "^19.3.1",

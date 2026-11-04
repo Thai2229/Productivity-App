@@ -7,6 +7,7 @@ import { prisma } from './lib/prisma.js'
 import { securityHeaders } from './lib/security-headers.js'
 import { habitsRouter } from './routes/habits.js'
 import { internshipsRouter } from './routes/internships.js'
+import { roadmapsRouter } from './routes/roadmaps.js'
 
 // Stop right away with a clear message if a required setting is missing,
 // instead of starting up half-configured (for example with CORS open to everyone)
@@ -58,6 +59,7 @@ app.get('/api/me', async (request, response) => {
 
 app.use('/api/internships', internshipsRouter)
 app.use('/api/habits', habitsRouter)
+app.use('/api/roadmaps', roadmapsRouter)
 
 // Anything else under /api is a plain 404, not Express's default HTML page
 app.use('/api', (_request, response) => {

@@ -1,14 +1,17 @@
+import { lazy, Suspense } from 'react'
 import { Navigate, Route, Routes } from 'react-router-dom'
 import Navbar from './components/Navbar'
 import RequireAuth from './components/RequireAuth'
 import Pomodoro from './pages/Pomodoro'
 import Internships from './pages/Internships'
 import Habits from './pages/Habits'
-import Roadmap from './pages/Roadmap'
 import Login from './pages/Login'
 import SignUp from './pages/SignUp'
 import './App.css'
 import './auth.css'
+
+// The roadmap editor is large, so it only downloads when someone opens that page
+const Roadmap = lazy(() => import('./pages/Roadmap'))
 
 export default function App() {
   return (
@@ -23,7 +26,14 @@ export default function App() {
           <Route element={<RequireAuth />}>
             <Route path="/internships" element={<Internships />} />
             <Route path="/habits" element={<Habits />} />
-            <Route path="/roadmap" element={<Roadmap />} />
+            <Route
+              path="/roadmap"
+              element={
+                <Suspense fallback={<p className="auth-loading">Loading…</p>}>
+                  <Roadmap />
+                </Suspense>
+              }
+            />
           </Route>
         </Routes>
       </main>
