@@ -332,8 +332,117 @@
   font-weight: 500;
 }
 
-.settings-row-toggle .theme-toggle .theme-label {
-  display: none;
+/* Theme picker on the Appearance tab */
+.settings-theme {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding-top: 0.75rem;
+  border-top: 1px solid var(--line);
+}
+
+.theme-grid {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 1.1rem 0.9rem;
+}
+
+.theme-option {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.45rem;
+  width: 4.75rem;
+  padding: 0;
+  background: none;
+  border: none;
+  color: var(--muted);
+  font: inherit;
+  cursor: pointer;
+  /* The page's colors, saved here before each square switches to its own theme's colors */
+  --picker-surface: var(--surface);
+  --picker-line: var(--line);
+}
+
+.theme-option:hover,
+.theme-option-selected {
+  color: var(--ink);
+}
+
+.theme-option:focus-visible {
+  outline: none;
+}
+
+.theme-option:focus-visible .theme-swatch {
+  outline: 2px solid var(--work);
+  outline-offset: 3px;
+}
+
+.theme-option-name {
+  font-size: 0.78rem;
+  line-height: 1.2;
+  text-align: center;
+}
+
+/* One theme square: page color fading into the card color on top, accent colors along the bottom */
+.theme-swatch {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  width: 3.5rem;
+  height: 3.5rem;
+  overflow: visible;
+  border-radius: 0.8rem;
+  box-shadow: 0 0 0 1px var(--picker-line);
+  transition: transform 0.15s ease;
+}
+
+.theme-option:hover .theme-swatch {
+  transform: translateY(-2px);
+}
+
+/* The selected square gets a ring in its own main color */
+.theme-option-selected .theme-swatch {
+  box-shadow: 0 0 0 2px var(--work);
+}
+
+.theme-swatch-base {
+  flex: 1;
+  background: linear-gradient(135deg, var(--bg) 0%, var(--bg) 45%, var(--surface) 100%);
+  border-radius: 0.8rem 0.8rem 0 0;
+}
+
+.theme-swatch[data-palette='sunset'] .theme-swatch-base {
+  background: var(--sunset-gradient);
+}
+
+.theme-swatch-accents {
+  display: flex;
+  height: 38%;
+  overflow: hidden;
+  border-radius: 0 0 0.8rem 0.8rem;
+}
+
+.theme-swatch-accents span {
+  flex: 1;
+}
+
+.theme-swatch-accents .theme-swatch-work { background: var(--work); }
+.theme-swatch-accents .theme-swatch-rest { background: var(--rest); }
+.theme-swatch-accents .theme-swatch-long { background: var(--long); }
+
+.theme-swatch-check {
+  position: absolute;
+  right: -0.4rem;
+  bottom: -0.4rem;
+  display: grid;
+  place-items: center;
+  width: 1.15rem;
+  height: 1.15rem;
+  background: #3b82f6;
+  border: 2px solid var(--picker-surface);
+  border-radius: 50%;
+  color: #ffffff;
 }
 
 @media (max-width: 40rem) {
@@ -353,4 +462,5 @@
   .settings-card {
     padding: 1rem;
   }
+
 }

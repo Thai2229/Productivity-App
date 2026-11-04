@@ -1,4 +1,5 @@
-:root {
+:root,
+[data-theme='light'] {
   --bg: #f3f5f7;
   --surface: #ffffff;
   --ink: #16202a;
@@ -12,7 +13,8 @@
   color-scheme: light;
 }
 
-:root[data-theme='dark'] {
+:root[data-theme='dark'],
+[data-theme='dark'] {
   --bg: #0f141a;
   --surface: #171d25;
   --ink: #e8edf2;
@@ -26,9 +28,119 @@
   color-scheme: dark;
 }
 
+/* Extra themes. Each one is a dark theme (data-theme='dark') with its own colors on top */
+:root[data-palette='midnight'],
+[data-palette='midnight'] {
+  --bg: #120e1f;
+  --surface: #1b1530;
+  --ink: #ece8f7;
+  --muted: #a197bd;
+  --line: #2d2547;
+  --dot: #43396a;
+  --work: #a78bfa;
+  --rest: #6ee7b7;
+  --long: #f0b45c;
+  --on-accent: #120e1f;
+}
+
+:root[data-palette='cyberpunk'],
+[data-palette='cyberpunk'] {
+  --bg: #0b0a14;
+  --surface: #15132a;
+  --ink: #f4f1ff;
+  --muted: #9d97c4;
+  --line: #2a2550;
+  --dot: #3f3874;
+  --work: #ff2bd6;
+  --rest: #00f0ff;
+  --long: #f5e600;
+  --on-accent: #0b0a14;
+}
+
+:root[data-palette='obsidian'],
+[data-palette='obsidian'] {
+  --bg: #080c14;
+  --surface: #0f1622;
+  --ink: #e3eaf5;
+  --muted: #8a9ab3;
+  --line: #1d2738;
+  --dot: #2e3b52;
+  --work: #4f8cff;
+  --rest: #3fc8a8;
+  --long: #e2a64a;
+  --on-accent: #080c14;
+}
+
+:root[data-palette='forest'],
+[data-palette='forest'] {
+  --bg: #0c1410;
+  --surface: #132019;
+  --ink: #e4efe7;
+  --muted: #8fa898;
+  --line: #20332a;
+  --dot: #31493c;
+  --work: #6fcf8e;
+  --rest: #7cc6d6;
+  --long: #d9b25c;
+  --on-accent: #0c1410;
+}
+
+:root[data-palette='ocean'],
+[data-palette='ocean'] {
+  --bg: #071a1d;
+  --surface: #0d252a;
+  --ink: #e2f3f4;
+  --muted: #86a9ad;
+  --line: #193a40;
+  --dot: #275258;
+  --work: #2dd4bf;
+  --rest: #60a5fa;
+  --long: #f2b366;
+  --on-accent: #071a1d;
+}
+
+:root[data-palette='sunset'],
+[data-palette='sunset'] {
+  --bg: #1a1020;
+  --surface: #241628;
+  --ink: #fbeef0;
+  --muted: #c3a3b0;
+  --line: #3a2333;
+  --dot: #57344a;
+  --work: #ff7a59;
+  --rest: #f472b6;
+  --long: #fbbf24;
+  --on-accent: #1a1020;
+  --sunset-gradient: linear-gradient(160deg, #2a1033 0%, #4a1a3a 45%, #7a2f2a 100%);
+}
+
+:root[data-palette='crimson'],
+[data-palette='crimson'] {
+  --bg: #0d0a0b;
+  --surface: #171113;
+  --ink: #f3e9ea;
+  --muted: #a8939a;
+  --line: #2b1d21;
+  --dot: #45292f;
+  --work: #e5384f;
+  --rest: #c0c7d1;
+  --long: #d4a24c;
+  --on-accent: #0d0a0b;
+}
+
+/* Cyberpunk's main buttons glow a little */
+:root[data-palette='cyberpunk'] .btn-primary {
+  box-shadow: 0 0 14px color-mix(in srgb, var(--phase) 55%, transparent);
+}
+
 body {
   margin: 0;
   background: var(--bg);
   color: var(--ink);
   font-family: 'IBM Plex Sans', system-ui, sans-serif;
+}
+
+/* Sunset's page background is a gradient instead of a flat color */
+:root[data-palette='sunset'] body {
+  background: var(--sunset-gradient) fixed;
 }

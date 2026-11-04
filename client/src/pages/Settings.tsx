@@ -1,6 +1,6 @@
 import { useState, type FormEvent } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import ThemeToggle from '../components/ThemeToggle'
+import ThemePicker from '../components/ThemePicker'
 import { authClient } from '../lib/auth-client'
 import '../profile.css'
 
@@ -213,12 +213,12 @@ export default function Settings() {
         {tab === 'appearance' && (
           <section className="settings-card">
             <h2 className="settings-heading">Appearance</h2>
-            <div className="settings-row-toggle">
+            <div className="settings-theme">
               <div>
-                <p className="settings-row-title">Dark mode</p>
+                <p className="settings-row-title">Theme</p>
                 <p className="settings-note">Saved on this device.</p>
               </div>
-              <ThemeToggle />
+              <ThemePicker />
             </div>
           </section>
         )}
