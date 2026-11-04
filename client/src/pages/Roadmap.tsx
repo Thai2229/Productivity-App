@@ -377,6 +377,7 @@ function RoadmapCanvas({ roadmapId }: { roadmapId: string }) {
           fitViewOptions={{ padding: 0.2, maxZoom: 1 }}
           minZoom={0.25}
           maxZoom={2}
+          proOptions={{ hideAttribution: true }}
         >
           <Background gap={20} size={1.5} />
           <Controls showInteractive={false} />

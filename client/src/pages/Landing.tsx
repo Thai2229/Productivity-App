@@ -83,7 +83,6 @@ export default function Landing() {
             )}
           </div>
         </div>
-        <p className="landing-note">Sample data. Go ahead and click around.</p>
       </section>
 
       <section className="landing-story">

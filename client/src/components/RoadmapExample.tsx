@@ -43,6 +43,7 @@ export default function RoadmapExample() {
         fitView
         fitViewOptions={{ padding: 0.15 }}
         minZoom={0.2}
+        proOptions={{ hideAttribution: true }}
       >
         <Background gap={20} size={1.5} />
       </ReactFlow>
