@@ -1,7 +1,25 @@
 import { betterAuth } from 'better-auth'
 import { APIError } from 'better-auth/api'
 import { prismaAdapter } from 'better-auth/adapters/prisma'
+import { captcha } from 'better-auth/plugins'
 import { prisma } from './prisma.js'
+
+// Cloudflare Turnstile: sign-ups must pass a "real person" check first.
+// Only switched on when the secret key is set, so a missing key can't take the site down.
+function botCheckPlugins() {
+  const secretKey = process.env.TURNSTILE_SECRET_KEY
+  if (!secretKey) {
+    console.warn('TURNSTILE_SECRET_KEY is not set, so sign-up has no bot check')
+    return []
+  }
+  return [
+    captcha({
+      provider: 'cloudflare-turnstile',
+      secretKey,
+      endpoints: ['/sign-up/email'],
+    }),
+  ]
+}
 
 // Names are only ever shown as text, but there's no reason to accept huge ones
 function checkName(name: unknown) {
@@ -30,6 +48,7 @@ export const auth = betterAuth({
     window: 60,
     max: 100,
   },
+  plugins: botCheckPlugins(),
   databaseHooks: {
     user: {
       create: {

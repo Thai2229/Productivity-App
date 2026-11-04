@@ -139,3 +139,7 @@
     display: none;
   }
 }
+/* Cloudflare's bot check on the sign-up form */
+.turnstile-box {
+  min-height: 65px;
+}
