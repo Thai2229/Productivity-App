@@ -1,6 +1,13 @@
-/* A little wider than the timer page so the day circles fit beside the names */
+/* Wide enough for the list and the detail panel side by side */
 .page:has(.habits) {
-  max-width: 48rem;
+  max-width: 76rem;
+}
+
+.habit-layout {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) 23rem;
+  gap: 1.25rem;
+  align-items: start;
 }
 
 .habits {
@@ -162,12 +169,40 @@
   gap: 0.35rem;
 }
 
+.habit-select {
+  display: flex;
+  flex-shrink: 0;
+  padding: 0;
+  background: none;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+}
+
 .habit-name {
-  margin: 0;
+  min-width: 0;
+  padding: 0;
   overflow: hidden;
+  background: none;
+  border: none;
+  color: var(--ink);
+  font: inherit;
   font-weight: 600;
+  text-align: left;
   text-overflow: ellipsis;
   white-space: nowrap;
+  cursor: pointer;
+}
+
+.habit-select:focus-visible,
+.habit-name:focus-visible {
+  outline: 2px solid var(--work);
+  outline-offset: 2px;
+}
+
+.habit-row-selected {
+  border-color: var(--work);
+  box-shadow: 0 0 0 1px var(--work);
 }
 
 .habit-edit {
@@ -218,6 +253,35 @@
   align-items: center;
   gap: 0.25rem;
   font-variant-numeric: tabular-nums;
+}
+
+/* Quick tooltip shown when hovering the target or fire */
+.habit-meta-item[data-tooltip] {
+  position: relative;
+  cursor: default;
+}
+
+.habit-meta-item[data-tooltip]::after {
+  content: attr(data-tooltip);
+  position: absolute;
+  top: calc(100% + 0.35rem);
+  left: 50%;
+  z-index: 1;
+  padding: 0.25rem 0.5rem;
+  background: var(--ink);
+  border-radius: 0.35rem;
+  color: var(--surface);
+  font-size: 0.72rem;
+  font-weight: 500;
+  white-space: nowrap;
+  opacity: 0;
+  pointer-events: none;
+  transform: translateX(-50%);
+  transition: opacity 0.12s;
+}
+
+.habit-meta-item[data-tooltip]:hover::after {
+  opacity: 1;
 }
 
 .habit-meta-icon {
@@ -281,6 +345,14 @@
   background: var(--habit-done);
 }
 
+.day-dot:disabled {
+  cursor: default;
+}
+
+.day-dot:disabled:hover {
+  background: var(--line);
+}
+
 .day-dot:focus-visible {
   outline: 2px solid var(--work);
   outline-offset: 3px;
@@ -296,6 +368,191 @@
   stroke-linejoin: round;
 }
 
+/* Detail panel */
+.habit-detail {
+  position: sticky;
+  top: 1rem;
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+  padding: 1.25rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+}
+
+.detail-header {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.detail-title {
+  margin: 0;
+  overflow-wrap: anywhere;
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.detail-stats {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 0.6rem;
+  margin: 0;
+}
+
+.detail-stat {
+  padding: 0.75rem 0.85rem;
+  background: var(--bg);
+  border-radius: 0.75rem;
+}
+
+.detail-stat dt {
+  display: flex;
+  align-items: center;
+  gap: 0.35rem;
+  color: var(--muted);
+  font-size: 0.78rem;
+}
+
+.detail-stat dd {
+  margin: 0.3rem 0 0;
+  font-size: 1.3rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.detail-stat dd span {
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.habit-badge-check,
+.habit-badge-percent {
+  stroke: var(--surface);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.habit-badge-check circle {
+  fill: var(--rest);
+  stroke: none;
+}
+
+.habit-badge-check path {
+  fill: none;
+}
+
+.habit-badge-percent > circle:first-child {
+  fill: var(--long);
+  stroke: none;
+}
+
+.habit-badge-percent path {
+  fill: none;
+}
+
+.habit-badge-percent circle + path ~ circle {
+  fill: var(--surface);
+  stroke: none;
+}
+
+/* Month calendar */
+.calendar {
+  padding: 0.85rem;
+  background: var(--bg);
+  border-radius: 0.75rem;
+}
+
+.calendar-nav {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.5rem;
+}
+
+.calendar-title {
+  margin: 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+.calendar-arrow {
+  display: flex;
+  padding: 0.3rem;
+  background: none;
+  border: none;
+  border-radius: 0.4rem;
+  color: var(--muted);
+  cursor: pointer;
+}
+
+.calendar-arrow:hover:not(:disabled) {
+  color: var(--ink);
+  background: var(--surface);
+}
+
+.calendar-arrow:disabled {
+  cursor: default;
+  opacity: 0.3;
+}
+
+.calendar-arrow:focus-visible {
+  outline: 2px solid var(--work);
+}
+
+.calendar-arrow svg {
+  width: 1rem;
+  height: 1rem;
+  fill: none;
+  stroke: currentColor;
+  stroke-width: 1.6;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.calendar-grid {
+  display: grid;
+  grid-template-columns: repeat(7, 1fr);
+  row-gap: 0.4rem;
+  justify-items: center;
+}
+
+.calendar-weekday {
+  padding-bottom: 0.2rem;
+  color: var(--muted);
+  font-size: 0.72rem;
+}
+
+.calendar-day {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.15rem;
+}
+
+.calendar-number {
+  color: var(--muted);
+  font-size: 0.72rem;
+  font-variant-numeric: tabular-nums;
+}
+
+.calendar-day-today .calendar-number {
+  color: var(--work);
+  font-weight: 700;
+}
+
+.calendar-day-outside {
+  opacity: 0.35;
+}
+
+.calendar-dot {
+  width: 1.75rem;
+  height: 1.75rem;
+}
+
 @media (hover: none) {
   .habit-edit {
     opacity: 1;
@@ -303,9 +560,21 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
+  .habit-meta-item[data-tooltip]::after,
   .day-dot,
   .habit-edit {
     transition: none;
+  }
+}
+
+/* Narrower screens: the detail panel moves under the list */
+@media (max-width: 62rem) {
+  .habit-layout {
+    grid-template-columns: 1fr;
+  }
+
+  .habit-detail {
+    position: static;
   }
 }
 

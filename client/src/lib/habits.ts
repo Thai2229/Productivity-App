@@ -125,3 +125,59 @@ export function daysText(count: number) {
   }
   return count + ' Days'
 }
+
+// The first day this habit counts from: the day it was added, or an earlier check-in
+export function habitStartKey(habit: Habit) {
+  let start = dayKey(new Date(habit.createdAt))
+  if (habit.checks.length > 0 && habit.checks[0] < start) {
+    start = habit.checks[0]
+  }
+  return start
+}
+
+// Check-ins in one month, and what share of that month's days were checked.
+// Only days from when the habit started up to today count toward the rate.
+export function monthStats(habit: Habit, year: number, month: number) {
+  const prefix = year + '-' + String(month + 1).padStart(2, '0') + '-'
+  const checkIns = habit.checks.filter((key) => key.startsWith(prefix)).length
+
+  let first = prefix + '01'
+  const start = habitStartKey(habit)
+  if (start > first) {
+    first = start
+  }
+  let last = dayKey(new Date(year, month + 1, 0))
+  const today = dayKey(new Date())
+  if (today < last) {
+    last = today
+  }
+
+  let countedDays = 0
+  let day = first
+  while (day <= last) {
+    countedDays += 1
+    day = shiftDay(day, 1)
+  }
+
+  let rate: number | null = null
+  if (countedDays > 0) {
+    rate = checkIns / countedDays
+  }
+  return { checkIns, rate }
+}
+
+// All the boxes for a month calendar, Sunday first, padded with the
+// neighbouring months' days so every week is complete
+export function monthGrid(year: number, month: number) {
+  const first = new Date(year, month, 1, 12)
+  const startKey = shiftDay(dayKey(first), -first.getDay())
+  const lastKey = dayKey(new Date(year, month + 1, 0, 12))
+  const cells: { key: string; number: number; inMonth: boolean }[] = []
+  let key = startKey
+  while (key <= lastKey || cells.length % 7 !== 0) {
+    const date = new Date(key + 'T12:00:00')
+    cells.push({ key, number: date.getDate(), inMonth: date.getMonth() === month })
+    key = shiftDay(key, 1)
+  }
+  return cells
+}
