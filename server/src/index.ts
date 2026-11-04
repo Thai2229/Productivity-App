@@ -5,6 +5,7 @@ import helmet from 'helmet'
 import { fromNodeHeaders, toNodeHandler } from 'better-auth/node'
 import { auth } from './lib/auth.js'
 import { prisma } from './lib/prisma.js'
+import { habitsRouter } from './routes/habits.js'
 import { internshipsRouter } from './routes/internships.js'
 
 // Stop right away with a clear message if a required setting is missing,
@@ -55,6 +56,7 @@ app.get('/api/me', async (request, response) => {
 })
 
 app.use('/api/internships', internshipsRouter)
+app.use('/api/habits', habitsRouter)
 
 // Anything else under /api is a plain 404, not Express's default HTML page
 app.use('/api', (_request, response) => {

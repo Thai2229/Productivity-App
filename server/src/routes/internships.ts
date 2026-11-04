@@ -1,45 +1,15 @@
-import { Router, type NextFunction, type Request, type Response } from 'express'
-import { rateLimit } from 'express-rate-limit'
-import { fromNodeHeaders } from 'better-auth/node'
-import { auth } from '../lib/auth.js'
+import { Router } from 'express'
 import { prisma } from '../lib/prisma.js'
+import { perUserLimit, requireUser } from '../lib/session.js'
 import { InternshipStage } from '../../generated/prisma/client.js'
 
 export const internshipsRouter = Router()
 
 const STAGES = Object.values(InternshipStage)
 
-// Every route below runs this first: no session, no data.
-// The user id comes from the session cookie, never from the request body,
-// so nobody can ask for someone else's internships.
-async function requireUser(request: Request, response: Response, next: NextFunction) {
-  const session = await auth.api.getSession({
-    headers: fromNodeHeaders(request.headers),
-  })
-
-  if (!session) {
-    response.status(401).json({ error: 'Not logged in' })
-    return
-  }
-
-  response.locals.userId = session.user.id
-  next()
-}
-
+// Logged-in users only, and at most 120 requests a minute each (see lib/session.ts)
 internshipsRouter.use(requireUser)
-
-// At most 120 requests a minute per account: plenty for clicking around,
-// but stops a script from flooding the database
-internshipsRouter.use(
-  rateLimit({
-    windowMs: 60 * 1000,
-    limit: 120,
-    keyGenerator: (_request, response) => response.locals.userId,
-    standardHeaders: 'draft-8',
-    legacyHeaders: false,
-    message: { error: 'Too many requests, please slow down' },
-  }),
-)
+internshipsRouter.use(perUserLimit())
 
 type InternshipInput = {
   company?: string

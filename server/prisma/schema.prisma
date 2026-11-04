@@ -18,6 +18,7 @@ model User {
   sessions      Session[]
   accounts      Account[]
   internships   Internship[]
+  habits        Habit[]
 
   @@unique([email])
   @@map("user")
@@ -119,4 +120,31 @@ model RateLimit {
   lastRequest BigInt
 
   @@map("rateLimit")
+}
+
+// A daily habit the user tracks, like "Read for 30 minutes"
+model Habit {
+  id        String       @id @default(cuid())
+  name      String
+  icon      String
+  createdAt DateTime     @default(now())
+  updatedAt DateTime     @updatedAt
+  userId    String
+  user      User         @relation(fields: [userId], references: [id], onDelete: Cascade)
+  checks    HabitCheck[]
+
+  @@index([userId])
+  @@map("habit")
+}
+
+// One row per day a habit was done
+model HabitCheck {
+  id        String   @id @default(cuid())
+  date      DateTime @db.Date
+  createdAt DateTime @default(now())
+  habitId   String
+  habit     Habit    @relation(fields: [habitId], references: [id], onDelete: Cascade)
+
+  @@unique([habitId, date])
+  @@map("habit_check")
 }
