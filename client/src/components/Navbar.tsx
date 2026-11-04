@@ -1,5 +1,6 @@
-import { NavLink, useNavigate } from 'react-router-dom'
+import { NavLink } from 'react-router-dom'
 import { authClient } from '../lib/auth-client'
+import ProfileMenu from './ProfileMenu'
 import ThemeToggle from './ThemeToggle'
 
 function getLinkClass({ isActive }: { isActive: boolean }) {
@@ -9,14 +10,10 @@ function getLinkClass({ isActive }: { isActive: boolean }) {
   return 'nav-link'
 }
 
+// Logged out: log in / sign up links and the dark mode switch.
+// Logged in: the profile letter (dark mode lives in Settings → Appearance).
 function AuthControls() {
   const { data: session, isPending } = authClient.useSession()
-  const navigate = useNavigate()
-
-  async function handleLogout() {
-    await authClient.signOut()
-    navigate('/pomodoro')
-  }
 
   if (isPending) {
     return null
@@ -27,16 +24,12 @@ function AuthControls() {
       <>
         <NavLink to="/login" className={getLinkClass}>Log in</NavLink>
         <NavLink to="/signup" className={getLinkClass}>Sign up</NavLink>
+        <ThemeToggle />
       </>
     )
   }
 
-  return (
-    <>
-      <span className="nav-user">{session.user.email}</span>
-      <button className="nav-logout" onClick={handleLogout}>Log out</button>
-    </>
-  )
+  return <ProfileMenu name={session.user.name} email={session.user.email} />
 }
 
 export default function Navbar() {
@@ -48,7 +41,6 @@ export default function Navbar() {
       <NavLink to="/roadmap" className={getLinkClass}>Roadmap</NavLink>
       <div className="nav-actions">
         <AuthControls />
-        <ThemeToggle />
       </div>
     </nav>
   )

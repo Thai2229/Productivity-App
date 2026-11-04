@@ -7,6 +7,7 @@ import Internships from './pages/Internships'
 import Habits from './pages/Habits'
 import Login from './pages/Login'
 import SignUp from './pages/SignUp'
+import Settings from './pages/Settings'
 import './App.css'
 import './auth.css'
 
@@ -26,6 +27,7 @@ export default function App() {
           <Route element={<RequireAuth />}>
             <Route path="/internships" element={<Internships />} />
             <Route path="/habits" element={<Habits />} />
+            <Route path="/settings" element={<Settings />} />
             <Route
               path="/roadmap"
               element={
