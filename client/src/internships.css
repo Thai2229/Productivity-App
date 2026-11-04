@@ -119,11 +119,11 @@
   opacity: 0.7;
 }
 
-/* Board / Chart switch: the white thumb slides under the chosen button */
+/* Board / Chart / Analytics switch: the white thumb slides under the chosen button */
 .view-toggle {
   position: relative;
   display: inline-grid;
-  grid-template-columns: 1fr 1fr;
+  grid-template-columns: 1fr 1fr 1fr;
   align-self: flex-start;
   padding: 0.25rem;
   background: var(--line);
@@ -135,7 +135,7 @@
   top: 0.25rem;
   bottom: 0.25rem;
   left: 0.25rem;
-  width: calc(50% - 0.25rem);
+  width: calc((100% - 0.5rem) / 3);
   background: var(--surface);
   border-radius: 999px;
   box-shadow: 0 1px 3px rgb(0 0 0 / 0.12);
@@ -144,6 +144,10 @@
 
 .view-toggle[data-view='chart'] .view-toggle-thumb {
   transform: translateX(100%);
+}
+
+.view-toggle[data-view='analytics'] .view-toggle-thumb {
+  transform: translateX(200%);
 }
 
 .view-toggle button {
@@ -321,6 +325,129 @@
   stroke-linejoin: round;
 }
 
+/* Analytics */
+.analytics {
+  display: grid;
+  gap: 1rem;
+}
+
+.analytics-card {
+  padding: 1.25rem 1.5rem 1.5rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+}
+
+.analytics-title {
+  margin: 0 0 0.75rem;
+  font-size: 1.05rem;
+  font-weight: 600;
+}
+
+.hero-number {
+  margin: 0;
+  font-size: 2.75rem;
+  font-weight: 600;
+  letter-spacing: -0.02em;
+  font-variant-numeric: tabular-nums;
+}
+
+.hero-unit {
+  color: var(--muted);
+  font-size: 1.1rem;
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+.analytics-note {
+  margin: 0.35rem 0 0;
+  color: var(--muted);
+  font-size: 0.85rem;
+}
+
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 0.75rem;
+  margin: 0;
+}
+
+.stat {
+  padding: 0.85rem 1rem;
+  background: var(--bg);
+  border-radius: 0.625rem;
+}
+
+.stat dt {
+  color: var(--muted);
+  font-size: 0.8rem;
+}
+
+.stat dd {
+  margin: 0.25rem 0 0;
+  font-size: 1.35rem;
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+}
+
+.stat-note {
+  display: block;
+  margin-top: 0.1rem;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 400;
+}
+
+.funnel {
+  display: grid;
+  gap: 0.85rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+.funnel-row {
+  display: grid;
+  grid-template-columns: 13rem 1fr 3rem 4.5rem;
+  align-items: center;
+  gap: 0.75rem;
+  font-size: 0.9rem;
+}
+
+.funnel-row-total {
+  padding-top: 0.85rem;
+  border-top: 1px solid var(--line);
+  font-weight: 600;
+}
+
+.funnel-track {
+  height: 0.6rem;
+  background: var(--bg);
+  border-radius: 999px;
+  overflow: hidden;
+}
+
+.funnel-fill {
+  display: block;
+  height: 100%;
+  min-width: 2px;
+  background: var(--work);
+  border-radius: 999px;
+}
+
+.funnel-value {
+  font-weight: 600;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
+.funnel-count {
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-variant-numeric: tabular-nums;
+  text-align: right;
+}
+
 /* One row per application */
 .tracker-list {
   display: flex;
@@ -495,6 +622,27 @@
 
   .flow-hint {
     display: block;
+  }
+
+  .view-toggle button {
+    padding: 0.4rem 0.7rem;
+  }
+
+  .analytics-card {
+    padding: 1rem;
+  }
+
+  .stat-grid {
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .funnel-row {
+    grid-template-columns: 1fr 3rem 4rem;
+    row-gap: 0.35rem;
+  }
+
+  .funnel-label {
+    grid-column: 1 / -1;
   }
 
   .tracker-form-grid {

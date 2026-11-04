@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react'
 import { useSearchParams } from 'react-router-dom'
+import Analytics from '../components/Analytics'
 import FlowChart from '../components/FlowChart'
 import InternshipForm from '../components/InternshipForm'
 import {
@@ -41,8 +42,9 @@ export default function Internships() {
 
   // The view lives in the address (?view=chart) so refresh and the back button keep it
   let view = 'board'
-  if (searchParams.get('view') === 'chart') {
-    view = 'chart'
+  const viewParam = searchParams.get('view')
+  if (viewParam === 'chart' || viewParam === 'analytics') {
+    view = viewParam
   }
 
   function showBoard() {
@@ -51,6 +53,10 @@ export default function Internships() {
 
   function showChart() {
     setSearchParams({ view: 'chart' })
+  }
+
+  function showAnalytics() {
+    setSearchParams({ view: 'analytics' })
   }
 
   async function load() {
@@ -217,6 +223,12 @@ export default function Internships() {
           </svg>
           Chart
         </button>
+        <button type="button" aria-pressed={view === 'analytics'} onClick={showAnalytics}>
+          <svg viewBox="0 0 16 16" aria-hidden="true">
+            <path d="M3 13.5V9M8 13.5V3M13 13.5V6.5" />
+          </svg>
+          Analytics
+        </button>
       </div>
 
       {view === 'chart' && internships.length > 0 && <FlowChart internships={internships} />}
@@ -224,6 +236,14 @@ export default function Internships() {
       {view === 'chart' && internships.length === 0 && (
         <div className="tracker-empty">
           <p>Add a job to see where your applications go.</p>
+        </div>
+      )}
+
+      {view === 'analytics' && internships.length > 0 && <Analytics internships={internships} />}
+
+      {view === 'analytics' && internships.length === 0 && (
+        <div className="tracker-empty">
+          <p>Add a job to see your stats.</p>
         </div>
       )}
 
