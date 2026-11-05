@@ -80,3 +80,41 @@ export async function sendPasswordResetEmail(to: string, name: string, url: stri
     html,
   })
 }
+
+// The 6-digit code people type in to prove they own their email
+export async function sendVerificationCodeEmail(to: string, code: string) {
+  const mailer = getTransport()
+
+  if (!mailer) {
+    if (process.env.VERCEL) {
+      console.error('GMAIL_USER / GMAIL_APP_PASSWORD are not set, so the verification code was not sent')
+      return
+    }
+    console.log('Email is not set up. Verification code for ' + to + ': ' + code)
+    return
+  }
+
+  const text = [
+    'Your Productivity App verification code is:',
+    '',
+    code,
+    '',
+    'It expires in 10 minutes.',
+    "If you didn't try to sign up or log in, you can ignore this email.",
+  ].join('\n')
+
+  const html = `
+    <div style="font-family: Arial, sans-serif; font-size: 15px; color: #16202a; max-width: 480px;">
+      <p>Your Productivity App verification code is:</p>
+      <p style="margin: 18px 0; font-size: 32px; font-weight: 700; letter-spacing: 8px;">${escapeHtml(code)}</p>
+      <p style="color: #667382; font-size: 13px;">It expires in 10 minutes. If you didn't try to sign up or log in, you can ignore this email.</p>
+    </div>`
+
+  await mailer.sendMail({
+    from: { name: 'Productivity App', address: process.env.GMAIL_USER as string },
+    to,
+    subject: 'Your Productivity App code is ' + code,
+    text,
+    html,
+  })
+}

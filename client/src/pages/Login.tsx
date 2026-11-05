@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react'
-import { Link, Navigate, useLocation, useSearchParams } from 'react-router-dom'
+import { Link, Navigate, useLocation, useNavigate, useSearchParams } from 'react-router-dom'
 import GoogleButton from '../components/GoogleButton'
 import { authClient } from '../lib/auth-client'
 import LegalLinks from '../components/LegalLinks'
@@ -7,12 +7,17 @@ import LegalLinks from '../components/LegalLinks'
 export default function Login() {
   const { data: session, isPending } = authClient.useSession()
   const location = useLocation()
+  const navigate = useNavigate()
   const [searchParams] = useSearchParams()
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   // Google sends people back here with ?error=... if sign-in didn't work
   const [error, setError] = useState(() => {
-    if (searchParams.get('error')) {
+    const googleError = searchParams.get('error')
+    if (googleError === 'account_not_linked') {
+      return 'This email already has an account. Log in with your email and password instead.'
+    }
+    if (googleError) {
       return "Google sign-in didn't work. Try again, or log in with your email."
     }
     return ''
@@ -45,6 +50,11 @@ export default function Login() {
         password: password,
       })
       if (result.error) {
+        // Right password, but the email isn't confirmed yet: the server just emailed a code
+        if (result.error.code === 'EMAIL_NOT_VERIFIED') {
+          navigate('/verify-email?email=' + encodeURIComponent(email.trim()))
+          return
+        }
         setError(result.error.message || 'Could not log in. Try again.')
       }
     } catch {

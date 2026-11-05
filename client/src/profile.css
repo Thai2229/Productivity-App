@@ -464,3 +464,69 @@
   }
 
 }
+
+/* Delete account: kept apart at the bottom and shown in red */
+.settings-danger {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.75rem;
+  max-width: 24rem;
+  margin-top: 0.5rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line);
+}
+
+.settings-danger .settings-subtitle {
+  color: var(--danger);
+}
+
+.settings-danger-open .auth-field {
+  align-self: stretch;
+}
+
+.settings-danger-warning {
+  margin: 0;
+  padding: 0.7rem 0.85rem;
+  background: color-mix(in srgb, var(--danger) 10%, transparent);
+  border: 1px solid color-mix(in srgb, var(--danger) 35%, transparent);
+  border-radius: 0.6rem;
+  color: var(--ink);
+  font-size: 0.875rem;
+  line-height: 1.5;
+}
+
+.settings-danger-actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.6rem;
+}
+
+.btn-danger {
+  background: var(--danger);
+  border: 1px solid var(--danger);
+  color: #ffffff;
+}
+
+:root[data-theme='dark'] .btn-danger {
+  color: #1a0c0b;
+}
+
+.btn-danger:hover {
+  filter: brightness(0.92);
+}
+
+.btn-danger:disabled {
+  cursor: wait;
+  opacity: 0.7;
+}
+
+.btn-danger-outline {
+  background: transparent;
+  border: 1px solid var(--danger);
+  color: var(--danger);
+}
+
+.btn-danger-outline:hover {
+  background: color-mix(in srgb, var(--danger) 10%, transparent);
+}

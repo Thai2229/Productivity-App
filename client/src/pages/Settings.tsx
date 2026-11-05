@@ -1,4 +1,4 @@
-import { useState, type FormEvent } from 'react'
+import { useEffect, useState, type FormEvent } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import ThemePicker from '../components/ThemePicker'
 import { authClient } from '../lib/auth-client'
@@ -161,6 +161,143 @@ function ChangePasswordForm() {
   )
 }
 
+const CONFIRM_WORD = 'DELETE'
+
+// Danger zone: permanently deletes the account and everything in it.
+// People with a password must enter it; everyone types DELETE so it can't happen by accident.
+function DeleteAccountSection() {
+  const [isOpen, setIsOpen] = useState(false)
+  // Google-only accounts have no password to ask for
+  const [hasPassword, setHasPassword] = useState(true)
+  const [password, setPassword] = useState('')
+  const [confirmText, setConfirmText] = useState('')
+  const [error, setError] = useState('')
+  const [deleting, setDeleting] = useState(false)
+
+  useEffect(() => {
+    let cancelled = false
+    authClient.listAccounts().then((result) => {
+      if (!cancelled && result.data) {
+        setHasPassword(result.data.some((account) => account.providerId === 'credential'))
+      }
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [])
+
+  function close() {
+    setIsOpen(false)
+    setPassword('')
+    setConfirmText('')
+    setError('')
+  }
+
+  async function handleDelete(event: FormEvent) {
+    event.preventDefault()
+    setError('')
+
+    if (confirmText.trim().toUpperCase() !== CONFIRM_WORD || (hasPassword && password === '')) {
+      let message = 'Type ' + CONFIRM_WORD + ' to confirm.'
+      if (hasPassword) {
+        message = 'Enter your password and type ' + CONFIRM_WORD + ' to confirm.'
+      }
+      setError(message)
+      return
+    }
+
+    setDeleting(true)
+    let body = {}
+    if (hasPassword) {
+      body = { password }
+    }
+    const { error: deleteError } = await authClient.deleteUser(body)
+    setDeleting(false)
+
+    if (deleteError) {
+      if (deleteError.code === 'INVALID_PASSWORD') {
+        setError("That password isn't right.")
+      } else if (deleteError.code === 'SESSION_EXPIRED') {
+        setError('For your safety, log out and log back in, then try again.')
+      } else if (deleteError.status === 429) {
+        setError('Too many attempts. Wait a minute and try again.')
+      } else {
+        setError(deleteError.message || 'Could not delete your account. Try again.')
+      }
+      return
+    }
+
+    // The account and login are gone, so start over on the landing page
+    window.location.assign('/')
+  }
+
+  if (!isOpen) {
+    return (
+      <div className="settings-danger">
+        <h3 className="settings-subtitle">Delete account</h3>
+        <p className="settings-note">
+          Permanently delete your account and everything in it: jobs, habits and roadmaps. This can't be undone.
+        </p>
+        <button type="button" className="btn btn-danger-outline" onClick={() => setIsOpen(true)}>
+          Delete account
+        </button>
+      </div>
+    )
+  }
+
+  let submitText = 'Delete my account'
+  if (deleting) {
+    submitText = 'Deleting…'
+  }
+
+  return (
+    <form className="settings-danger settings-danger-open" onSubmit={handleDelete}>
+      <h3 className="settings-subtitle">Delete account</h3>
+      <p className="settings-danger-warning">
+        This permanently deletes your account, every job application, habit and check-in, and all your roadmaps.
+        There's no undo.
+      </p>
+      {hasPassword && (
+        <PasswordInput
+          label="Your password"
+          value={password}
+          onChange={(value) => {
+            setPassword(value)
+            setError('')
+          }}
+          autoComplete="current-password"
+        />
+      )}
+      <label className="auth-field">
+        <span>
+          Type <strong>{CONFIRM_WORD}</strong> to confirm
+        </span>
+        <input
+          type="text"
+          value={confirmText}
+          onChange={(event) => {
+            setConfirmText(event.target.value)
+            setError('')
+          }}
+          autoComplete="off"
+          spellCheck={false}
+        />
+      </label>
+
+      {error && <p className="auth-error" role="alert">{error}</p>}
+
+      <div className="settings-danger-actions">
+        <button type="submit" className="btn btn-danger" disabled={deleting}>
+          {submitText}
+        </button>
+        <button type="button" className="btn btn-secondary" onClick={close} disabled={deleting}>
+          Cancel
+        </button>
+      </div>
+    </form>
+  )
+}
+
 export default function Settings() {
   const { data: session } = authClient.useSession()
   const [searchParams, setSearchParams] = useSearchParams()
@@ -211,6 +348,7 @@ export default function Settings() {
               </div>
             </dl>
             <ChangePasswordForm />
+            <DeleteAccountSection />
           </section>
         )}
 

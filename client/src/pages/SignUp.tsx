@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react'
-import { Link, Navigate } from 'react-router-dom'
+import { Link, Navigate, useNavigate } from 'react-router-dom'
 import Turnstile from '../components/Turnstile'
 import GoogleButton from '../components/GoogleButton'
 import { authClient } from '../lib/auth-client'
@@ -12,10 +12,13 @@ const TURNSTILE_SITE_KEY = import.meta.env.VITE_TURNSTILE_SITE_KEY as string | u
 
 export default function SignUp() {
   const { data: session, isPending } = authClient.useSession()
+  const navigate = useNavigate()
   const [name, setName] = useState('')
   const [email, setEmail] = useState('')
   const [password, setPassword] = useState('')
   const [error, setError] = useState('')
+  // True when the email already has an account, so we can link to Log in
+  const [emailTaken, setEmailTaken] = useState(false)
   const [isSubmitting, setIsSubmitting] = useState(false)
   const [captchaToken, setCaptchaToken] = useState('')
   // Changing this redraws the check, since each pass can only be used once
@@ -38,6 +41,7 @@ export default function SignUp() {
     }
 
     setError('')
+    setEmailTaken(false)
     setIsSubmitting(true)
     try {
       const result = await authClient.signUp.email({
@@ -51,10 +55,17 @@ export default function SignUp() {
         if (result.error.status === 403 || (result.error.code ?? '').includes('CAPTCHA')) {
           message = "The bot check didn't go through. Please complete it again."
         }
+        if (result.error.code === 'USER_ALREADY_EXISTS') {
+          message = ''
+          setEmailTaken(true)
+        }
         setError(message)
         setCaptchaToken('')
         setCaptchaRound((round) => round + 1)
+        return
       }
+      // The account isn't usable until the email is confirmed with the code we just sent
+      navigate('/verify-email?email=' + encodeURIComponent(email.trim()))
     } catch {
       setError('Could not reach the server. Try again.')
     } finally {
@@ -106,6 +117,11 @@ export default function SignUp() {
         {error !== '' && (
           <p className="auth-error" role="alert">
             {error}
+          </p>
+        )}
+        {emailTaken && (
+          <p className="auth-error" role="alert">
+            An account with this email already exists. <Link to="/login">Log in instead</Link>
           </p>
         )}
         <button

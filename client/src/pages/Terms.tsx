@@ -47,7 +47,8 @@ export default function Terms() {
 
       <h2>Leaving</h2>
       <p>
-        You can stop using the app at any time. To delete your account and data, email{' '}
+        You can stop using the app at any time. To delete your account and all its data, use{' '}
+        <strong>Settings → Account → Delete account</strong>, or email{' '}
         <a href={'mailto:' + CONTACT_EMAIL}>{CONTACT_EMAIL}</a>.
       </p>
 

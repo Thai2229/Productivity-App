@@ -42,8 +42,8 @@ export default function Privacy() {
 
       <h2>How it's used</h2>
       <p>
-        Only to run the app for you: showing your data, keeping you logged in, sending password reset emails you ask
-        for, and protecting the site from abuse. There are no ads, no analytics or tracking tools, and your data is{' '}
+        Only to run the app for you: showing your data, keeping you logged in, sending verification codes and password
+        reset emails, and protecting the site from abuse. There are no ads, no analytics or tracking tools, and your data is{' '}
         <strong>never sold or shared for marketing</strong>.
       </p>
 
@@ -63,7 +63,7 @@ export default function Privacy() {
           <strong>Google</strong> handles "Continue with Google", if you choose to use it.
         </li>
         <li>
-          <strong>Gmail</strong> sends password reset emails.
+          <strong>Gmail</strong> sends verification codes and password reset emails.
         </li>
       </ul>
 
@@ -75,9 +75,10 @@ export default function Privacy() {
 
       <h2>Keeping and deleting your data</h2>
       <p>
-        Your data is kept for as long as you have an account. To delete your account and everything in it, email{' '}
-        <a href={'mailto:' + CONTACT_EMAIL}>{CONTACT_EMAIL}</a> from the address you signed up with, and it will be
-        deleted within 30 days. You can also ask for a copy of your data the same way.
+        Your data is kept for as long as you have an account. You can delete your account and everything in it at any
+        time from <strong>Settings → Account → Delete account</strong>. It's removed right away. If you can't log in,
+        email <a href={'mailto:' + CONTACT_EMAIL}>{CONTACT_EMAIL}</a> from the address you signed up with and it will
+        be deleted within 30 days. You can also ask for a copy of your data the same way.
       </p>
 
       <h2>Security</h2>
