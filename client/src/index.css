@@ -140,6 +140,15 @@ body {
   font-family: 'IBM Plex Sans', system-ui, sans-serif;
 }
 
+/* Dropdown lists (job stage, Add job form, roadmap picker). Some dropdowns have a see-through
+   background, and on Windows the opened list then falls back to white while the text follows
+   the theme, which made light text on white in dark themes. Give the list the theme's colors. */
+select option,
+select optgroup {
+  background-color: var(--surface);
+  color: var(--ink);
+}
+
 /* Sunset's page background is a gradient instead of a flat color */
 :root[data-palette='sunset'] body {
   background: var(--sunset-gradient) fixed;
