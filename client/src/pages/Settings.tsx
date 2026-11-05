@@ -161,30 +161,92 @@ function ChangePasswordForm() {
   )
 }
 
+// Google sign-ups have no password. This adds one, so they can also log in with email and password.
+function SetPasswordForm({ onDone }: { onDone: () => void }) {
+  const [newPassword, setNewPassword] = useState('')
+  const [confirmPassword, setConfirmPassword] = useState('')
+  const [error, setError] = useState('')
+  const [saving, setSaving] = useState(false)
+
+  async function handleSubmit(event: FormEvent) {
+    event.preventDefault()
+    setError('')
+
+    if (newPassword.length < 8 || newPassword !== confirmPassword) {
+      setError('Password must be at least 8 characters and match the confirmation.')
+      return
+    }
+
+    setSaving(true)
+    try {
+      const result = await fetch('/api/account/set-password', {
+        method: 'POST',
+        credentials: 'include',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ newPassword }),
+      })
+      if (!result.ok) {
+        const data = await result.json().catch(() => ({}))
+        setError(data.error || 'Could not set your password. Try again.')
+        return
+      }
+      onDone()
+    } catch {
+      setError('Could not reach the server. Try again.')
+    } finally {
+      setSaving(false)
+    }
+  }
+
+  let submitText = 'Set password'
+  if (saving) {
+    submitText = 'Saving…'
+  }
+
+  return (
+    <form className="settings-form" onSubmit={handleSubmit}>
+      <h3 className="settings-subtitle">Set a password</h3>
+      <p className="settings-note">
+        You sign in with Google. Add a password if you also want to log in with your email.
+      </p>
+      <PasswordInput
+        label="New password"
+        value={newPassword}
+        onChange={(value) => {
+          setNewPassword(value)
+          setError('')
+        }}
+        autoComplete="new-password"
+      />
+      <PasswordInput
+        label="Confirm new password"
+        value={confirmPassword}
+        onChange={(value) => {
+          setConfirmPassword(value)
+          setError('')
+        }}
+        autoComplete="new-password"
+      />
+
+      {error && <p className="auth-error" role="alert">{error}</p>}
+
+      <button type="submit" className="btn btn-primary settings-submit" disabled={saving}>
+        {submitText}
+      </button>
+    </form>
+  )
+}
+
 const CONFIRM_WORD = 'DELETE'
 
 // Danger zone: permanently deletes the account and everything in it.
 // People with a password must enter it; everyone types DELETE so it can't happen by accident.
-function DeleteAccountSection() {
+function DeleteAccountSection({ hasPassword }: { hasPassword: boolean }) {
   const [isOpen, setIsOpen] = useState(false)
-  // Google-only accounts have no password to ask for
-  const [hasPassword, setHasPassword] = useState(true)
   const [password, setPassword] = useState('')
   const [confirmText, setConfirmText] = useState('')
   const [error, setError] = useState('')
   const [deleting, setDeleting] = useState(false)
-
-  useEffect(() => {
-    let cancelled = false
-    authClient.listAccounts().then((result) => {
-      if (!cancelled && result.data) {
-        setHasPassword(result.data.some((account) => account.providerId === 'credential'))
-      }
-    })
-    return () => {
-      cancelled = true
-    }
-  }, [])
 
   function close() {
     setIsOpen(false)
@@ -301,6 +363,21 @@ function DeleteAccountSection() {
 export default function Settings() {
   const { data: session } = authClient.useSession()
   const [searchParams, setSearchParams] = useSearchParams()
+  // Whether this account has a password. Google sign-ups start without one; null while loading.
+  const [hasPassword, setHasPassword] = useState<boolean | null>(null)
+  const [passwordAdded, setPasswordAdded] = useState(false)
+
+  useEffect(() => {
+    let cancelled = false
+    authClient.listAccounts().then((result) => {
+      if (!cancelled && result.data) {
+        setHasPassword(result.data.some((account) => account.providerId === 'credential'))
+      }
+    })
+    return () => {
+      cancelled = true
+    }
+  }, [])
 
   let tab: Tab = 'account'
   if (searchParams.get('tab') === 'appearance') {
@@ -347,8 +424,21 @@ export default function Settings() {
                 <dd>{session.user.email}</dd>
               </div>
             </dl>
-            <ChangePasswordForm />
-            <DeleteAccountSection />
+            {passwordAdded && (
+              <p className="settings-success" role="status">
+                Password set. You can now log in with Google or with your email and password.
+              </p>
+            )}
+            {hasPassword === true && <ChangePasswordForm />}
+            {hasPassword === false && (
+              <SetPasswordForm
+                onDone={() => {
+                  setHasPassword(true)
+                  setPasswordAdded(true)
+                }}
+              />
+            )}
+            {hasPassword !== null && <DeleteAccountSection hasPassword={hasPassword} />}
           </section>
         )}
 
