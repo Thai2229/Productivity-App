@@ -89,69 +89,6 @@
   box-sizing: border-box;
 }
 
-.landing-tabs {
-  position: relative;
-  display: inline-grid;
-  grid-template-columns: repeat(6, 1fr);
-  padding: 0.25rem;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 999px;
-}
-
-/* The blue pill slides under whichever preview is chosen */
-.landing-tabs-thumb {
-  position: absolute;
-  top: 0.25rem;
-  bottom: 0.25rem;
-  left: 0.25rem;
-  width: calc((100% - 0.5rem) / 6);
-  height: auto;
-  background: var(--work);
-  border-radius: 999px;
-  transition: transform 0.3s ease;
-}
-
-.landing-tabs[data-active='1'] .landing-tabs-thumb { transform: translateX(100%); }
-.landing-tabs[data-active='2'] .landing-tabs-thumb { transform: translateX(200%); }
-.landing-tabs[data-active='3'] .landing-tabs-thumb { transform: translateX(300%); }
-.landing-tabs[data-active='4'] .landing-tabs-thumb { transform: translateX(400%); }
-.landing-tabs[data-active='5'] .landing-tabs-thumb { transform: translateX(500%); }
-
-.landing-tabs button {
-  position: relative;
-  padding: 0.45rem 1.1rem;
-  background: transparent;
-  border: none;
-  border-radius: 999px;
-  color: var(--muted);
-  font: inherit;
-  font-size: 0.9rem;
-  font-weight: 500;
-  cursor: pointer;
-  transition: color 0.2s;
-}
-
-.landing-tabs button:hover {
-  color: var(--ink);
-}
-
-.landing-tabs button[aria-pressed='true'] {
-  color: var(--on-accent);
-}
-
-.landing-tabs button:focus-visible {
-  outline: 2px solid var(--work);
-  outline-offset: 2px;
-}
-
-@media (prefers-reduced-motion: reduce) {
-  .landing-tabs-thumb,
-  .landing-tabs button {
-    transition: none;
-  }
-}
-
 .landing-window {
   width: 100%;
   overflow: hidden;
@@ -163,6 +100,7 @@
 
 .landing-window-bar {
   display: flex;
+  align-items: center;
   gap: 0.4rem;
   padding: 0.85rem 1rem;
   border-bottom: 1px solid var(--line);
@@ -248,10 +186,6 @@
     padding: 0 1rem;
   }
 
-  .landing-tabs button {
-    padding: 0.4rem 0.6rem;
-  }
-
   .landing-window-body {
     min-height: 0;
     padding: 1rem 0.75rem;
@@ -309,30 +243,295 @@
   font-weight: 600;
 }
 
-/* Phones: six tabs fit as two rows of three, and the thumb moves by row and column */
 @media (max-width: 40rem) {
-  .landing-tabs {
-    grid-template-columns: repeat(3, 1fr);
-    border-radius: 1.25rem;
-  }
-
-  .landing-tabs-thumb {
-    width: calc((100% - 0.5rem) / 3);
-    height: calc((100% - 0.5rem) / 2);
-    bottom: auto;
-  }
-
-  .landing-tabs[data-active='1'] .landing-tabs-thumb { transform: translate(100%, 0); }
-  .landing-tabs[data-active='2'] .landing-tabs-thumb { transform: translate(200%, 0); }
-  .landing-tabs[data-active='3'] .landing-tabs-thumb { transform: translate(0, 100%); }
-  .landing-tabs[data-active='4'] .landing-tabs-thumb { transform: translate(100%, 100%); }
-  .landing-tabs[data-active='5'] .landing-tabs-thumb { transform: translate(200%, 100%); }
-
   .calendar-preview {
     grid-template-columns: minmax(0, 1fr);
   }
 
   .calendar-preview .cal-day {
     min-height: 2.75rem;
+  }
+}
+
+/* Window title shows which part of the app is being previewed */
+.landing-window-title {
+  flex: 1;
+  margin: 0 0 0 -2.5rem;
+  color: var(--muted);
+  font-size: 0.8rem;
+  font-weight: 600;
+  text-align: center;
+  pointer-events: none;
+}
+
+/* Each new preview zooms out of its card */
+.landing-zoom {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  animation: landing-zoom-in 0.35s cubic-bezier(0.2, 0.8, 0.2, 1);
+}
+
+.landing-zoom > * {
+  width: 100%;
+}
+
+@keyframes landing-zoom-in {
+  from {
+    opacity: 0;
+    transform: scale(0.88) translateY(1.5rem);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+.landing-hint {
+  margin: -1rem 0 0;
+  color: var(--muted);
+  font-size: 0.9rem;
+}
+
+/* Touch screens have no hover, so the hint is hidden there */
+@media (hover: none) {
+  .landing-hint {
+    display: none;
+  }
+}
+
+/* The hand of cards */
+.app-cards {
+  --fan-step: 8.2rem;
+  position: relative;
+  width: 100%;
+  height: 29rem;
+  margin-top: 0.5rem;
+}
+
+.app-card {
+  position: absolute;
+  bottom: 6.5rem;
+  left: calc(50% - 6.25rem);
+  display: flex;
+  flex-direction: column;
+  gap: 0.7rem;
+  width: 12.5rem;
+  height: 18rem;
+  padding: 0.55rem 0.55rem 0.7rem;
+  box-sizing: border-box;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 1.1rem;
+  box-shadow: 0 6px 18px -8px rgb(15 23 42 / 0.35);
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  cursor: pointer;
+  transform-origin: 50% 130%;
+  transition:
+    transform 0.32s cubic-bezier(0.2, 0.8, 0.2, 1),
+    box-shadow 0.32s ease,
+    border-color 0.2s ease;
+}
+
+.app-card-lifted {
+  border-color: var(--card-color);
+  box-shadow: 0 22px 44px -16px rgb(15 23 42 / 0.45);
+}
+
+.app-card-active {
+  border-color: var(--card-color);
+  box-shadow:
+    0 0 0 2px var(--card-color),
+    0 12px 28px -12px rgb(15 23 42 / 0.4);
+}
+
+.app-card:focus-visible {
+  outline: 3px solid var(--card-color);
+  outline-offset: 3px;
+}
+
+/* Colored image area with a real screenshot of that page peeking out */
+.app-card-media {
+  display: block;
+  flex-shrink: 0;
+  height: 6.9rem;
+  padding: 0.6rem 0.6rem 0;
+  overflow: hidden;
+  background: linear-gradient(135deg, var(--card-color), var(--card-color-2));
+  border-radius: 0.75rem;
+}
+
+.app-card-image {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 0.45rem 0.45rem 0 0;
+  box-shadow: 0 4px 14px -4px rgb(15 23 42 / 0.45);
+  transition: transform 0.32s cubic-bezier(0.2, 0.8, 0.2, 1);
+  transform-origin: 50% 0;
+}
+
+.app-card-lifted .app-card-image {
+  transform: scale(1.06);
+}
+
+.app-card-body {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  gap: 0.3rem;
+  flex: 1;
+  min-height: 0;
+  padding: 0 0.3rem;
+}
+
+.app-card-label {
+  padding: 0.15rem 0.55rem;
+  background: color-mix(in srgb, var(--card-color) 14%, transparent);
+  border-radius: 999px;
+  color: var(--card-color);
+  font-size: 0.68rem;
+  font-weight: 600;
+  letter-spacing: 0.02em;
+}
+
+.app-card-name {
+  font-size: 1.1rem;
+  font-weight: 700;
+}
+
+.app-card-blurb {
+  color: var(--muted);
+  font-size: 0.78rem;
+  line-height: 1.4;
+}
+
+/* Looks like a button; the whole card is the real button */
+.app-card-action {
+  display: block;
+  padding: 0.5rem;
+  background: linear-gradient(90deg, var(--card-color), var(--card-color-2));
+  border-radius: 0.6rem;
+  color: #fff;
+  font-size: 0.85rem;
+  font-weight: 600;
+  text-align: center;
+  transition: filter 0.2s ease;
+}
+
+.app-card-lifted .app-card-action {
+  filter: brightness(1.08) saturate(1.1);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .app-card {
+    transition: none;
+  }
+
+  .landing-zoom {
+    animation: none;
+  }
+}
+
+/* Narrower screens: tighten the fan */
+@media (max-width: 75rem) {
+  .app-cards {
+    --fan-step: 7rem;
+  }
+}
+
+@media (max-width: 60rem) {
+  .app-cards {
+    --fan-step: 5.6rem;
+    height: 26rem;
+  }
+
+  .app-card {
+    left: calc(50% - 5.25rem);
+    width: 10.5rem;
+    height: 15.5rem;
+    gap: 0.55rem;
+  }
+
+  .app-card-media {
+    height: 5.6rem;
+    padding: 0.5rem 0.5rem 0;
+  }
+
+  .app-card-name {
+    font-size: 1rem;
+  }
+
+  .app-card-blurb {
+    font-size: 0.72rem;
+  }
+
+  .app-card-action {
+    padding: 0.4rem;
+    font-size: 0.8rem;
+  }
+}
+
+@media (max-width: 50rem) {
+  .app-cards {
+    --fan-step: 4rem;
+  }
+}
+
+/* Phones: the hand becomes a row of cards you swipe through */
+@media (max-width: 40rem) {
+  .app-cards {
+    display: flex;
+    gap: 0.75rem;
+    height: auto;
+    margin: 0 -1rem;
+    padding: 1rem 1rem 1.5rem;
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scrollbar-width: none;
+  }
+
+  .app-cards::-webkit-scrollbar {
+    display: none;
+  }
+
+  .app-card {
+    position: relative;
+    bottom: auto;
+    left: auto;
+    flex-shrink: 0;
+    width: 10rem;
+    height: auto;
+    gap: 0.5rem;
+    padding: 0.45rem 0.45rem 0.55rem;
+    scroll-snap-align: center;
+    transform: none !important;
+  }
+
+  .app-card-active {
+    transform: translateY(-0.5rem) !important;
+  }
+
+  .app-card-media {
+    height: 5.2rem;
+    padding: 0.45rem 0.45rem 0;
+  }
+
+  .app-card-blurb {
+    font-size: 0.7rem;
+  }
+
+  /* Cards first on phones, so a tapped card's preview opens right below it */
+  .landing-hint {
+    order: -2;
+    margin: 0;
+  }
+
+  .app-cards {
+    order: -1;
+    margin-top: -0.5rem;
   }
 }
