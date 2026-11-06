@@ -45,8 +45,22 @@ function AuthControls() {
   return <ProfileMenu name={session.user.name} email={session.user.email} />
 }
 
-// Links only slide sideways while being dragged
-const onlySideways: Modifier = ({ transform }) => ({ ...transform, y: 0 })
+// Links only slide sideways while being dragged, and stop at either end of the
+// visible menu, so the row never scrolls the other links out of view
+const sidewaysWithinMenu: Modifier = ({ transform, draggingNodeRect, containerNodeRect }) => {
+  let x = transform.x
+  if (draggingNodeRect && containerNodeRect) {
+    const furthestLeft = containerNodeRect.left - draggingNodeRect.left
+    const furthestRight = containerNodeRect.right - draggingNodeRect.right
+    if (x < furthestLeft) {
+      x = furthestLeft
+    }
+    if (x > furthestRight) {
+      x = furthestRight
+    }
+  }
+  return { ...transform, x, y: 0 }
+}
 
 type SortableLinkProps = {
   page: NavPage
@@ -145,7 +159,8 @@ function PageLinks() {
     <DndContext
       sensors={sensors}
       collisionDetection={closestCenter}
-      modifiers={[onlySideways]}
+      modifiers={[sidewaysWithinMenu]}
+      autoScroll={false}
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
       onDragCancel={() => {
