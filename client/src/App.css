@@ -145,9 +145,8 @@
   max-width: 24rem;
   margin: 0 auto;
   padding: 2rem 1.5rem 1.75rem;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 1rem;
+  /* No box of its own, so the timer sits right on each theme's page background */
+  background: transparent;
 }
 
 .timer-break {
@@ -163,7 +162,8 @@
   gap: 0.25rem;
   margin-bottom: 1.75rem;
   padding: 0.25rem;
-  background: var(--bg);
+  /* A see-through tint, so the track shows up on any page background (even Sunset's gradient) */
+  background: color-mix(in srgb, var(--ink) 7%, transparent);
   border-radius: 0.625rem;
 }
 
