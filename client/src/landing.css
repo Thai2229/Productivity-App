@@ -92,7 +92,7 @@
 .landing-tabs {
   position: relative;
   display: inline-grid;
-  grid-template-columns: repeat(4, 1fr);
+  grid-template-columns: repeat(6, 1fr);
   padding: 0.25rem;
   background: var(--surface);
   border: 1px solid var(--line);
@@ -105,7 +105,8 @@
   top: 0.25rem;
   bottom: 0.25rem;
   left: 0.25rem;
-  width: calc((100% - 0.5rem) / 4);
+  width: calc((100% - 0.5rem) / 6);
+  height: auto;
   background: var(--work);
   border-radius: 999px;
   transition: transform 0.3s ease;
@@ -114,6 +115,8 @@
 .landing-tabs[data-active='1'] .landing-tabs-thumb { transform: translateX(100%); }
 .landing-tabs[data-active='2'] .landing-tabs-thumb { transform: translateX(200%); }
 .landing-tabs[data-active='3'] .landing-tabs-thumb { transform: translateX(300%); }
+.landing-tabs[data-active='4'] .landing-tabs-thumb { transform: translateX(400%); }
+.landing-tabs[data-active='5'] .landing-tabs-thumb { transform: translateX(500%); }
 
 .landing-tabs button {
   position: relative;
@@ -266,5 +269,70 @@
     grid-template-columns: repeat(7, 1fr);
     justify-items: center;
     width: 100%;
+  }
+}
+
+
+/* To-Do and Calendar previews inside the window */
+.todos-preview .todo-column {
+  background: var(--surface);
+}
+
+.todos-preview .todo-list {
+  min-height: 2rem;
+}
+
+.todos-preview .todo-title,
+.todos-preview .todo-column-title,
+.calendar-preview .cal-month-name,
+.calendar-preview .cal-panel-title,
+.calendar-preview .cal-event-title {
+  margin: 0;
+}
+
+.calendar-preview {
+  grid-template-columns: minmax(0, 1fr) 15rem;
+  text-align: left;
+}
+
+.calendar-preview .cal-month,
+.calendar-preview .cal-panel {
+  padding: 0.75rem;
+}
+
+.calendar-preview .cal-day {
+  min-height: 4.6rem;
+}
+
+.calendar-preview .cal-panel-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+}
+
+/* Phones: six tabs fit as two rows of three, and the thumb moves by row and column */
+@media (max-width: 40rem) {
+  .landing-tabs {
+    grid-template-columns: repeat(3, 1fr);
+    border-radius: 1.25rem;
+  }
+
+  .landing-tabs-thumb {
+    width: calc((100% - 0.5rem) / 3);
+    height: calc((100% - 0.5rem) / 2);
+    bottom: auto;
+  }
+
+  .landing-tabs[data-active='1'] .landing-tabs-thumb { transform: translate(100%, 0); }
+  .landing-tabs[data-active='2'] .landing-tabs-thumb { transform: translate(200%, 0); }
+  .landing-tabs[data-active='3'] .landing-tabs-thumb { transform: translate(0, 100%); }
+  .landing-tabs[data-active='4'] .landing-tabs-thumb { transform: translate(100%, 100%); }
+  .landing-tabs[data-active='5'] .landing-tabs-thumb { transform: translate(200%, 100%); }
+
+  .calendar-preview {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .calendar-preview .cal-day {
+    min-height: 2.75rem;
   }
 }

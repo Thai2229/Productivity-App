@@ -1,6 +1,12 @@
 import { lazy, Suspense, useState } from 'react'
 import { Link, Navigate } from 'react-router-dom'
-import { HabitsPreview, JobsPreview, PomodoroPreview } from '../components/LandingPreviews'
+import {
+  CalendarPreview,
+  HabitsPreview,
+  JobsPreview,
+  PomodoroPreview,
+  TodosPreview,
+} from '../components/LandingPreviews'
 import { authClient } from '../lib/auth-client'
 import '../internships.css'
 import LegalLinks from '../components/LegalLinks'
@@ -9,10 +15,12 @@ import '../landing.css'
 // The roadmap example uses the large React Flow library, so it loads on its own
 const RoadmapExample = lazy(() => import('../components/RoadmapExample'))
 
-type Preview = 'pomodoro' | 'jobs' | 'habits' | 'roadmap'
+type Preview = 'pomodoro' | 'todos' | 'calendar' | 'jobs' | 'habits' | 'roadmap'
 
 const PREVIEWS: { value: Preview; label: string }[] = [
   { value: 'pomodoro', label: 'Pomodoro' },
+  { value: 'todos', label: 'To-Do' },
+  { value: 'calendar', label: 'Calendar' },
   { value: 'jobs', label: 'Jobs' },
   { value: 'habits', label: 'Habits' },
   { value: 'roadmap', label: 'Roadmap' },
@@ -35,7 +43,7 @@ export default function Landing() {
       <section className="landing-hero">
         <h1 className="landing-title">Focus. Apply. Grow.</h1>
         <p className="landing-lead">
-          A Pomodoro timer, job tracker, habit streaks and skill roadmaps, all in one place and completely free.
+          A Pomodoro timer, to-do list, calendar, job tracker, habit streaks and skill roadmaps, all in one place and completely free.
         </p>
         <div className="landing-cta">
           <Link to="/signup" className="btn btn-primary">
@@ -75,6 +83,8 @@ export default function Landing() {
           </div>
           <div className="landing-window-body">
             {preview === 'pomodoro' && <PomodoroPreview />}
+            {preview === 'todos' && <TodosPreview />}
+            {preview === 'calendar' && <CalendarPreview />}
             {preview === 'jobs' && <JobsPreview />}
             {preview === 'habits' && <HabitsPreview />}
             {preview === 'roadmap' && (

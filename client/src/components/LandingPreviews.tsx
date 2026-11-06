@@ -2,9 +2,12 @@ import { useEffect, useState } from 'react'
 import FlowChart from './FlowChart'
 import { CheckIcon, FireIcon, TargetIcon } from './HabitIcons'
 import TimerRing from './TimerRing'
-import { daysText, recentDays, streakFor } from '../lib/habits'
-import { SAMPLE_HABITS, SAMPLE_INTERNSHIPS } from '../lib/landing-samples'
+import { dayKey, daysText, monthGrid, recentDays, shiftDay, streakFor } from '../lib/habits'
+import { SAMPLE_EVENTS, SAMPLE_HABITS, SAMPLE_INTERNSHIPS, SAMPLE_TODOS } from '../lib/landing-samples'
+import { dueLabel } from '../lib/todos'
 import '../habits.css'
+import '../todos.css'
+import '../calendar.css'
 
 // Small, made-up versions of each page for the landing page. Nothing here is saved.
 
@@ -188,6 +191,151 @@ export function HabitsPreview() {
           )
         })}
       </ul>
+    </div>
+  )
+}
+
+// Visitors can tick tasks to move them between Current and Past; nothing is saved
+export function TodosPreview() {
+  const today = dayKey(new Date())
+  const [doneIds, setDoneIds] = useState(() => SAMPLE_TODOS.filter((todo) => todo.done).map((todo) => todo.id))
+
+  function toggle(id: string) {
+    setDoneIds((current) => {
+      if (current.includes(id)) {
+        return current.filter((item) => item !== id)
+      }
+      return [...current, id]
+    })
+  }
+
+  function renderTask(todo: (typeof SAMPLE_TODOS)[number]) {
+    const isPast = doneIds.includes(todo.id)
+    let itemClass = 'todo-item'
+    let label = 'Mark "' + todo.title + '" as done'
+    if (isPast) {
+      itemClass = 'todo-item todo-item-past'
+      label = 'Move "' + todo.title + '" back to current'
+    }
+    let badge = null
+    if (todo.dueIn !== null) {
+      const due = dueLabel(shiftDay(today, todo.dueIn), isPast)
+      badge = <span className={'todo-due todo-due-' + due.tone}>{due.text}</span>
+    }
+    return (
+      <li key={todo.id} className={itemClass}>
+        <button type="button" className="todo-check" onClick={() => toggle(todo.id)} aria-label={label}>
+          {isPast && <CheckIcon />}
+        </button>
+        <div className="todo-body">
+          <div className="todo-title-line">
+            <p className="todo-title">{todo.title}</p>
+            {badge}
+          </div>
+          {todo.description !== '' && <p className="todo-description">{todo.description}</p>}
+        </div>
+      </li>
+    )
+  }
+
+  const current = SAMPLE_TODOS.filter((todo) => !doneIds.includes(todo.id))
+    .sort((a, b) => (a.dueIn ?? 999) - (b.dueIn ?? 999))
+  const past = SAMPLE_TODOS.filter((todo) => doneIds.includes(todo.id))
+
+  return (
+    <div className="todos-preview todo-columns">
+      <section className="todo-column">
+        <p className="todo-column-title">
+          Current <span className="todo-count">{current.length}</span>
+        </p>
+        <ul className="todo-list">{current.map(renderTask)}</ul>
+      </section>
+      <section className="todo-column">
+        <p className="todo-column-title">
+          Past <span className="todo-count">{past.length}</span>
+        </p>
+        <ul className="todo-list">{past.map(renderTask)}</ul>
+      </section>
+    </div>
+  )
+}
+
+// This month with a few sample events; visitors can click a day to see its events
+export function CalendarPreview() {
+  const today = dayKey(new Date())
+  const now = new Date()
+  const [selected, setSelected] = useState(shiftDay(today, 2))
+  const cells = monthGrid(now.getFullYear(), now.getMonth())
+
+  const byDay = new Map<string, (typeof SAMPLE_EVENTS)[number][]>()
+  for (const event of SAMPLE_EVENTS) {
+    const key = shiftDay(today, event.day)
+    const list = byDay.get(key) ?? []
+    list.push(event)
+    byDay.set(key, list)
+  }
+  const selectedEvents = byDay.get(selected) ?? []
+  const monthName = now.toLocaleDateString(undefined, { month: 'long', year: 'numeric' })
+  const weekdays = cells.slice(0, 7).map((cell) =>
+    new Date(cell.key + 'T12:00:00').toLocaleDateString(undefined, { weekday: 'short' }),
+  )
+
+  return (
+    <div className="calendar-preview cal-layout">
+      <div className="cal-month">
+        <div className="cal-toolbar">
+          <p className="cal-month-name">{monthName}</p>
+        </div>
+        <div className="cal-grid">
+          {weekdays.map((name) => (
+            <div key={name} className="cal-weekday">
+              {name}
+            </div>
+          ))}
+          {cells.map((cell) => {
+            const dayEvents = byDay.get(cell.key) ?? []
+            let cellClass = 'cal-day'
+            if (!cell.inMonth) {
+              cellClass += ' cal-day-outside'
+            }
+            if (cell.key === selected) {
+              cellClass += ' cal-day-selected'
+            }
+            if (cell.key === today) {
+              cellClass += ' cal-day-today'
+            }
+            return (
+              <button key={cell.key} type="button" className={cellClass} onClick={() => setSelected(cell.key)} aria-pressed={cell.key === selected}>
+                <span className="cal-day-number">{cell.number}</span>
+                <span className="cal-chips">
+                  {dayEvents.map((event) => (
+                    <span key={event.id} className="cal-chip">
+                      {event.title}
+                    </span>
+                  ))}
+                </span>
+                {dayEvents.length > 0 && <span className="cal-dot" aria-hidden="true" />}
+              </button>
+            )
+          })}
+        </div>
+      </div>
+      <div className="cal-panel">
+        <p className="cal-panel-title">
+          {new Date(selected + 'T12:00:00').toLocaleDateString(undefined, { weekday: 'long', month: 'long', day: 'numeric' })}
+        </p>
+        {selectedEvents.length === 0 && <p className="cal-empty">Nothing planned for this day.</p>}
+        {selectedEvents.length > 0 && (
+          <ul className="cal-events">
+            {selectedEvents.map((event) => (
+              <li key={event.id} className="cal-event">
+                <p className="cal-event-title">{event.title}</p>
+                {event.description !== '' && <p className="cal-event-description">{event.description}</p>}
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
     </div>
   )
 }
