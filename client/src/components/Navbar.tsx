@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, type MouseEvent } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { NavLink } from 'react-router-dom'
 import {
   DndContext,
@@ -62,13 +62,8 @@ const sidewaysWithinMenu: Modifier = ({ transform, draggingNodeRect, containerNo
   return { ...transform, x, y: 0 }
 }
 
-type SortableLinkProps = {
-  page: NavPage
-  onClickCapture: (event: MouseEvent) => void
-}
-
 // One menu link that can be dragged to a new spot. A plain click still opens the page.
-function SortableLink({ page, onClickCapture }: SortableLinkProps) {
+function SortableLink({ page }: { page: NavPage }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: page.id })
 
   // Keep it a normal link for screen readers instead of the library's default "button" role
@@ -88,7 +83,6 @@ function SortableLink({ page, onClickCapture }: SortableLinkProps) {
       <NavLink
         to={page.to}
         className={getLinkClass}
-        onClickCapture={onClickCapture}
         draggable={false}
         {...dragAttributes}
         {...listeners}
@@ -99,10 +93,16 @@ function SortableLink({ page, onClickCapture }: SortableLinkProps) {
   )
 }
 
+// How long after a drag ends a click is still treated as part of the drag
+const CLICK_AFTER_DRAG_MS = 400
+
 function PageLinks() {
   const [order, setOrder] = useState(loadNavOrder)
-  // A click right after a drag is the mouse being released, not a request to open the page
-  const justDragged = useRef(false)
+  // Releasing the mouse (or finger) at the end of a drag also counts as a click.
+  // These ignore clicks during a drag and for a moment after it ends.
+  const isDragging = useRef(false)
+  const dragEndedAt = useRef(0)
+  const rowRef = useRef<HTMLDivElement>(null)
 
   useEffect(() => {
     function reload() {
@@ -110,6 +110,21 @@ function PageLinks() {
     }
     window.addEventListener(NAV_ORDER_EVENT, reload)
     return () => window.removeEventListener(NAV_ORDER_EVENT, reload)
+  }, [])
+
+  // Catch the click that comes from letting go of a drag before anything else sees it.
+  // Without this, dropping a link back in its own spot can make the browser open
+  // (and fully reload) that page.
+  useEffect(() => {
+    function blockClickAfterDrag(event: globalThis.MouseEvent) {
+      const recentlyDragged = isDragging.current || Date.now() - dragEndedAt.current < CLICK_AFTER_DRAG_MS
+      if (recentlyDragged && rowRef.current && rowRef.current.contains(event.target as Node)) {
+        event.preventDefault()
+        event.stopPropagation()
+      }
+    }
+    window.addEventListener('click', blockClickAfterDrag, true)
+    return () => window.removeEventListener('click', blockClickAfterDrag, true)
   }, [])
 
   const sensors = useSensors(
@@ -125,14 +140,16 @@ function PageLinks() {
   )
 
   function handleDragStart() {
-    justDragged.current = true
+    isDragging.current = true
+  }
+
+  function finishDrag() {
+    isDragging.current = false
+    dragEndedAt.current = Date.now()
   }
 
   function handleDragEnd(event: DragEndEvent) {
-    // Let the click that ends a mouse drag pass by first
-    setTimeout(() => {
-      justDragged.current = false
-    }, 0)
+    finishDrag()
     const { active, over } = event
     if (!over || active.id === over.id) {
       return
@@ -142,13 +159,6 @@ function PageLinks() {
     const next = arrayMove(order, from, to)
     setOrder(next)
     saveNavOrder(next)
-  }
-
-  function handleClickCapture(event: MouseEvent) {
-    if (justDragged.current) {
-      event.preventDefault()
-      event.stopPropagation()
-    }
   }
 
   const pages = order
@@ -163,9 +173,7 @@ function PageLinks() {
       autoScroll={false}
       onDragStart={handleDragStart}
       onDragEnd={handleDragEnd}
-      onDragCancel={() => {
-        justDragged.current = false
-      }}
+      onDragCancel={finishDrag}
       accessibility={{
         screenReaderInstructions: {
           draggable: 'To move this page in the menu, press Space, use the arrow keys, then press Space again.',
@@ -173,9 +181,9 @@ function PageLinks() {
       }}
     >
       <SortableContext items={order} strategy={horizontalListSortingStrategy}>
-        <div className="nav-links">
+        <div className="nav-links" ref={rowRef}>
           {pages.map((page) => (
-            <SortableLink key={page.id} page={page} onClickCapture={handleClickCapture} />
+            <SortableLink key={page.id} page={page} />
           ))}
         </div>
       </SortableContext>
