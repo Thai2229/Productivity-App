@@ -5,6 +5,8 @@ import RequireAuth from './components/RequireAuth'
 import Pomodoro from './pages/Pomodoro'
 import Internships from './pages/Internships'
 import Habits from './pages/Habits'
+import Todos from './pages/Todos'
+import Calendar from './pages/Calendar'
 import Login from './pages/Login'
 import SignUp from './pages/SignUp'
 import ForgotPassword from './pages/ForgotPassword'
@@ -38,6 +40,8 @@ export default function App() {
             <Route path="/pomodoro" element={<Pomodoro />} />
             <Route path="/internships" element={<Internships />} />
             <Route path="/habits" element={<Habits />} />
+            <Route path="/todos" element={<Todos />} />
+            <Route path="/calendar" element={<Calendar />} />
             <Route path="/settings" element={<Settings />} />
             <Route
               path="/roadmap"

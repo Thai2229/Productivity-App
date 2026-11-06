@@ -41,12 +41,14 @@ export default function Navbar() {
         </NavLink>
       )}
       {session && (
-        <>
+        <div className="nav-links">
           <NavLink to="/pomodoro" className={getLinkClass}>Pomodoro</NavLink>
+          <NavLink to="/todos" className={getLinkClass}>To-Do</NavLink>
+          <NavLink to="/calendar" className={getLinkClass}>Calendar</NavLink>
           <NavLink to="/internships" className={getLinkClass}>Jobs</NavLink>
           <NavLink to="/habits" className={getLinkClass}>Habits</NavLink>
           <NavLink to="/roadmap" className={getLinkClass}>Roadmap</NavLink>
-        </>
+        </div>
       )}
       <div className="nav-actions">
         <AuthControls />

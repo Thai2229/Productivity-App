@@ -1,0 +1,221 @@
+/* To-Do page: current and past lists side by side */
+.page:has(.todos) {
+  max-width: 68rem;
+}
+
+.todos {
+  --phase: var(--work);
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.todo-form-grid {
+  grid-template-columns: minmax(0, 1fr) 13rem;
+}
+
+.todo-columns {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  gap: 1.25rem;
+  align-items: start;
+}
+
+.todo-column {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+  padding: 1rem 1rem 1.1rem;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 1rem;
+}
+
+.todo-column-title {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  margin: 0 0.25rem;
+  font-size: 1rem;
+  font-weight: 600;
+}
+
+.todo-count {
+  min-width: 1.5rem;
+  padding: 0.05rem 0.45rem;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-align: center;
+}
+
+.todo-empty {
+  margin: 0;
+  padding: 1.25rem 0.75rem;
+  border: 1px dashed var(--dot);
+  border-radius: 0.75rem;
+  color: var(--muted);
+  font-size: 0.875rem;
+  text-align: center;
+}
+
+.todo-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.6rem;
+  margin: 0;
+  padding: 0;
+  list-style: none;
+}
+
+/* One task */
+.todo-item {
+  display: flex;
+  gap: 0.75rem;
+  padding: 0.8rem 0.9rem;
+  background: var(--bg);
+  border: 1px solid var(--line);
+  border-radius: 0.75rem;
+}
+
+.todo-check {
+  display: grid;
+  flex-shrink: 0;
+  place-items: center;
+  width: 1.35rem;
+  height: 1.35rem;
+  margin-top: 0.1rem;
+  padding: 0;
+  background: var(--surface);
+  border: 2px solid var(--dot);
+  border-radius: 50%;
+  color: var(--on-accent);
+  cursor: pointer;
+}
+
+.todo-check:hover {
+  border-color: var(--rest);
+}
+
+.todo-check:focus-visible {
+  outline: 2px solid var(--work);
+  outline-offset: 2px;
+}
+
+.todo-item-past .todo-check {
+  background: var(--rest);
+  border-color: var(--rest);
+}
+
+.todo-body {
+  display: flex;
+  flex: 1;
+  flex-direction: column;
+  gap: 0.35rem;
+  min-width: 0;
+}
+
+.todo-title-line {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.35rem 0.75rem;
+}
+
+.todo-title {
+  margin: 0;
+  color: var(--ink);
+  font-size: 0.95rem;
+  font-weight: 600;
+  overflow-wrap: anywhere;
+}
+
+.todo-item-past .todo-title {
+  color: var(--muted);
+  text-decoration: line-through;
+}
+
+/* "Due Nov 12" badge next to the title */
+.todo-due {
+  display: inline-flex;
+  flex-shrink: 0;
+  align-items: center;
+  gap: 0.3rem;
+  padding: 0.15rem 0.5rem;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  color: var(--muted);
+  font-size: 0.75rem;
+  font-weight: 500;
+  white-space: nowrap;
+}
+
+.todo-due-soon {
+  border-color: color-mix(in srgb, var(--work) 45%, transparent);
+  background: color-mix(in srgb, var(--work) 10%, transparent);
+  color: var(--work);
+}
+
+.todo-due-overdue {
+  border-color: color-mix(in srgb, var(--danger) 45%, transparent);
+  background: color-mix(in srgb, var(--danger) 10%, transparent);
+  color: var(--danger);
+}
+
+.todo-description {
+  margin: 0;
+  color: var(--muted);
+  font-size: 0.875rem;
+  line-height: 1.5;
+  overflow-wrap: anywhere;
+  white-space: pre-wrap;
+}
+
+.todo-description-clamped {
+  display: -webkit-box;
+  overflow: hidden;
+  -webkit-box-orient: vertical;
+  -webkit-line-clamp: 3;
+  line-clamp: 3;
+}
+
+.todo-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.25rem 0.85rem;
+  font-size: 0.8rem;
+}
+
+.todo-actions-spacer {
+  flex: 1;
+}
+
+.todo-done-date {
+  color: var(--muted);
+}
+
+.todo-confirm {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  color: var(--muted);
+}
+
+@media (max-width: 48rem) {
+  .todo-columns {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .todo-form-grid {
+    grid-template-columns: minmax(0, 1fr);
+  }
+
+  .todo-form-grid .tracker-form-wide {
+    grid-column: auto;
+  }
+}
