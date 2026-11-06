@@ -6,9 +6,11 @@ import { auth } from './lib/auth.js'
 import { prisma } from './lib/prisma.js'
 import { securityHeaders } from './lib/security-headers.js'
 import { accountRouter } from './routes/account.js'
+import { eventsRouter } from './routes/events.js'
 import { habitsRouter } from './routes/habits.js'
 import { internshipsRouter } from './routes/internships.js'
 import { roadmapsRouter } from './routes/roadmaps.js'
+import { todosRouter } from './routes/todos.js'
 
 // Stop right away with a clear message if a required setting is missing,
 // instead of starting up half-configured (for example with CORS open to everyone)
@@ -62,6 +64,8 @@ app.use('/api/internships', internshipsRouter)
 app.use('/api/habits', habitsRouter)
 app.use('/api/roadmaps', roadmapsRouter)
 app.use('/api/account', accountRouter)
+app.use('/api/todos', todosRouter)
+app.use('/api/events', eventsRouter)
 
 // Anything else under /api is a plain 404, not Express's default HTML page
 app.use('/api', (_request, response) => {

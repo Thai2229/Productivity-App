@@ -8,18 +8,20 @@ datasource db {
 }
 
 model User {
-  id            String       @id
-  name          String
-  email         String
-  emailVerified Boolean      @default(false)
-  image         String?
-  createdAt     DateTime     @default(now())
-  updatedAt     DateTime     @default(now()) @updatedAt
-  sessions      Session[]
-  accounts      Account[]
-  internships   Internship[]
-  habits        Habit[]
-  roadmaps      Roadmap[]
+  id             String          @id
+  name           String
+  email          String
+  emailVerified  Boolean         @default(false)
+  image          String?
+  createdAt      DateTime        @default(now())
+  updatedAt      DateTime        @default(now()) @updatedAt
+  sessions       Session[]
+  accounts       Account[]
+  internships    Internship[]
+  habits         Habit[]
+  roadmaps       Roadmap[]
+  todos          Todo[]
+  calendarEvents CalendarEvent[]
 
   @@unique([email])
   @@map("user")
@@ -204,4 +206,42 @@ model SkillLink {
   @@unique([fromId, toId])
   @@index([roadmapId])
   @@map("skill_link")
+}
+
+// To-Do page: a task is either still to do (CURRENT) or done and moved to the past list (PAST)
+enum TodoStatus {
+  CURRENT
+  PAST
+}
+
+model Todo {
+  id          String     @id @default(cuid())
+  title       String
+  description String     @default("")
+  dueDate     DateTime?  @db.Date
+  status      TodoStatus @default(CURRENT)
+  // When it was moved to the past list (empty while it's current)
+  completedAt DateTime?
+  createdAt   DateTime   @default(now())
+  updatedAt   DateTime   @updatedAt
+  userId      String
+  user        User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("todo")
+}
+
+// Calendar page: one event on one day, with a title and an optional description
+model CalendarEvent {
+  id          String   @id @default(cuid())
+  title       String
+  description String   @default("")
+  date        DateTime @db.Date
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  userId      String
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, date])
+  @@map("calendar_event")
 }
