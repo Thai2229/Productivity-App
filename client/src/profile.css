@@ -530,3 +530,19 @@
 .btn-danger-outline:hover {
   background: color-mix(in srgb, var(--danger) 10%, transparent);
 }
+
+/* Appearance → Menu order */
+.settings-menu-order {
+  flex-wrap: wrap;
+}
+
+.settings-small-btn {
+  padding: 0.5rem 1rem;
+  font-size: 0.875rem;
+  white-space: nowrap;
+}
+
+.settings-small-btn:disabled {
+  cursor: default;
+  opacity: 0.5;
+}

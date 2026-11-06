@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import { useSearchParams } from 'react-router-dom'
 import ThemePicker from '../components/ThemePicker'
+import { NAV_ORDER_EVENT, isDefaultNavOrder, loadNavOrder, resetNavOrder } from '../lib/navOrder'
 import { authClient } from '../lib/auth-client'
 import '../profile.css'
 
@@ -237,6 +238,43 @@ function SetPasswordForm({ onDone }: { onDone: () => void }) {
   )
 }
 
+// Appearance → Menu order: shows whether the top menu was rearranged, and puts it back
+function MenuOrderSetting() {
+  const [isDefault, setIsDefault] = useState(() => isDefaultNavOrder(loadNavOrder()))
+
+  useEffect(() => {
+    function refresh() {
+      setIsDefault(isDefaultNavOrder(loadNavOrder()))
+    }
+    window.addEventListener(NAV_ORDER_EVENT, refresh)
+    window.addEventListener('storage', refresh)
+    return () => {
+      window.removeEventListener(NAV_ORDER_EVENT, refresh)
+      window.removeEventListener('storage', refresh)
+    }
+  }, [])
+
+  return (
+    <div className="settings-row-toggle settings-menu-order">
+      <div>
+        <p className="settings-row-title">Menu order</p>
+        <p className="settings-note">Drag the pages in the top menu to rearrange them. Saved on this device.</p>
+      </div>
+      <button
+        type="button"
+        className="btn btn-secondary settings-small-btn"
+        onClick={() => {
+          resetNavOrder()
+          setIsDefault(true)
+        }}
+        disabled={isDefault}
+      >
+        Reset menu order
+      </button>
+    </div>
+  )
+}
+
 const CONFIRM_WORD = 'DELETE'
 
 // Danger zone: permanently deletes the account and everything in it.
@@ -452,6 +490,7 @@ export default function Settings() {
               </div>
               <ThemePicker />
             </div>
+            <MenuOrderSetting />
           </section>
         )}
       </div>
