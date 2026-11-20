@@ -428,6 +428,10 @@
   gap: var(--space-1);
 }
 
+.calendar-weekday abbr {
+  text-decoration: none;
+}
+
 .calendar-weekday {
   padding-bottom: var(--space-1);
   color: var(--muted);

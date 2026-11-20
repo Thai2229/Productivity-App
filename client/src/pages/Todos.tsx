@@ -303,12 +303,12 @@ export default function Todos() {
         <div className="empty">
           <h1 className="empty-title">Couldn't load your tasks</h1>
           <p className="empty-text">Check your connection and try again.</p>
-        <button type="button" className="btn btn-secondary" onClick={() => {
-          setLoadState('loading')
-          load()
-        }}>
-          Try again
-        </button>
+          <button type="button" className="btn btn-secondary" onClick={() => {
+            setLoadState('loading')
+            load()
+          }}>
+            Try again
+          </button>
         </div>
       </div>
     )

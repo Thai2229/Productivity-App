@@ -84,7 +84,7 @@ export function PomodoroPreview({ still = false }: { still?: boolean }) {
   }
 
   return (
-    <div className={'timer-card preview-timer timer-' + phase}>
+    <div className={'preview-timer timer-' + phase}>
       <div className="phase-tabs">
         {PREVIEW_PHASES.map((item) => {
           let phaseClass = 'phase'

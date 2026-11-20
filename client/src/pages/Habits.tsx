@@ -1,6 +1,7 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import {
   HABIT_ICONS,
+  HABIT_ICON_NAMES,
   createHabit,
   dayKey,
   deleteHabit,
@@ -85,18 +86,24 @@ function HabitForm({ initial, onSave, onDelete, onCancel }: FormProps) {
       <div className="field">
         <span className="field-label">Icon</span>
         <div className="icon-picker" role="group" aria-label="Icon">
-          {HABIT_ICONS.map((choice) => (
-            <button
-              key={choice}
-              type="button"
-              className="icon-choice"
-              aria-pressed={icon === choice}
-              aria-label={'Icon ' + (HABIT_ICONS.indexOf(choice) + 1)}
-              onClick={() => setIcon(choice)}
-            >
-              <HabitIcon value={choice} />
-            </button>
-          ))}
+          {HABIT_ICONS.map((choice) => {
+            let label = 'Icon ' + (HABIT_ICONS.indexOf(choice) + 1)
+            if (HABIT_ICON_NAMES[choice]) {
+              label = HABIT_ICON_NAMES[choice]
+            }
+            return (
+              <button
+                key={choice}
+                type="button"
+                className="icon-choice"
+                aria-pressed={icon === choice}
+                aria-label={label}
+                onClick={() => setIcon(choice)}
+              >
+                <HabitIcon value={choice} />
+              </button>
+            )
+          })}
         </div>
       </div>
 

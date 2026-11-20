@@ -8,6 +8,7 @@ type Props = {
 }
 
 const WEEKDAYS = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
+const WEEKDAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
 export default function HabitDetail({ habit, onToggle }: Props) {
   const now = new Date()
@@ -90,7 +91,7 @@ export default function HabitDetail({ habit, onToggle }: Props) {
 
         <div className="calendar-grid">
           {WEEKDAYS.map((name, index) => (
-            <span key={index} className="calendar-weekday">{name}</span>
+            <span key={index} className="calendar-weekday"><abbr title={WEEKDAY_NAMES[index]}>{name}</abbr></span>
           ))}
           {monthGrid(year, month).map((cell) => {
             const checked = done.has(cell.key)

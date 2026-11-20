@@ -144,15 +144,23 @@ export default function Calendar() {
     // eslint-disable-next-line react-hooks/exhaustive-deps -- reload only when the six weeks change
   }, [from, to])
 
+  // Show the loading state only when the six weeks change, otherwise the effect won't run and it would stick
+  function showMonth(nextYear: number, nextMonth: number) {
+    const next = monthGrid(nextYear, nextMonth)
+    if (next[0].key !== from || next[next.length - 1].key !== to) {
+      setLoadState('loading')
+    }
+    setYear(nextYear)
+    setMonth(nextMonth)
+  }
+
   function changeMonth(delta: number) {
     const next = new Date(year, month + delta, 1, 12)
-    setYear(next.getFullYear())
-    setMonth(next.getMonth())
+    showMonth(next.getFullYear(), next.getMonth())
   }
 
   function goToToday() {
-    setYear(new Date().getFullYear())
-    setMonth(new Date().getMonth())
+    showMonth(new Date().getFullYear(), new Date().getMonth())
     setSelected(today)
   }
 
@@ -164,8 +172,7 @@ export default function Calendar() {
     // Clicking a grey day from the next or previous month jumps to that month
     const date = new Date(key + 'T12:00:00')
     if (date.getMonth() !== month || date.getFullYear() !== year) {
-      setYear(date.getFullYear())
-      setMonth(date.getMonth())
+      showMonth(date.getFullYear(), date.getMonth())
     }
   }
 

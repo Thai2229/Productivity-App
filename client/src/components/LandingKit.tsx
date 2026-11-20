@@ -49,7 +49,7 @@ const loadModule: (url: string) => Promise<{ default: { init: () => void } }> = 
 ) as never
 
 // The kit's scripts start themselves the first time they load; later visits start them again
-let kitScriptsLoaded = false
+const loadedKitScripts = new Set<string>()
 
 function addMeta(attr: 'name' | 'property', key: string, content: string, added: Element[]) {
   const meta = document.createElement('meta')
@@ -143,12 +143,13 @@ export function useLandingKit() {
           return
         }
         const url: string = KIT_BASE + file
+        const seen = loadedKitScripts.has(file)
         const mod = await loadModule(url)
-        if (kitScriptsLoaded) {
+        loadedKitScripts.add(file)
+        if (seen) {
           mod.default.init()
         }
       }
-      kitScriptsLoaded = true
     })
 
     return () => {
