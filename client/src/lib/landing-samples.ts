@@ -1,4 +1,5 @@
 // Made-up sample data for the examples on the landing page (never saved anywhere)
+import { dayKey, shiftDay, type Habit } from './habits'
 import type { Internship, Stage } from './internships'
 
 // Each path is the stages one sample application went through
@@ -47,13 +48,24 @@ export const SAMPLE_LINKS = [
   ['k6', 'k7'],
 ] as const
 
-// Sample habits: which of the last 7 days (0 = six days ago, 6 = today) are checked
-export const SAMPLE_HABITS = [
-  { id: 'h1', name: 'Apply to 5 internships', icon: '💻', done: [2, 3, 4, 5, 6], total: 23 },
-  { id: 'h2', name: 'Gym', icon: '💪', done: [0, 1, 3, 4, 5], total: 41 },
-  { id: 'h3', name: 'Read 20 pages', icon: '📘', done: [0, 2, 4], total: 12 },
-  { id: 'h4', name: 'Drink 8 glasses of water', icon: '💧', done: [], total: 6 },
+// Sample habits. Each string is three weeks of check-ins, newest first: character 0 is today, 1 is yesterday, and so on
+const SAMPLE_HISTORY = [
+  { id: 'h1', name: 'Apply to 5 internships', icon: '💻', history: '111110011101111101110' },
+  { id: 'h2', name: 'Gym', icon: '💪', history: '011101111011011110101' },
+  { id: 'h3', name: 'Read 20 pages', icon: '📘', history: '001010110110111110111' },
+  { id: 'h4', name: 'Drink 8 glasses of water', icon: '💧', history: '000000011101111111011' },
 ]
+
+export const SAMPLE_HABITS: Habit[] = SAMPLE_HISTORY.map((habit) => {
+  const today = dayKey(new Date())
+  const checks: string[] = []
+  for (let index = habit.history.length - 1; index >= 0; index--) {
+    if (habit.history[index] === '1') {
+      checks.push(shiftDay(today, -index))
+    }
+  }
+  return { id: habit.id, name: habit.name, icon: habit.icon, createdAt: shiftDay(today, -60) + 'T12:00:00', checks }
+})
 
 // Sample to-do tasks. dueIn is days from today (negative = overdue), null = no due date.
 export const SAMPLE_TODOS = [

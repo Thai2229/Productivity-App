@@ -292,7 +292,12 @@ html.is-landing .app-card:focus-visible {
 }
 
 .habits-preview {
-  max-width: 44rem;
+  align-items: start;
+}
+
+/* In the app the detail sticks to the page as it scrolls; in the window it just sits there */
+.habits-preview .habit-detail {
+  position: static;
 }
 
 .preview-habit-name {
