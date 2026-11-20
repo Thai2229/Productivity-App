@@ -1,128 +1,144 @@
-:root {
-  --danger: #b42318;
-}
+/* Log in, sign up, forgot / reset password, verify email.
+   Wide screens: the page name and a line about the app on the left, the form on the right, split by a hairline.
+   Narrow screens: one column. Tokens and primitives (.field, .btn, inputs) come from index.css / App.css. */
 
-:root[data-theme='dark'] {
-  --danger: #ff8f86;
-}
-
-.nav-actions {
-  display: flex;
-  align-items: center;
-  gap: 0.75rem;
-  margin-left: auto;
-}
-
-.nav-actions .theme-toggle {
-  margin-left: 0;
-}
-
-.nav-user {
-  max-width: 14rem;
-  overflow: hidden;
-  color: var(--muted);
-  font-size: 0.85rem;
-  text-overflow: ellipsis;
-  white-space: nowrap;
-}
-
-.nav-logout {
-  padding: 0.4rem 0.75rem;
-  background: transparent;
-  border: 1px solid var(--line);
-  border-radius: 0.5rem;
-  color: var(--ink);
-  font-family: inherit;
-  font-size: 0.85rem;
-  cursor: pointer;
-}
-
-.nav-logout:hover {
-  background: var(--bg);
-}
-
-.nav-logout:focus-visible {
-  outline: 2px solid var(--work);
-  outline-offset: 2px;
+.page:has(.auth-card) {
+  max-width: 60rem;
 }
 
 .auth-card {
   --phase: var(--work);
-  max-width: 24rem;
+  display: grid;
+  gap: var(--space-5);
+  max-width: 28rem;
   margin: 0 auto;
-  padding: 2rem 1.5rem;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 1rem;
+  padding-top: var(--space-4);
 }
 
 .auth-title {
-  margin: 0 0 1.5rem;
-  font-size: 1.25rem;
-  font-weight: 600;
+  margin: 0;
+  font-size: var(--text-2xl);
+  line-height: 1.1;
+}
+
+.auth-lede {
+  max-width: 24rem;
+  margin: var(--space-3) 0 0;
+  color: var(--muted);
+  font-size: var(--text-m);
+  line-height: 1.5;
+}
+
+.auth-body {
+  min-width: 0;
+}
+
+@media (min-width: 52rem) {
+  .auth-card {
+    grid-template-columns: minmax(0, 1fr) 24rem;
+    gap: 0;
+    max-width: none;
+    margin: 0;
+    padding-top: var(--space-6);
+  }
+
+  .auth-intro {
+    padding-right: var(--space-7);
+  }
+
+  .auth-title {
+    font-size: var(--text-3xl);
+  }
+
+  .auth-lede {
+    font-size: var(--text-l);
+  }
+
+  .auth-body {
+    padding-left: var(--space-7);
+    border-left: 1px solid var(--line);
+  }
 }
 
 .auth-form {
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: var(--space-4);
 }
 
+/* Label + control stack. The auth pages use .field; other pages' forms still use .auth-field */
 .auth-field {
   display: flex;
   flex-direction: column;
-  gap: 0.375rem;
-  font-size: 0.9rem;
+  gap: var(--space-1);
+  font-size: var(--text-s);
   font-weight: 500;
-}
-
-.auth-field input {
-  padding: 0.65rem 0.75rem;
-  background: var(--bg);
-  border: 1px solid var(--line);
-  border-radius: 0.5rem;
-  color: var(--ink);
-  font: inherit;
-  font-weight: 400;
-}
-
-.auth-field input:focus-visible {
-  outline: 2px solid var(--work);
-  outline-offset: 1px;
 }
 
 .auth-hint {
   color: var(--muted);
-  font-size: 0.8rem;
+  font-size: var(--text-xs);
   font-weight: 400;
 }
 
 .auth-error {
   margin: 0;
   color: var(--danger);
-  font-size: 0.9rem;
+  font-size: var(--text-s);
+  line-height: 1.4;
+}
+
+.auth-error a {
+  color: inherit;
+  font-weight: 500;
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
 }
 
 .auth-submit {
   width: 100%;
-  margin-top: 0.25rem;
-}
-
-.auth-submit:disabled {
-  cursor: wait;
-  opacity: 0.7;
+  margin-top: var(--space-1);
 }
 
 .auth-switch {
-  margin: 1.5rem 0 0;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  column-gap: var(--space-1);
+  margin: var(--space-4) 0 0;
   color: var(--muted);
-  font-size: 0.9rem;
-  text-align: center;
+  font-size: var(--text-s);
 }
 
-.auth-switch a {
-  color: var(--work);
+.auth-switch + .auth-switch {
+  margin-top: 0;
+}
+
+.auth-switch a,
+.auth-text-button,
+.auth-forgot {
+  display: inline-flex;
+  align-items: center;
+  min-height: var(--control-h);
+  color: var(--ink);
   font-weight: 500;
+  text-decoration: underline;
+  text-decoration-color: var(--line-strong);
+  text-underline-offset: 0.25em;
+}
+
+.auth-switch a:hover,
+.auth-text-button:hover:not(:disabled),
+.auth-forgot:hover {
+  text-decoration-color: currentColor;
+}
+
+.auth-switch a:focus-visible,
+.auth-text-button:focus-visible,
+.auth-forgot:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
+  border-radius: var(--radius-s);
 }
 
 .auth-loading {
@@ -130,61 +146,68 @@
   text-align: center;
 }
 
-@media (max-width: 40rem) {
-  .navbar {
-    flex-wrap: wrap;
-    padding: 0 0.75rem;
-  }
-
-  .nav-links {
-    flex: 1 1 0;
-    gap: 0;
-  }
-
-  .nav-user {
-    display: none;
-  }
+/* Plain text on the forgot / reset / verify pages */
+.auth-text {
+  margin: 0 0 var(--space-4);
+  color: var(--ink);
+  font-size: var(--text-m);
+  line-height: 1.5;
+  overflow-wrap: anywhere;
 }
-/* Cloudflare's bot check on the sign-up form */
-.turnstile-box {
-  min-height: 65px;
+
+.auth-text strong,
+.auth-lede strong {
+  color: var(--ink);
+  font-family: var(--font-mono);
+  font-size: 0.85em;
+  font-weight: 400;
+}
+
+.auth-text-muted {
+  color: var(--muted);
+  font-size: var(--text-s);
+}
+
+.auth-link-button {
+  text-decoration: none;
+}
+
+/* Password label with "Forgot password?" on the right */
+.auth-label-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-3);
+  min-height: var(--control-h);
+  margin-block: calc(var(--space-2) * -1);
+}
+
+.auth-forgot {
+  min-height: var(--control-h);
+  font-size: var(--text-s);
+  font-weight: 400;
+  color: var(--muted);
 }
 
 /* "Continue with Google" and the "or" line under it */
 .auth-google {
   display: flex;
   flex-direction: column;
-  gap: 0.9rem;
-  margin-bottom: 0.9rem;
+  gap: var(--space-4);
+  margin-bottom: var(--space-4);
 }
 
 .auth-google-button {
-  display: inline-flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.6rem;
   width: 100%;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  color: var(--ink);
-  font-weight: 500;
-}
-
-.auth-google-button:hover {
-  background: var(--bg);
-}
-
-.auth-google-button:disabled {
-  cursor: wait;
-  opacity: 0.7;
 }
 
 .auth-divider {
   display: flex;
   align-items: center;
-  gap: 0.75rem;
+  gap: var(--space-3);
   color: var(--muted);
-  font-size: 0.8rem;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
 }
 
 .auth-divider::before,
@@ -195,95 +218,58 @@
   background: var(--line);
 }
 
-/* Password label with "Forgot password?" on the right */
-.auth-label-row {
-  display: flex;
-  align-items: baseline;
-  justify-content: space-between;
-  gap: 0.75rem;
-}
-
-.auth-forgot {
-  color: var(--work);
-  font-size: 0.8rem;
-  font-weight: 500;
-  text-decoration: none;
-}
-
-.auth-forgot:hover {
-  text-decoration: underline;
-}
-
-/* Plain text on the forgot / reset password pages */
-.auth-text {
-  margin: 0 0 1rem;
-  color: var(--ink);
-  font-size: 0.95rem;
-  line-height: 1.5;
-}
-
-.auth-text-muted {
-  color: var(--muted);
-  font-size: 0.875rem;
-}
-
-.auth-link-button {
-  display: block;
-  box-sizing: border-box;
-  text-align: center;
-  text-decoration: none;
+/* Cloudflare's bot check on the sign-up form */
+.turnstile-box {
+  min-height: 65px;
 }
 
 /* Privacy / Terms links under the landing, log in and sign up pages */
 .legal-links {
-  margin: 1.25rem 0 0;
+  margin: var(--space-5) 0 0;
   color: var(--muted);
-  font-size: 0.8rem;
+  font-size: var(--text-xs);
   line-height: 1.5;
-  text-align: center;
 }
 
 .legal-links a {
   color: var(--muted);
   text-decoration: underline;
+  text-underline-offset: 0.2em;
 }
 
 .legal-links a:hover {
   color: var(--ink);
 }
 
-/* Verify email page */
+/* Verify email page: one wide mono field for the 6 digits */
 .auth-code-input {
-  font-size: 1.4rem;
-  font-weight: 600;
+  min-height: 3.5rem;
+  padding: 0 0 0 0.5em;
+  font-family: var(--font-mono);
+  font-size: var(--text-xl);
+  font-variant-numeric: tabular-nums;
   letter-spacing: 0.5em;
   text-align: center;
 }
 
 .auth-notice {
   margin: 0;
-  color: var(--rest);
-  font-size: 0.875rem;
+  color: var(--ok);
+  font-size: var(--text-s);
 }
 
 .auth-text-button {
   padding: 0;
   background: none;
   border: none;
-  color: var(--work);
   font: inherit;
   font-weight: 500;
-  text-decoration: underline;
   cursor: pointer;
 }
 
 .auth-text-button:disabled {
   color: var(--muted);
+  font-weight: 400;
   text-decoration: none;
   cursor: default;
-}
-
-.auth-error a {
-  color: inherit;
-  font-weight: 600;
 }

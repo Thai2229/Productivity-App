@@ -71,45 +71,52 @@ export default function Login() {
 
   return (
     <div className="auth-card">
-      <h1 className="auth-title">Log in</h1>
-      <GoogleButton />
-      <form className="auth-form" onSubmit={handleSubmit} noValidate>
-        <label className="auth-field">
-          <span>Email</span>
-          <input
-            type="email"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            autoComplete="email"
-          />
-        </label>
-        <label className="auth-field">
-          <span className="auth-label-row">
-            Password
-            <Link className="auth-forgot" to="/forgot-password">
-              Forgot password?
-            </Link>
-          </span>
-          <input
-            type="password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            autoComplete="current-password"
-          />
-        </label>
-        {error !== '' && (
-          <p className="auth-error" role="alert">
-            {error}
-          </p>
-        )}
-        <button className="btn btn-primary auth-submit" type="submit" disabled={isSubmitting}>
-          {buttonLabel}
-        </button>
-      </form>
-      <p className="auth-switch">
-        No account yet? <Link to="/signup">Sign up</Link>
-      </p>
-      <LegalLinks />
+      <div className="auth-intro">
+        <h1 className="auth-title">Log in</h1>
+        <p className="auth-lede">
+          Your timer, to-dos, calendar, job applications, habits and roadmaps.
+        </p>
+      </div>
+      <div className="auth-body">
+        <GoogleButton />
+        <form className="auth-form" onSubmit={handleSubmit} noValidate>
+          <label className="field">
+            <span className="field-label">Email</span>
+            <input
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              autoComplete="email"
+            />
+          </label>
+          <label className="field">
+            <span className="field-label auth-label-row">
+              Password
+              <Link className="auth-forgot" to="/forgot-password">
+                Forgot password?
+              </Link>
+            </span>
+            <input
+              type="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              autoComplete="current-password"
+            />
+          </label>
+          {error !== '' && (
+            <p className="auth-error" role="alert">
+              {error}
+            </p>
+          )}
+          <button className="btn btn-primary auth-submit" type="submit" disabled={isSubmitting}>
+            {buttonLabel}
+          </button>
+        </form>
+        <p className="auth-switch">
+          No account yet? <Link to="/signup">Sign up</Link>
+        </p>
+        <LegalLinks />
+      </div>
     </div>
   )
 }

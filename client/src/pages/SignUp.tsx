@@ -33,9 +33,7 @@ export default function SignUp() {
 
     if (name.trim() === '' || email.trim() === '' || password.length < MIN_PASSWORD_LENGTH) {
       setError(
-        'Enter your name, your email, and a password of at least ' +
-          MIN_PASSWORD_LENGTH +
-          ' characters.',
+        'Enter your name, your email, and a password of at least ' + MIN_PASSWORD_LENGTH + ' characters.',
       )
       return
     }
@@ -80,62 +78,69 @@ export default function SignUp() {
 
   return (
     <div className="auth-card">
-      <h1 className="auth-title">Create an account</h1>
-      <GoogleButton />
-      <form className="auth-form" onSubmit={handleSubmit} noValidate>
-        <label className="auth-field">
-          <span>Name</span>
-          <input
-            type="text"
-            value={name}
-            onChange={(event) => setName(event.target.value)}
-            autoComplete="name"
-          />
-        </label>
-        <label className="auth-field">
-          <span>Email</span>
-          <input
-            type="email"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            autoComplete="email"
-          />
-        </label>
-        <label className="auth-field">
-          <span>Password</span>
-          <input
-            type="password"
-            value={password}
-            onChange={(event) => setPassword(event.target.value)}
-            autoComplete="new-password"
-          />
-          <small className="auth-hint">At least {MIN_PASSWORD_LENGTH} characters</small>
-        </label>
-        {TURNSTILE_SITE_KEY && (
-          <Turnstile key={captchaRound} siteKey={TURNSTILE_SITE_KEY} onToken={setCaptchaToken} />
-        )}
-        {error !== '' && (
-          <p className="auth-error" role="alert">
-            {error}
-          </p>
-        )}
-        {emailTaken && (
-          <p className="auth-error" role="alert">
-            An account with this email already exists. <Link to="/login">Log in instead</Link>
-          </p>
-        )}
-        <button
-          className="btn btn-primary auth-submit"
-          type="submit"
-          disabled={isSubmitting || (Boolean(TURNSTILE_SITE_KEY) && captchaToken === '')}
-        >
-          {buttonLabel}
-        </button>
-      </form>
-      <p className="auth-switch">
-        Already have an account? <Link to="/login">Log in</Link>
-      </p>
-      <LegalLinks forSignUp />
+      <div className="auth-intro">
+        <h1 className="auth-title">Create an account</h1>
+        <p className="auth-lede">
+          A timer, to-do list, calendar, job tracker, habit tracker and skill roadmaps. All free.
+        </p>
+      </div>
+      <div className="auth-body">
+        <GoogleButton />
+        <form className="auth-form" onSubmit={handleSubmit} noValidate>
+          <label className="field">
+            <span className="field-label">Name</span>
+            <input
+              type="text"
+              value={name}
+              onChange={(event) => setName(event.target.value)}
+              autoComplete="name"
+            />
+          </label>
+          <label className="field">
+            <span className="field-label">Email</span>
+            <input
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              autoComplete="email"
+            />
+          </label>
+          <label className="field">
+            <span className="field-label">Password</span>
+            <input
+              type="password"
+              value={password}
+              onChange={(event) => setPassword(event.target.value)}
+              autoComplete="new-password"
+            />
+            <small className="field-hint">At least {MIN_PASSWORD_LENGTH} characters</small>
+          </label>
+          {TURNSTILE_SITE_KEY && (
+            <Turnstile key={captchaRound} siteKey={TURNSTILE_SITE_KEY} onToken={setCaptchaToken} />
+          )}
+          {error !== '' && (
+            <p className="auth-error" role="alert">
+              {error}
+            </p>
+          )}
+          {emailTaken && (
+            <p className="auth-error" role="alert">
+              An account with this email already exists. <Link to="/login">Log in instead</Link>
+            </p>
+          )}
+          <button
+            className="btn btn-primary auth-submit"
+            type="submit"
+            disabled={isSubmitting || (Boolean(TURNSTILE_SITE_KEY) && captchaToken === '')}
+          >
+            {buttonLabel}
+          </button>
+        </form>
+        <p className="auth-switch">
+          Already have an account? <Link to="/login">Log in</Link>
+        </p>
+        <LegalLinks forSignUp />
+      </div>
     </div>
   )
 }

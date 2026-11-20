@@ -48,11 +48,17 @@ export default function ResetPassword() {
   if (linkError || token === '' || isExpired) {
     return (
       <div className="auth-card">
-        <h1 className="auth-title">This link has expired</h1>
-        <p className="auth-text">Reset links work once and only for 1 hour. Ask for a new one and try again.</p>
-        <Link className="btn btn-primary auth-submit auth-link-button" to="/forgot-password">
-          Send a new link
-        </Link>
+        <div className="auth-intro">
+          <h1 className="auth-title">This link has expired</h1>
+          <p className="auth-lede">
+            Reset links work once and only for 1 hour. Ask for a new one and try again.
+          </p>
+        </div>
+        <div className="auth-body">
+          <Link className="btn btn-primary auth-submit auth-link-button" to="/forgot-password">
+            Send a new link
+          </Link>
+        </div>
       </div>
     )
   }
@@ -60,13 +66,17 @@ export default function ResetPassword() {
   if (isDone) {
     return (
       <div className="auth-card">
-        <h1 className="auth-title">Password updated</h1>
-        <p className="auth-text">
-          You can log in with your new password now. For safety, you've been logged out on every device.
-        </p>
-        <Link className="btn btn-primary auth-submit auth-link-button" to="/login">
-          Log in
-        </Link>
+        <div className="auth-intro">
+          <h1 className="auth-title">Password updated</h1>
+          <p className="auth-lede">
+            You can log in with your new password now. For safety, you've been logged out on every device.
+          </p>
+        </div>
+        <div className="auth-body">
+          <Link className="btn btn-primary auth-submit auth-link-button" to="/login">
+            Log in
+          </Link>
+        </div>
       </div>
     )
   }
@@ -78,36 +88,40 @@ export default function ResetPassword() {
 
   return (
     <div className="auth-card">
-      <h1 className="auth-title">Choose a new password</h1>
-      <form className="auth-form" onSubmit={handleSubmit} noValidate>
-        <label className="auth-field">
-          <span>New password</span>
-          <input
-            type="password"
-            value={newPassword}
-            onChange={(event) => setNewPassword(event.target.value)}
-            autoComplete="new-password"
-          />
-          <small className="auth-hint">At least {MIN_PASSWORD_LENGTH} characters</small>
-        </label>
-        <label className="auth-field">
-          <span>Confirm new password</span>
-          <input
-            type="password"
-            value={confirmPassword}
-            onChange={(event) => setConfirmPassword(event.target.value)}
-            autoComplete="new-password"
-          />
-        </label>
-        {error !== '' && (
-          <p className="auth-error" role="alert">
-            {error}
-          </p>
-        )}
-        <button className="btn btn-primary auth-submit" type="submit" disabled={isSubmitting}>
-          {buttonLabel}
-        </button>
-      </form>
+      <div className="auth-intro">
+        <h1 className="auth-title">Choose a new password</h1>
+      </div>
+      <div className="auth-body">
+        <form className="auth-form" onSubmit={handleSubmit} noValidate>
+          <label className="field">
+            <span className="field-label">New password</span>
+            <input
+              type="password"
+              value={newPassword}
+              onChange={(event) => setNewPassword(event.target.value)}
+              autoComplete="new-password"
+            />
+            <small className="field-hint">At least {MIN_PASSWORD_LENGTH} characters</small>
+          </label>
+          <label className="field">
+            <span className="field-label">Confirm new password</span>
+            <input
+              type="password"
+              value={confirmPassword}
+              onChange={(event) => setConfirmPassword(event.target.value)}
+              autoComplete="new-password"
+            />
+          </label>
+          {error !== '' && (
+            <p className="auth-error" role="alert">
+              {error}
+            </p>
+          )}
+          <button className="btn btn-primary auth-submit" type="submit" disabled={isSubmitting}>
+            {buttonLabel}
+          </button>
+        </form>
+      </div>
     </div>
   )
 }
