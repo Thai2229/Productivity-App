@@ -70,10 +70,7 @@ export function useLandingKit() {
     footer.className = 'footer closing footer--statement'
     footer.id = 'contact'
     footer.setAttribute('aria-labelledby', 'close-h')
-    const bar = document.createElement('nav')
-    bar.className = 'actionbar'
-    bar.setAttribute('aria-label', 'Quick actions')
-    return { header, footer, bar }
+    return { header, footer }
   })
 
   useLayoutEffect(() => {
@@ -112,9 +109,9 @@ export function useLandingKit() {
     const savedMainId = main?.getAttribute('id') ?? null
     main?.setAttribute('id', 'top')
 
-    const { header, footer, bar } = hosts
+    const { header, footer } = hosts
     document.body.prepend(header)
-    document.body.append(footer, bar)
+    document.body.append(footer)
 
     let cancelled = false
     styles.then(async () => {
@@ -169,7 +166,6 @@ export function useLandingKit() {
       }
       header.remove()
       footer.remove()
-      bar.remove()
     }
   }, [hosts])
 
