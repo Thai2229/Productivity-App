@@ -20,7 +20,7 @@ const DEFAULT_ORDER = NAV_PAGES.map((page) => page.id)
 
 // The saved order, cleaned up: unknown ids are dropped and pages added later go at the end
 export function loadNavOrder(): string[] {
-  let saved: unknown = null
+  let saved: unknown
   try {
     saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || 'null')
   } catch {

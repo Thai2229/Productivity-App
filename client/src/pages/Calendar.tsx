@@ -80,16 +80,16 @@ function EventForm({ initial, defaultDate, onSave, onCancel }: FormProps) {
   return (
     <form className="cal-form" onSubmit={handleSubmit}>
       <h3 className="cal-form-title">{heading}</h3>
-      <label className="auth-field">
-        <span>Title</span>
+      <label className="field">
+        <span className="field-label">Title</span>
         <input type="text" value={title} onChange={(event) => setTitle(event.target.value)} maxLength={MAX_TITLE} autoFocus />
       </label>
-      <label className="auth-field">
-        <span>Date</span>
+      <label className="field">
+        <span className="field-label">Date</span>
         <input type="date" value={date} onChange={(event) => setDate(event.target.value)} />
       </label>
-      <label className="auth-field">
-        <span>Description (optional)</span>
+      <label className="field">
+        <span className="field-label">Description (optional)</span>
         <textarea
           rows={3}
           value={description}
@@ -102,7 +102,7 @@ function EventForm({ initial, defaultDate, onSave, onCancel }: FormProps) {
       {error && <p className="auth-error" role="alert">{error}</p>}
 
       <div className="cal-form-actions">
-        <button type="button" className="btn btn-secondary" onClick={onCancel}>
+        <button type="button" className="btn btn-ghost" onClick={onCancel}>
           Cancel
         </button>
         <button type="submit" className="btn btn-primary" disabled={saving}>
@@ -130,7 +130,6 @@ export default function Calendar() {
   const to = cells[cells.length - 1].key
 
   function load() {
-    setLoadState('loading')
     listEvents(from, to)
       .then((rows) => {
         setEvents(rows)
@@ -140,7 +139,10 @@ export default function Calendar() {
   }
 
   // Load the six weeks on screen whenever the month changes
-  useEffect(load, [from, to])
+  useEffect(() => {
+    load()
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- reload only when the six weeks change
+  }, [from, to])
 
   function changeMonth(delta: number) {
     const next = new Date(year, month + delta, 1, 12)
@@ -233,14 +235,16 @@ export default function Calendar() {
 
   return (
     <div className="cal-page">
-      <header className="tracker-header">
+      <header className="page-header">
         <div>
-          <h1 className="tracker-title">Calendar</h1>
-          <p className="tracker-subtitle">Click a day to see or add events</p>
+          <h1 className="page-title">Calendar</h1>
+          <p className="page-meta">{longDate(today)}</p>
         </div>
-        <button type="button" className="btn btn-primary" onClick={openNew}>
-          Add event
-        </button>
+        <div className="page-actions">
+          <button type="button" className="btn btn-primary" onClick={openNew}>
+            Add event
+          </button>
+        </div>
       </header>
 
       {actionError && <p className="auth-error" role="alert">{actionError}</p>}
@@ -248,29 +252,32 @@ export default function Calendar() {
       <div className="cal-layout">
         <section className="cal-month" aria-label={monthName}>
           <div className="cal-toolbar">
-            <button type="button" className="btn btn-secondary cal-today" onClick={goToToday}>
-              Today
-            </button>
-            <div className="cal-arrows">
-              <button type="button" className="cal-arrow" onClick={() => changeMonth(-1)} aria-label="Previous month">
+            <h2 className="cal-month-name">{monthName}</h2>
+            {loadState === 'loading' && <span className="cal-status">Loading…</span>}
+            <div className="cal-nav">
+              <button type="button" className="btn btn-outline btn-small cal-today" onClick={goToToday}>
+                Today
+              </button>
+              <button type="button" className="btn btn-outline btn-icon btn-small" onClick={() => changeMonth(-1)} aria-label="Previous month">
                 <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
-                  <path d="M10 3.5L5.5 8l4.5 4.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M10 3.5L5.5 8l4.5 4.5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </button>
-              <button type="button" className="cal-arrow" onClick={() => changeMonth(1)} aria-label="Next month">
+              <button type="button" className="btn btn-outline btn-icon btn-small" onClick={() => changeMonth(1)} aria-label="Next month">
                 <svg viewBox="0 0 16 16" width="16" height="16" aria-hidden="true">
-                  <path d="M6 3.5L10.5 8 6 12.5" fill="none" stroke="currentColor" strokeWidth="1.8" strokeLinecap="round" strokeLinejoin="round" />
+                  <path d="M6 3.5L10.5 8 6 12.5" fill="none" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
                 </svg>
               </button>
             </div>
-            <h2 className="cal-month-name">{monthName}</h2>
-            {loadState === 'loading' && <span className="cal-status">Loading…</span>}
           </div>
 
           {loadState === 'error' && (
             <div className="cal-load-error">
               <p>Couldn't load your events.</p>
-              <button type="button" className="btn btn-secondary" onClick={load}>
+              <button type="button" className="btn btn-secondary btn-small" onClick={() => {
+                setLoadState('loading')
+                load()
+              }}>
                 Try again
               </button>
             </div>
@@ -346,7 +353,10 @@ export default function Calendar() {
           )}
 
           {!formOpen && selectedEvents.length === 0 && (
-            <p className="cal-empty">Nothing planned for this day.</p>
+            <div className="empty cal-empty">
+              <p className="empty-title">Nothing planned</p>
+              <p className="empty-text">This day is free.</p>
+            </div>
           )}
 
           {selectedEvents.length > 0 && (
@@ -356,21 +366,21 @@ export default function Calendar() {
                   <h3 className="cal-event-title">{event.title}</h3>
                   {event.description !== '' && <p className="cal-event-description">{event.description}</p>}
                   <div className="cal-event-actions">
-                    <button type="button" className="link-btn" onClick={() => openEdit(event)}>
+                    <button type="button" className="btn btn-ghost btn-small" onClick={() => openEdit(event)}>
                       Edit
                     </button>
                     {confirmingId !== event.id && (
-                      <button type="button" className="link-btn link-btn-danger" onClick={() => setConfirmingId(event.id)}>
+                      <button type="button" className="btn btn-ghost btn-small cal-act-danger" onClick={() => setConfirmingId(event.id)}>
                         Delete
                       </button>
                     )}
                     {confirmingId === event.id && (
                       <span className="cal-confirm">
                         Delete?
-                        <button type="button" className="link-btn link-btn-danger" onClick={() => removeEvent(event)}>
+                        <button type="button" className="btn btn-ghost btn-small cal-act-danger" onClick={() => removeEvent(event)}>
                           Yes
                         </button>
-                        <button type="button" className="link-btn" onClick={() => setConfirmingId('')}>
+                        <button type="button" className="btn btn-ghost btn-small" onClick={() => setConfirmingId('')}>
                           No
                         </button>
                       </span>
@@ -382,8 +392,8 @@ export default function Calendar() {
           )}
 
           {!formOpen && (
-            <button type="button" className="btn btn-secondary cal-add-day" onClick={openNew}>
-              + Add event on this day
+            <button type="button" className="btn btn-outline cal-add-day" onClick={openNew}>
+              Add event on this day
             </button>
           )}
         </aside>

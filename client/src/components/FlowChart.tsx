@@ -17,6 +17,10 @@ function colorFor(id: FlowNodeId) {
   return 'var(--stage-' + id.toLowerCase().replace('_interview', '') + ')'
 }
 
+// Room for the labels of the first and last columns, so they sit on white, not on the bands
+const LABEL_LEFT = 100
+const LABEL_RIGHT = 164
+
 function nodeOf(end: string | number | LaidOutNode) {
   return end as LaidOutNode
 }
@@ -65,7 +69,7 @@ export default function FlowChart({ internships }: Props) {
       .nodeAlign(sankeyJustify)
       .nodeWidth(10)
       .nodePadding(22)
-      .extent([[1, 10], [chartWidth - 1, height - 10]])
+      .extent([[LABEL_LEFT, 10], [chartWidth - LABEL_RIGHT, height - 10]])
 
     return generator({
       nodes: [...ids].map((id) => ({ id })),
@@ -127,10 +131,10 @@ export default function FlowChart({ internships }: Props) {
                 const y0 = node.y0 ?? 0
                 const y1 = node.y1 ?? 0
 
-                // Labels go right of each box; the last column's go left so they stay inside
+                // Labels go right of each box; the first column's go left, in the margin
                 let labelX = x1 + 8
                 let anchor: 'start' | 'end' = 'start'
-                if (x1 >= chartWidth - 2) {
+                if (x0 <= LABEL_LEFT + 1) {
                   labelX = x0 - 8
                   anchor = 'end'
                 }
@@ -142,7 +146,7 @@ export default function FlowChart({ internships }: Props) {
                       y={y0}
                       width={x1 - x0}
                       height={Math.max(2, y1 - y0)}
-                      rx={3}
+                      rx={2}
                       style={{ fill: colorFor(node.id) }}
                     />
                     <text

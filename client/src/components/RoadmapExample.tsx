@@ -18,7 +18,7 @@ const edges: Edge[] = SAMPLE_LINKS.map(([from, to]) => ({
   id: from + '-' + to,
   source: from,
   target: to,
-  markerEnd: { type: MarkerType.ArrowClosed, width: 18, height: 18, color: 'var(--muted)' },
+  markerEnd: { type: MarkerType.ArrowClosed, width: 18, height: 18, color: 'var(--line-strong)' },
 }))
 
 // A sample roadmap visitors can drag around; nothing here is saved
