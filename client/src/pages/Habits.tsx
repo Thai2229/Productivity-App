@@ -399,7 +399,7 @@ export default function Habits() {
             </ul>
           </div>
 
-          <HabitDetail key={selected.id} habit={selected} onToggle={toggleDay} />
+          <HabitDetail key={selected.id} habit={selected} habits={habits} />
         </div>
       )}
     </div>
