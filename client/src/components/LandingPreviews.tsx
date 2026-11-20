@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import FlowChart from './FlowChart'
-import { CheckIcon, FireIcon, TargetIcon } from './HabitIcons'
+import { CheckIcon, FireIcon, HabitIcon, TargetIcon } from './HabitIcons'
 import TimerRing from './TimerRing'
 import { dayKey, daysText, monthGrid, recentDays, shiftDay, streakFor } from '../lib/habits'
 import { SAMPLE_EVENTS, SAMPLE_HABITS, SAMPLE_INTERNSHIPS, SAMPLE_TODOS } from '../lib/landing-samples'
@@ -41,39 +41,42 @@ function previewCaption(phase: PreviewPhase, completed: number) {
   return 'Step away for ' + previewSeconds(phase) / 60 + ' minutes'
 }
 
+type PreviewClock = { phase: PreviewPhase; completed: number; secondsLeft: number }
+
+// One second later; when the clock runs out, move on to the next phase like the real timer does
+function nextTick(current: PreviewClock): PreviewClock {
+  const secondsLeft = current.secondsLeft - 1
+  if (secondsLeft > 0) {
+    return { ...current, secondsLeft }
+  }
+
+  let nextPhase: PreviewPhase = 'work'
+  let nextCompleted = current.completed
+  if (current.phase === 'work') {
+    nextCompleted = current.completed + 1
+    nextPhase = 'break'
+    if (nextCompleted % PREVIEW_SESSIONS === 0) {
+      nextPhase = 'longBreak'
+    }
+  }
+  return { phase: nextPhase, completed: nextCompleted, secondsLeft: previewSeconds(nextPhase) }
+}
+
 // A live timer that counts down on its own, starting partway through session 2
-export function PomodoroPreview() {
-  const [phase, setPhase] = useState<PreviewPhase>('work')
-  const [completed, setCompleted] = useState(1)
-  const [secondsLeft, setSecondsLeft] = useState(15 * 60 + 30)
+// `still` holds the picture (the hero's collage); the clock also rests when reduced motion is asked for
+export function PomodoroPreview({ still = false }: { still?: boolean }) {
+  const [clock, setClock] = useState<PreviewClock>({ phase: 'work', completed: 1, secondsLeft: 15 * 60 + 30 })
+  const { phase, completed, secondsLeft } = clock
 
   useEffect(() => {
-    const interval = setInterval(() => {
-      setSecondsLeft((current) => current - 1)
-    }, 1000)
-    return () => clearInterval(interval)
-  }, [])
-
-  // When the clock runs out, move on to the next phase like the real timer does
-  useEffect(() => {
-    if (secondsLeft > 0) {
+    if (still || window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
       return
     }
-
-    let nextPhase: PreviewPhase = 'work'
-    let nextCompleted = completed
-    if (phase === 'work') {
-      nextCompleted = completed + 1
-      nextPhase = 'break'
-      if (nextCompleted % PREVIEW_SESSIONS === 0) {
-        nextPhase = 'longBreak'
-      }
-    }
-
-    setPhase(nextPhase)
-    setCompleted(nextCompleted)
-    setSecondsLeft(previewSeconds(nextPhase))
-  }, [secondsLeft, phase, completed])
+    const interval = setInterval(() => {
+      setClock(nextTick)
+    }, 1000)
+    return () => clearInterval(interval)
+  }, [still])
 
   let filledDots = completed % PREVIEW_SESSIONS
   if (phase === 'longBreak') {
@@ -149,7 +152,7 @@ export function HabitsPreview() {
           const total = habit.total - habit.done.length + keys.length
           return (
             <li key={habit.id} className="habit-row">
-              <span className="habit-icon" aria-hidden="true">{habit.icon}</span>
+              <span className="habit-icon" aria-hidden="true"><HabitIcon value={habit.icon} /></span>
               <div className="habit-info">
                 <p className="habit-name preview-habit-name">{habit.name}</p>
                 <p className="habit-meta">

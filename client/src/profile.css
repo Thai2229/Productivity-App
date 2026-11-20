@@ -406,12 +406,9 @@
 }
 
 .theme-option:focus-visible {
-  outline: none;
-}
-
-.theme-option:focus-visible .theme-swatch {
   outline: 2px solid var(--picker-ink);
   outline-offset: 3px;
+  border-radius: var(--radius-s);
 }
 
 .theme-option-name {
