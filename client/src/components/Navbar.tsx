@@ -67,6 +67,7 @@ function SortableLink({ page }: { page: NavPage }) {
   const { attributes, listeners, setNodeRef, transform, transition, isDragging } = useSortable({ id: page.id })
 
   // Keep it a normal link for screen readers instead of the library's default "button" role
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { role: _role, tabIndex: _tabIndex, ...dragAttributes } = attributes
 
   let wrapperClass = 'nav-sortable'

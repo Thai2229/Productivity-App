@@ -29,8 +29,8 @@ function PasswordInput({
   }
 
   return (
-    <label className="auth-field">
-      <span>{label}</span>
+    <label className="field">
+      <span className="field-label">{label}</span>
       <span className="password-box">
         <input
           type={type}
@@ -262,7 +262,7 @@ function MenuOrderSetting() {
       </div>
       <button
         type="button"
-        className="btn btn-secondary settings-small-btn"
+        className="btn btn-secondary btn-small settings-small-btn"
         onClick={() => {
           resetNavOrder()
           setIsDefault(true)
@@ -368,8 +368,8 @@ function DeleteAccountSection({ hasPassword }: { hasPassword: boolean }) {
           autoComplete="current-password"
         />
       )}
-      <label className="auth-field">
-        <span>
+      <label className="field">
+        <span className="field-label">
           Type <strong>{CONFIRM_WORD}</strong> to confirm
         </span>
         <input
@@ -433,7 +433,12 @@ export default function Settings() {
 
   return (
     <div className="settings">
-      <h1 className="tracker-title">Settings</h1>
+      <header className="page-header">
+        <div>
+          <h1 className="page-title">Settings</h1>
+          <p className="page-meta">{session.user.email}</p>
+        </div>
+      </header>
 
       <div className="settings-layout">
         <nav className="settings-tabs" aria-label="Settings sections">

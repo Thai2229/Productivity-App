@@ -17,6 +17,12 @@ export default function TimerRing({ progress, timeText, label }: TimerRingProps)
           if (index >= elapsedTicks) {
             tickClass = 'tick tick-on'
           }
+          // Every fifth tick is a longer, heavier mark, like a watch dial
+          let tickLength = 14
+          if (index % 5 === 0) {
+            tickClass = tickClass + ' tick-major'
+            tickLength = 22
+          }
 
           return (
             <line
@@ -25,7 +31,7 @@ export default function TimerRing({ progress, timeText, label }: TimerRingProps)
               x1="100"
               y1="8"
               x2="100"
-              y2="20"
+              y2={8 + tickLength}
               transform={'rotate(' + index * (360 / TICK_COUNT) + ' 100 100)'}
             />
           )

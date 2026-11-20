@@ -22,3 +22,7 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# design tooling scratch (screenshots, taste-skill gate state)
+.design/
+.taste-skill/
