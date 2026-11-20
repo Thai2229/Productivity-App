@@ -67,9 +67,8 @@ export function useLandingKit() {
     const header = document.createElement('header')
     header.className = 'nav'
     const footer = document.createElement('footer')
-    footer.className = 'footer closing footer--statement'
+    footer.className = 'footer'
     footer.id = 'contact'
-    footer.setAttribute('aria-labelledby', 'close-h')
     return { header, footer }
   })
 

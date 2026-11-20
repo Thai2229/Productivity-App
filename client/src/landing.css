@@ -15,7 +15,7 @@ html.is-landing main.page {
 /* Nothing shows until the kit's stylesheets are in, so the page never flashes unstyled */
 html.landing-wait main.page,
 html.landing-wait body > header.nav,
-html.landing-wait body > footer.closing,
+html.landing-wait body > footer.footer,
 html.landing-wait body > nav.actionbar {
   visibility: hidden;
 }
@@ -30,18 +30,12 @@ html.landing-wait body > nav.actionbar {
   transform-origin: 0 0;
 }
 
-/* The statement's line under it reads in ink, like every running text */
-html.is-landing .mo-la__sub {
-  color: var(--ink);
-}
-
-/* The first screen: the name and the main button on one row, the open tool as one window, the hand of cards under it.
+/* The first screen: the name, the open tool as one window, the hand of cards under it.
    Every rule starts with html.is-landing because the kit's stylesheets load after this one. */
 html.is-landing main > .hero--app {
   height: auto;
-  min-height: 100svh;
-  padding: calc(var(--nav) + var(--s-5)) 0 var(--s-5);
-  z-index: 1; /* above the story's scattered letters, which start out overlapping the fold */
+  min-height: 0;
+  padding: calc(var(--nav) + var(--s-5)) 0 0;
   background: var(--bg);
 }
 
@@ -57,19 +51,12 @@ html.is-landing .hero--app .hero-text {
   height: auto;
 }
 
-html.is-landing .hero--app .hero__top {
-  display: flex;
-  align-items: center;
-  justify-content: space-between;
-  gap: var(--s-4) var(--s-6);
-}
-
 html.is-landing .hero--app h1 {
   font-size: clamp(32px, 1.5vw + 22px, 48px);
   line-height: 1.05;
 }
 
-/* The open tool: a window the height of what the screen leaves under the heading and above the cards */
+/* The open tool: a window that grows to the height of the tool in it, so no tool is cut off */
 .app {
   display: flex;
   flex-direction: column;
@@ -82,7 +69,7 @@ html.is-landing .hero--app h1 {
 }
 
 html.is-landing .hero--app .app {
-  height: clamp(340px, calc(100svh - 440px), 460px);
+  height: auto;
 }
 
 .app__head {
@@ -100,17 +87,12 @@ html.is-landing .hero--app .app {
 
 .app__body {
   position: relative;
-  flex: 1 1 0;
-  min-height: 0;
+  min-height: 24rem;
   padding: var(--s-5);
-  overflow: hidden;
-  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 48px), transparent);
-  mask-image: linear-gradient(to bottom, #000 calc(100% - 48px), transparent);
 }
 
 .app__body .landing-roadmap {
-  height: 100%;
-  min-height: 0;
+  height: 24rem;
 }
 
 .app__body .flow-card {
@@ -118,12 +100,22 @@ html.is-landing .hero--app .app {
   border: 0;
 }
 
-html.is-landing #story {
-  overflow: clip;
+/* The story: a heading and a paragraph with normal section spacing (the kit gives every section a screen's height) */
+html.is-landing main > #story {
+  height: auto;
+  min-height: 0;
+  display: block;
+  padding-block: var(--s-7) var(--s-8);
 }
 
-/* The bar keeps the logo, Log in and the button. The kit hides Log in below 1024 for a menu sheet this page does not have;
-   on a phone the first screen holds the button right under the name, so the bar keeps only Log in */
+html.is-landing .story__text {
+  max-width: 60ch;
+  margin-top: var(--s-4);
+  font-size: var(--t-lead);
+}
+
+/* The bar keeps the logo, Log in and the button, the only two on the page. The kit hides Log in below 1024 for a menu
+   sheet this page does not have */
 html.is-landing .nav .nav__actions {
   margin-left: auto;
 }
@@ -132,8 +124,9 @@ html.is-landing .nav .nav__actions > .nav__link {
   display: inline-flex;
 }
 
+/* On a phone only the ring stays of the logo, so Log in and the button fit on one row */
 @media (max-width: 479px) {
-  html.is-landing .nav .nav__actions > .btn {
+  html.is-landing .nav .nav__name {
     display: none;
   }
 }
@@ -271,13 +264,6 @@ html.is-landing .app-card:focus-visible {
   background: var(--accent);
 }
 
-/* The name set across the .wrap: sized by hand so "Productivity App" ends on the right line */
-footer.closing .close__word {
-  line-height: 1.1;
-  font-size: clamp(36px, calc((100vw - 2 * var(--gut)) * 0.117), 150px);
-  white-space: nowrap;
-}
-
 /* The previews borrow the app pages' own styles; these keep them tidy inside the page */
 .preview-timer {
   max-width: 19rem;
@@ -357,22 +343,13 @@ footer.closing .close__word {
 
 /* Phones: no fan, the cards are a row to swipe */
 @media (max-width: 639px) {
-  html.is-landing .hero--app .hero__top {
-    flex-direction: column;
-    align-items: stretch;
-  }
-
-  html.is-landing .hero--app .hero__top .btn {
-    width: 100%;
-    height: 48px;
-  }
-
-  html.is-landing .hero--app .app {
-    height: clamp(300px, calc(100svh - 450px), 420px);
-  }
-
   .app__body {
+    min-height: 20rem;
     padding: var(--s-4);
+  }
+
+  .app__body .landing-roadmap {
+    height: 20rem;
   }
 
   .app__body .preview-timer {
@@ -452,9 +429,18 @@ footer.closing .close__word {
   outline-offset: 2px;
 }
 
-/* The footer lists the tools in two columns */
-.footer ul.footer__tools {
-  grid-auto-flow: column;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  grid-template-rows: repeat(3, auto);
+/* React Flow's edge layers are 0 wide boxes; the kit's svg { max-width: 100% } would shrink their svg to nothing */
+html.is-landing .react-flow svg {
+  max-width: none;
+}
+
+/* The footer is one slim row */
+html.is-landing footer.footer {
+  padding-block: var(--s-5);
+}
+
+html.is-landing .footer .footer__legal {
+  margin-top: 0;
+  padding-top: 0;
+  border-top: 0;
 }
