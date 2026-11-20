@@ -16,6 +16,21 @@ export type HabitDraft = {
 // Must match the list on the server
 export const HABIT_ICONS = ['📘', '💪', '💧', '🏃', '🧘', '😴', '🥗', '💻', '✍️', '🎸', '🧹', '💊']
 
+export const HABIT_ICON_NAMES: Record<string, string> = {
+  '📘': 'Book',
+  '💪': 'Strength',
+  '💧': 'Water',
+  '🏃': 'Running',
+  '🧘': 'Meditation',
+  '😴': 'Sleep',
+  '🥗': 'Healthy eating',
+  '💻': 'Coding',
+  '✍️': 'Writing',
+  '🎸': 'Music',
+  '🧹': 'Cleaning',
+  '💊': 'Medicine',
+}
+
 async function request<T>(path: string, method: string, body?: unknown): Promise<T> {
   const options: RequestInit = { method, headers: {} }
 

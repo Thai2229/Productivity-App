@@ -72,11 +72,11 @@ function TodoForm({ initial, onSave, onCancel }: FormProps) {
   }
 
   return (
-    <form className="tracker-form" onSubmit={handleSubmit}>
-      <h2 className="tracker-form-title">{heading}</h2>
-      <div className="tracker-form-grid todo-form-grid">
-        <label className="auth-field">
-          <span>Title</span>
+    <form className="todo-form" onSubmit={handleSubmit}>
+      <h2 className="todo-form-title">{heading}</h2>
+      <div className="todo-form-grid">
+        <label className="field">
+          <span className="field-label">Title</span>
           <input
             type="text"
             value={title}
@@ -85,12 +85,12 @@ function TodoForm({ initial, onSave, onCancel }: FormProps) {
             autoFocus
           />
         </label>
-        <label className="auth-field">
-          <span>Due by (optional)</span>
+        <label className="field">
+          <span className="field-label">Due by (optional)</span>
           <input type="date" value={dueDate} onChange={(event) => setDueDate(event.target.value)} />
         </label>
-        <label className="auth-field tracker-form-wide">
-          <span>Description (optional)</span>
+        <label className="field todo-form-wide">
+          <span className="field-label">Description (optional)</span>
           <textarea
             rows={4}
             value={description}
@@ -103,8 +103,8 @@ function TodoForm({ initial, onSave, onCancel }: FormProps) {
 
       {error && <p className="auth-error" role="alert">{error}</p>}
 
-      <div className="tracker-form-actions">
-        <button type="button" className="btn btn-secondary" onClick={onCancel}>
+      <div className="todo-form-actions">
+        <button type="button" className="btn btn-ghost" onClick={onCancel}>
           Cancel
         </button>
         <button type="submit" className="btn btn-primary" disabled={saving}>
@@ -142,13 +142,7 @@ function TodoItem({ todo, onMove, onEdit, onDelete }: ItemProps) {
   if (todo.dueDate) {
     const due = dueLabel(todo.dueDate, isPast)
     badge = (
-      <span className={'todo-due todo-due-' + due.tone}>
-        <svg viewBox="0 0 16 16" width="12" height="12" aria-hidden="true">
-          <rect x="2" y="3" width="12" height="11" rx="2" fill="none" stroke="currentColor" strokeWidth="1.5" />
-          <path d="M2 6.5h12M5.5 1.5v3M10.5 1.5v3" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-        </svg>
-        {due.text}
-      </span>
+      <span className={'todo-due todo-due-' + due.tone}>{due.text}</span>
     )
   }
 
@@ -180,32 +174,32 @@ function TodoItem({ todo, onMove, onEdit, onDelete }: ItemProps) {
         {todo.description !== '' && <p className={descriptionClass}>{todo.description}</p>}
         <div className="todo-actions">
           {isLong && (
-            <button type="button" className="link-btn" onClick={() => setExpanded(!expanded)}>
+            <button type="button" className="btn btn-ghost btn-small" onClick={() => setExpanded(!expanded)}>
               {expandText}
             </button>
           )}
           {isPast && <span className="todo-done-date">{doneLabel(todo.completedAt)}</span>}
           <span className="todo-actions-spacer" />
-          <button type="button" className="link-btn" onClick={onMove}>
+          <button type="button" className="btn btn-ghost btn-small" onClick={onMove}>
             {moveText}
           </button>
           {!isPast && (
-            <button type="button" className="link-btn" onClick={onEdit}>
+            <button type="button" className="btn btn-ghost btn-small" onClick={onEdit}>
               Edit
             </button>
           )}
           {!confirming && (
-            <button type="button" className="link-btn link-btn-danger" onClick={() => setConfirming(true)}>
+            <button type="button" className="btn btn-ghost btn-small todo-act-danger" onClick={() => setConfirming(true)}>
               Delete
             </button>
           )}
           {confirming && (
             <span className="todo-confirm">
               Delete?
-              <button type="button" className="link-btn link-btn-danger" onClick={onDelete}>
+              <button type="button" className="btn btn-ghost btn-small todo-act-danger" onClick={onDelete}>
                 Yes
               </button>
-              <button type="button" className="link-btn" onClick={() => setConfirming(false)}>
+              <button type="button" className="btn btn-ghost btn-small" onClick={() => setConfirming(false)}>
                 No
               </button>
             </span>
@@ -224,7 +218,6 @@ export default function Todos() {
   const [actionError, setActionError] = useState('')
 
   function load() {
-    setLoadState('loading')
     listTodos()
       .then((rows) => {
         setTodos(rows)
@@ -233,7 +226,9 @@ export default function Todos() {
       .catch(() => setLoadState('error'))
   }
 
-  useEffect(load, [])
+  useEffect(() => {
+    load()
+  }, [])
 
   function replaceTodo(saved: Todo) {
     setTodos((rows) => rows.map((row) => {
@@ -304,11 +299,17 @@ export default function Todos() {
 
   if (loadState === 'error') {
     return (
-      <div className="todos tracker-empty">
-        <p>Couldn't load your tasks. Check your connection and try again.</p>
-        <button type="button" className="btn btn-secondary" onClick={load}>
-          Try again
-        </button>
+      <div className="todos">
+        <div className="empty">
+          <h1 className="empty-title">Couldn't load your tasks</h1>
+          <p className="empty-text">Check your connection and try again.</p>
+          <button type="button" className="btn btn-secondary" onClick={() => {
+            setLoadState('loading')
+            load()
+          }}>
+            Try again
+          </button>
+        </div>
       </div>
     )
   }
@@ -316,9 +317,9 @@ export default function Todos() {
   const current = sortCurrent(todos.filter((todo) => todo.status === 'CURRENT'))
   const past = sortPast(todos.filter((todo) => todo.status === 'PAST'))
 
-  let subtitle = current.length + ' to do · ' + past.length + ' done'
+  let subtitle = current.length + ' open · ' + past.length + ' done'
   if (todos.length === 0) {
-    subtitle = 'Plan what needs doing and tick it off'
+    subtitle = 'No tasks yet'
   }
 
   function renderList(rows: Todo[]) {
@@ -339,15 +340,17 @@ export default function Todos() {
 
   return (
     <div className="todos">
-      <header className="tracker-header">
+      <header className="page-header">
         <div>
-          <h1 className="tracker-title">To-Do</h1>
-          <p className="tracker-subtitle">{subtitle}</p>
+          <h1 className="page-title">To-Do</h1>
+          <p className="page-meta">{subtitle}</p>
         </div>
         {!formOpen && (
-          <button type="button" className="btn btn-primary" onClick={openNew}>
-            Add task
-          </button>
+          <div className="page-actions">
+            <button type="button" className="btn btn-primary" onClick={openNew}>
+              Add task
+            </button>
+          </div>
         )}
       </header>
 
@@ -361,7 +364,15 @@ export default function Todos() {
             Current <span className="todo-count">{current.length}</span>
           </h2>
           {current.length === 0 && (
-            <p className="todo-empty">Nothing to do right now. Add a task, or bring one back from Past.</p>
+            <div className="empty todo-empty">
+              <p className="empty-title">Nothing to do right now</p>
+              <p className="empty-text">Add a task, or bring one back from Past.</p>
+              {!formOpen && (
+                <button type="button" className="btn btn-secondary" onClick={openNew}>
+                  Add task
+                </button>
+              )}
+            </div>
           )}
           {current.length > 0 && renderList(current)}
         </section>
@@ -370,7 +381,12 @@ export default function Todos() {
           <h2 className="todo-column-title" id="todo-past-heading">
             Past <span className="todo-count">{past.length}</span>
           </h2>
-          {past.length === 0 && <p className="todo-empty">Finished tasks show up here. Tick a circle to move one.</p>}
+          {past.length === 0 && (
+            <div className="empty todo-empty">
+              <p className="empty-title">Nothing finished yet</p>
+              <p className="empty-text">Tick a circle and the task moves here.</p>
+            </div>
+          )}
           {past.length > 0 && renderList(past)}
         </section>
       </div>

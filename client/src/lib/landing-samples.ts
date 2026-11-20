@@ -75,3 +75,20 @@ export const SAMPLE_EVENTS = [
   { id: 'e6', day: 9, title: 'Interview', description: 'Technical round, 45 minutes on Zoom.' },
   { id: 'e7', day: -8, title: 'Dentist', description: '2:30pm' },
 ]
+
+// The six tools of the app, in the order the landing page's window lists them
+export type AppCardId = 'pomodoro' | 'todos' | 'calendar' | 'jobs' | 'habits' | 'roadmap'
+
+export type AppCard = {
+  id: AppCardId
+  name: string
+}
+
+export const APP_CARDS: AppCard[] = [
+  { id: 'pomodoro', name: 'Pomodoro timer' },
+  { id: 'todos', name: 'To-do list' },
+  { id: 'calendar', name: 'Calendar' },
+  { id: 'jobs', name: 'Job tracker' },
+  { id: 'habits', name: 'Habit tracker' },
+  { id: 'roadmap', name: 'Skill roadmaps' },
+]

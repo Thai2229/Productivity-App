@@ -17,7 +17,7 @@ import {
   type NodeChange,
 } from '@xyflow/react'
 import '@xyflow/react/dist/style.css'
-import SkillNode, { type SkillNodeType } from '../components/SkillNode'
+import SkillNode, { StatusMark, type SkillNodeType } from '../components/SkillNode'
 import {
   STATUSES,
   autoArrange,
@@ -45,7 +45,7 @@ type BarMode = 'none' | 'new' | 'rename' | 'delete'
 const nodeTypes = { skill: SkillNode }
 
 const defaultEdgeOptions = {
-  markerEnd: { type: MarkerType.ArrowClosed, width: 18, height: 18, color: 'var(--muted)' },
+  markerEnd: { type: MarkerType.ArrowClosed, width: 18, height: 18, color: 'var(--line-strong)' },
 }
 
 function toNode(skill: Skill): SkillNodeType {
@@ -92,8 +92,8 @@ function SkillEditor({ node, onRename, onStatus, onDelete }: EditorProps) {
 
   return (
     <form className="skill-editor" onSubmit={handleSubmit}>
-      <label className="auth-field">
-        <span>Skill</span>
+      <label className="field">
+        <span className="field-label">Skill</span>
         <input
           value={name}
           onChange={(event) => setName(event.target.value)}
@@ -104,7 +104,7 @@ function SkillEditor({ node, onRename, onStatus, onDelete }: EditorProps) {
         />
       </label>
 
-      <div className="status-picker" role="group" aria-label="Status">
+      <div className="status-picker segmented" role="group" aria-label="Status">
         {STATUSES.map((status) => (
           <button
             key={status.value}
@@ -113,24 +113,24 @@ function SkillEditor({ node, onRename, onStatus, onDelete }: EditorProps) {
             aria-pressed={node.data.status === status.value}
             onClick={() => onStatus(status.value)}
           >
-            <span className="skill-status-dot" aria-hidden="true" />
+            <StatusMark status={status.value} />
             {status.label}
           </button>
         ))}
       </div>
 
       {!confirming && (
-        <button type="button" className="link-btn link-btn-danger" onClick={() => setConfirming(true)}>
+        <button type="button" className="btn btn-ghost btn-small roadmap-danger" onClick={() => setConfirming(true)}>
           Delete skill
         </button>
       )}
       {confirming && (
         <span className="roadmap-confirm">
           Delete it and its arrows?
-          <button type="button" className="link-btn link-btn-danger" onClick={onDelete}>
+          <button type="button" className="btn btn-danger btn-small" onClick={onDelete}>
             Yes, delete
           </button>
-          <button type="button" className="link-btn" onClick={() => setConfirming(false)}>
+          <button type="button" className="btn btn-ghost btn-small" onClick={() => setConfirming(false)}>
             Keep
           </button>
         </span>
@@ -320,8 +320,8 @@ function RoadmapCanvas({ roadmapId }: { roadmapId: string }) {
 
   if (loadState === 'error') {
     return (
-      <div className="tracker-empty">
-        <p>Couldn't load this roadmap. Check your connection and refresh.</p>
+      <div className="empty">
+        <p className="empty-text">Couldn't load this roadmap. Check your connection and refresh.</p>
       </div>
     )
   }
@@ -346,10 +346,10 @@ function RoadmapCanvas({ roadmapId }: { roadmapId: string }) {
         <button type="button" className="btn btn-secondary btn-small" onClick={arrange} disabled={nodes.length === 0}>
           Auto arrange
         </button>
-        <ul className="status-legend" aria-label="Status colors">
+        <ul className="status-legend" aria-label="Status key">
           {STATUSES.map((status) => (
-            <li key={status.value} data-status={status.value}>
-              <span className="skill-status-dot" aria-hidden="true" />
+            <li key={status.value}>
+              <StatusMark status={status.value} />
               {status.label}
             </li>
           ))}
@@ -374,12 +374,12 @@ function RoadmapCanvas({ roadmapId }: { roadmapId: string }) {
           isValidConnection={(connection) => connection.source !== connection.target}
           deleteKeyCode={['Backspace', 'Delete']}
           fitView
-          fitViewOptions={{ padding: 0.2, maxZoom: 1 }}
+          fitViewOptions={{ padding: 0.1, maxZoom: 1 }}
           minZoom={0.25}
           maxZoom={2}
           proOptions={{ hideAttribution: true }}
         >
-          <Background gap={20} size={1.5} />
+          <Background gap={24} size={1.25} />
           <Controls showInteractive={false} />
 
           {nodes.length === 0 && (
@@ -389,7 +389,7 @@ function RoadmapCanvas({ roadmapId }: { roadmapId: string }) {
           )}
 
           {editing && (
-            <Panel position="top-right">
+            <Panel position="top-right" className="skill-panel">
               <SkillEditor
                 key={editing.id}
                 node={editing}
@@ -401,11 +401,11 @@ function RoadmapCanvas({ roadmapId }: { roadmapId: string }) {
           )}
 
           {selectedEdge && (
-            <Panel position="top-right" className="skill-editor">
+            <Panel position="top-right" className="skill-panel skill-editor">
               <span>Arrow selected</span>
               <button
                 type="button"
-                className="link-btn link-btn-danger"
+                className="btn btn-danger-outline btn-small"
                 onClick={() => removeSelectedEdge(selectedEdge as Edge)}
               >
                 Delete arrow
@@ -416,8 +416,7 @@ function RoadmapCanvas({ roadmapId }: { roadmapId: string }) {
       </div>
 
       <p className="roadmap-help">
-        Drag blocks to move them. Drag from the dot on a block's right edge to another block to draw an arrow.
-        Click a block to rename it or change its status; click an arrow and press Delete to remove it.
+        Drag to move. Drag from a block's right dot to link. Select an arrow and press Delete to remove it.
       </p>
     </>
   )
@@ -527,8 +526,8 @@ export default function Roadmap() {
 
   if (loadState === 'error') {
     return (
-      <div className="roadmap tracker-empty">
-        <p>Couldn't load your roadmaps. Check your connection and refresh.</p>
+      <div className="roadmap empty">
+        <p className="empty-text">Couldn't load your roadmaps. Check your connection and refresh.</p>
       </div>
     )
   }
@@ -540,19 +539,70 @@ export default function Roadmap() {
     submitText = 'Save'
   }
 
+  let roadmapsMeta = roadmaps.length + ' roadmaps'
+  if (roadmaps.length === 1) {
+    roadmapsMeta = '1 roadmap'
+  }
+
   return (
     <div className="roadmap">
-      <header className="tracker-header">
+      <header className="page-header">
         <div>
-          <h1 className="tracker-title">Roadmaps</h1>
-          <p className="tracker-subtitle">Map out the skills you've learned and what comes next</p>
+          <h1 className="page-title">Roadmaps</h1>
+          <p className="page-meta">{roadmapsMeta}</p>
         </div>
+
+        {current && (
+          <div className="page-actions roadmap-bar">
+            <select
+              className="roadmap-select"
+              aria-label="Roadmap"
+              value={current.id}
+              onChange={(event) => {
+                setSearchParams({ map: event.target.value })
+                setMode('none')
+              }}
+            >
+              {roadmaps.map((roadmap) => (
+                <option key={roadmap.id} value={roadmap.id}>
+                  {roadmap.name}
+                </option>
+              ))}
+            </select>
+
+            {mode !== 'delete' && (
+              <>
+                <button type="button" className="btn btn-outline" onClick={startNew}>
+                  New roadmap
+                </button>
+                <button type="button" className="btn btn-ghost" onClick={startRename}>
+                  Rename
+                </button>
+                <button type="button" className="btn btn-ghost roadmap-danger" onClick={() => setMode('delete')}>
+                  Delete
+                </button>
+              </>
+            )}
+
+            {mode === 'delete' && (
+              <span className="roadmap-confirm">
+                Delete "{current.name}" and all its skills?
+                <button type="button" className="btn btn-danger btn-small" onClick={confirmDelete}>
+                  Yes, delete
+                </button>
+                <button type="button" className="btn btn-ghost btn-small" onClick={cancel}>
+                  Keep
+                </button>
+              </span>
+            )}
+          </div>
+        )}
       </header>
 
       {(mode === 'new' || mode === 'rename') && (
         <form className="roadmap-name-form" onSubmit={submitName}>
-          <label className="auth-field">
-            <span>{formTitle}</span>
+          <label className="field">
+            <span className="field-label">{formTitle}</span>
             <input
               value={nameInput}
               onChange={(event) => setNameInput(event.target.value)}
@@ -563,10 +613,10 @@ export default function Roadmap() {
             />
           </label>
           <div className="roadmap-name-actions">
-            <button type="button" className="btn btn-secondary btn-small" onClick={cancel}>
+            <button type="button" className="btn btn-ghost" onClick={cancel}>
               Cancel
             </button>
-            <button type="submit" className="btn btn-primary btn-small">
+            <button type="submit" className="btn btn-primary">
               {submitText}
             </button>
           </div>
@@ -576,57 +626,12 @@ export default function Roadmap() {
       {error && <p className="auth-error" role="alert">{error}</p>}
 
       {roadmaps.length === 0 && mode === 'none' && (
-        <div className="tracker-empty">
-          <p>No roadmaps yet. Make one for each path you're following, like "Cybersecurity" or "Full-stack".</p>
+        <div className="empty">
+          <p className="empty-title">No roadmaps yet</p>
+          <p className="empty-text">Make one for each path you're following, like "Cybersecurity" or "Full-stack".</p>
           <button type="button" className="btn btn-primary" onClick={startNew}>
             Create your first roadmap
           </button>
-        </div>
-      )}
-
-      {current && (
-        <div className="roadmap-bar">
-          <select
-            className="roadmap-select"
-            aria-label="Roadmap"
-            value={current.id}
-            onChange={(event) => {
-              setSearchParams({ map: event.target.value })
-              setMode('none')
-            }}
-          >
-            {roadmaps.map((roadmap) => (
-              <option key={roadmap.id} value={roadmap.id}>
-                {roadmap.name}
-              </option>
-            ))}
-          </select>
-
-          {mode !== 'delete' && (
-            <>
-              <button type="button" className="btn btn-secondary btn-small" onClick={startNew}>
-                New roadmap
-              </button>
-              <button type="button" className="link-btn" onClick={startRename}>
-                Rename
-              </button>
-              <button type="button" className="link-btn link-btn-danger" onClick={() => setMode('delete')}>
-                Delete
-              </button>
-            </>
-          )}
-
-          {mode === 'delete' && (
-            <span className="roadmap-confirm">
-              Delete "{current.name}" and all its skills?
-              <button type="button" className="link-btn link-btn-danger" onClick={confirmDelete}>
-                Yes, delete
-              </button>
-              <button type="button" className="link-btn" onClick={cancel}>
-                Keep
-              </button>
-            </span>
-          )}
         </div>
       )}
 

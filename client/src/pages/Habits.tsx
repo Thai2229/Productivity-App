@@ -1,8 +1,9 @@
 import { useEffect, useState, type FormEvent } from 'react'
 import {
   HABIT_ICONS,
+  HABIT_ICON_NAMES,
   createHabit,
-  daysText,
+  dayKey,
   deleteHabit,
   listHabits,
   recentDays,
@@ -13,7 +14,7 @@ import {
   type HabitDraft,
 } from '../lib/habits'
 import HabitDetail from '../components/HabitDetail'
-import { CheckIcon, FireIcon, TargetIcon } from '../components/HabitIcons'
+import { CheckIcon, HabitIcon } from '../components/HabitIcons'
 import '../habits.css'
 
 type LoadState = 'loading' | 'ready' | 'error'
@@ -77,25 +78,32 @@ function HabitForm({ initial, onSave, onDelete, onCancel }: FormProps) {
     <form className="habit-form" onSubmit={handleSubmit}>
       <h2 className="habit-form-title">{title}</h2>
 
-      <label className="auth-field">
-        <span>Name</span>
+      <label className="field">
+        <span className="field-label">Name</span>
         <input value={name} onChange={(event) => setName(event.target.value)} maxLength={60} autoFocus required />
       </label>
 
-      <div className="auth-field">
-        <span>Icon</span>
+      <div className="field">
+        <span className="field-label">Icon</span>
         <div className="icon-picker" role="group" aria-label="Icon">
-          {HABIT_ICONS.map((choice) => (
-            <button
-              key={choice}
-              type="button"
-              className="icon-choice"
-              aria-pressed={icon === choice}
-              onClick={() => setIcon(choice)}
-            >
-              {choice}
-            </button>
-          ))}
+          {HABIT_ICONS.map((choice) => {
+            let label = 'Icon ' + (HABIT_ICONS.indexOf(choice) + 1)
+            if (HABIT_ICON_NAMES[choice]) {
+              label = HABIT_ICON_NAMES[choice]
+            }
+            return (
+              <button
+                key={choice}
+                type="button"
+                className="icon-choice"
+                aria-pressed={icon === choice}
+                aria-label={label}
+                onClick={() => setIcon(choice)}
+              >
+                <HabitIcon value={choice} />
+              </button>
+            )
+          })}
         </div>
       </div>
 
@@ -103,23 +111,23 @@ function HabitForm({ initial, onSave, onDelete, onCancel }: FormProps) {
 
       <div className="habit-form-actions">
         {initial && !confirming && (
-          <button type="button" className="link-btn link-btn-danger" onClick={() => setConfirming(true)}>
+          <button type="button" className="btn btn-ghost btn-danger-text" onClick={() => setConfirming(true)}>
             Delete habit
           </button>
         )}
         {initial && confirming && (
           <span className="habit-confirm">
             Delete it and all its check-ins?
-            <button type="button" className="link-btn link-btn-danger" onClick={handleDelete}>
+            <button type="button" className="btn btn-danger btn-small" onClick={handleDelete}>
               Yes, delete
             </button>
-            <button type="button" className="link-btn" onClick={() => setConfirming(false)}>
+            <button type="button" className="btn btn-ghost btn-small" onClick={() => setConfirming(false)}>
               Keep
             </button>
           </span>
         )}
         <span className="habit-form-spacer" />
-        <button type="button" className="btn btn-secondary" onClick={onCancel}>
+        <button type="button" className="btn btn-ghost" onClick={onCancel}>
           Cancel
         </button>
         <button type="submit" className="btn btn-primary" disabled={saving}>
@@ -227,8 +235,8 @@ export default function Habits() {
 
   if (loadState === 'error') {
     return (
-      <div className="habits tracker-empty">
-        <p>Couldn't load your habits. Check your connection and try again.</p>
+      <div className="habits empty">
+        <p className="empty-text">Couldn't load your habits. Check your connection and try again.</p>
         <button type="button" className="btn btn-secondary" onClick={retry}>
           Try again
         </button>
@@ -237,6 +245,13 @@ export default function Habits() {
   }
 
   const days = recentDays(7)
+  const todayKey = dayKey(new Date())
+  const doneToday = habits.filter((habit) => habit.checks.includes(todayKey)).length
+  let habitsMeta = habits.length + ' habits'
+  if (habits.length === 1) {
+    habitsMeta = '1 habit'
+  }
+  habitsMeta = habitsMeta + ' · ' + doneToday + ' done today'
 
   // The habit shown in the side panel: the one clicked, or the first one
   let selected: Habit | null = null
@@ -251,15 +266,17 @@ export default function Habits() {
 
   return (
     <div className="habits">
-      <header className="tracker-header">
+      <header className="page-header">
         <div>
-          <h1 className="tracker-title">Daily Habits</h1>
-          <p className="tracker-subtitle">Tap a circle to log that day</p>
+          <h1 className="page-title">Habits</h1>
+          <p className="page-meta">{habitsMeta}</p>
         </div>
         {!formOpen && (
-          <button type="button" className="btn btn-primary" onClick={openNew}>
-            Add habit
-          </button>
+          <div className="page-actions">
+            <button type="button" className="btn btn-primary" onClick={openNew}>
+              Add habit
+            </button>
+          </div>
         )}
       </header>
 
@@ -276,8 +293,12 @@ export default function Habits() {
       {actionError && <p className="auth-error" role="alert">{actionError}</p>}
 
       {habits.length === 0 && !formOpen && (
-        <div className="tracker-empty">
-          <p>No habits yet. Add one you want to do every day.</p>
+        <div className="empty">
+          <p className="empty-title">No habits yet</p>
+          <p className="empty-text">Add one you want to do every day, then tap a circle to log it.</p>
+          <button type="button" className="btn btn-primary" onClick={openNew}>
+            Add habit
+          </button>
         </div>
       )}
 
@@ -320,33 +341,19 @@ export default function Habits() {
                       onClick={() => setSelectedId(habit.id)}
                       aria-label={'Show details for ' + habit.name}
                     >
-                      <span className="habit-icon" aria-hidden="true">{habit.icon}</span>
+                      <span className="habit-icon" aria-hidden="true"><HabitIcon value={habit.icon} /></span>
                     </button>
 
                     <div className="habit-info">
-                      <div className="habit-name-line">
-                        <button type="button" className="habit-name" onClick={() => setSelectedId(habit.id)}>
-                          {habit.name}
-                        </button>
-                        <button
-                          type="button"
-                          className="habit-edit"
-                          onClick={() => openEdit(habit)}
-                          aria-label={'Edit ' + habit.name}
-                        >
-                          <svg viewBox="0 0 16 16" aria-hidden="true">
-                            <path d="M10.5 2.8l2.7 2.7-7.6 7.6H2.9v-2.7z" />
-                          </svg>
-                        </button>
-                      </div>
+                      <button type="button" className="habit-name" onClick={() => setSelectedId(habit.id)}>
+                        {habit.name}
+                      </button>
                       <p className="habit-meta">
-                        <span className="habit-meta-item" data-tooltip="Total check-ins">
-                          <TargetIcon />
-                          {daysText(habit.checks.length)}
+                        <span className="habit-meta-item">
+                          <span className="mono">{habit.checks.length}</span> total
                         </span>
-                        <span className={streakClass} data-tooltip="Total streak">
-                          <FireIcon lit={streak > 0} />
-                          {daysText(streak)}
+                        <span className={streakClass}>
+                          <span className="mono">{streak}</span> day streak
                         </span>
                       </p>
                     </div>
@@ -375,6 +382,17 @@ export default function Habits() {
                         )
                       })}
                     </div>
+
+                    <button
+                      type="button"
+                      className="btn btn-icon habit-edit"
+                      onClick={() => openEdit(habit)}
+                      aria-label={'Edit ' + habit.name}
+                    >
+                      <svg viewBox="0 0 16 16" aria-hidden="true">
+                        <path d="M10.5 2.8l2.7 2.7-7.6 7.6H2.9v-2.7z" />
+                      </svg>
+                    </button>
                   </li>
                 )
               })}
@@ -382,7 +400,7 @@ export default function Habits() {
           </div>
 
           <HabitDetail key={selected.id} habit={selected} onToggle={toggleDay} />
-          </div>
+        </div>
       )}
     </div>
   )

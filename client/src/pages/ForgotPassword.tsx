@@ -45,15 +45,19 @@ export default function ForgotPassword() {
   if (sentTo !== '') {
     return (
       <div className="auth-card">
-        <h1 className="auth-title">Check your email</h1>
-        <p className="auth-text">
-          If <strong>{sentTo}</strong> has an account, we sent it a link to reset your password. The link expires
-          in 1 hour.
-        </p>
-        <p className="auth-text auth-text-muted">Not there? Check your spam folder.</p>
-        <p className="auth-switch">
-          <Link to="/login">Back to log in</Link>
-        </p>
+        <div className="auth-intro">
+          <h1 className="auth-title">Check your email</h1>
+        </div>
+        <div className="auth-body">
+          <p className="auth-text">
+            If <strong>{sentTo}</strong> has an account, we sent it a link to reset your password. The link
+            expires in 1 hour.
+          </p>
+          <p className="auth-text auth-text-muted">Not there? Check your spam folder.</p>
+          <p className="auth-switch">
+            <Link to="/login">Back to log in</Link>
+          </p>
+        </div>
       </div>
     )
   }
@@ -65,30 +69,34 @@ export default function ForgotPassword() {
 
   return (
     <div className="auth-card">
-      <h1 className="auth-title">Forgot your password?</h1>
-      <p className="auth-text">Enter your email and we'll send you a link to choose a new one.</p>
-      <form className="auth-form" onSubmit={handleSubmit} noValidate>
-        <label className="auth-field">
-          <span>Email</span>
-          <input
-            type="email"
-            value={email}
-            onChange={(event) => setEmail(event.target.value)}
-            autoComplete="email"
-          />
-        </label>
-        {error !== '' && (
-          <p className="auth-error" role="alert">
-            {error}
-          </p>
-        )}
-        <button className="btn btn-primary auth-submit" type="submit" disabled={isSubmitting}>
-          {buttonLabel}
-        </button>
-      </form>
-      <p className="auth-switch">
-        Remembered it? <Link to="/login">Log in</Link>
-      </p>
+      <div className="auth-intro">
+        <h1 className="auth-title">Forgot your password?</h1>
+        <p className="auth-lede">Enter your email and we'll send you a link to choose a new one.</p>
+      </div>
+      <div className="auth-body">
+        <form className="auth-form" onSubmit={handleSubmit} noValidate>
+          <label className="field">
+            <span className="field-label">Email</span>
+            <input
+              type="email"
+              value={email}
+              onChange={(event) => setEmail(event.target.value)}
+              autoComplete="email"
+            />
+          </label>
+          {error !== '' && (
+            <p className="auth-error" role="alert">
+              {error}
+            </p>
+          )}
+          <button className="btn btn-primary auth-submit" type="submit" disabled={isSubmitting}>
+            {buttonLabel}
+          </button>
+        </form>
+        <p className="auth-switch">
+          Remembered it? <Link to="/login">Log in</Link>
+        </p>
+      </div>
     </div>
   )
 }

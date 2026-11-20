@@ -105,53 +105,57 @@ export default function VerifyEmail() {
 
   return (
     <div className="auth-card">
-      <h1 className="auth-title">Check your email</h1>
-      <p className="auth-text">
-        We sent a {CODE_LENGTH}-digit code to <strong>{email}</strong>. Enter it below to confirm your email. It
-        expires in 10 minutes.
-      </p>
-      <form className="auth-form" onSubmit={handleSubmit} noValidate>
-        <label className="auth-field">
-          <span>Verification code</span>
-          <input
-            className="auth-code-input"
-            type="text"
-            inputMode="numeric"
-            autoComplete="one-time-code"
-            maxLength={CODE_LENGTH}
-            value={code}
-            onChange={(event) => setCode(event.target.value.replace(/\D/g, '').slice(0, CODE_LENGTH))}
-            autoFocus
-          />
-        </label>
-        {error !== '' && (
-          <p className="auth-error" role="alert">
-            {error}
-          </p>
-        )}
-        {notice !== '' && (
-          <p className="auth-notice" role="status">
-            {notice}
-          </p>
-        )}
-        <button className="btn btn-primary auth-submit" type="submit" disabled={isSubmitting}>
-          {buttonLabel}
-        </button>
-      </form>
-      <p className="auth-switch">
-        No email? Check spam, or{' '}
-        <button
-          type="button"
-          className="auth-text-button"
-          onClick={handleResend}
-          disabled={isResending || secondsLeft > 0}
-        >
-          {resendLabel}
-        </button>
-      </p>
-      <p className="auth-switch">
-        Wrong email? <Link to="/signup">Sign up again</Link>
-      </p>
+      <div className="auth-intro">
+        <h1 className="auth-title">Check your email</h1>
+        <p className="auth-lede">
+          We sent a {CODE_LENGTH}-digit code to <strong>{email}</strong>. Enter it below to confirm your
+          email. It expires in 10 minutes.
+        </p>
+      </div>
+      <div className="auth-body">
+        <form className="auth-form" onSubmit={handleSubmit} noValidate>
+          <label className="field">
+            <span className="field-label">Verification code</span>
+            <input
+              className="auth-code-input"
+              type="text"
+              inputMode="numeric"
+              autoComplete="one-time-code"
+              maxLength={CODE_LENGTH}
+              value={code}
+              onChange={(event) => setCode(event.target.value.replace(/\D/g, '').slice(0, CODE_LENGTH))}
+              autoFocus
+            />
+          </label>
+          {error !== '' && (
+            <p className="auth-error" role="alert">
+              {error}
+            </p>
+          )}
+          {notice !== '' && (
+            <p className="auth-notice" role="status">
+              {notice}
+            </p>
+          )}
+          <button className="btn btn-primary auth-submit" type="submit" disabled={isSubmitting}>
+            {buttonLabel}
+          </button>
+        </form>
+        <p className="auth-switch">
+          No email? Check spam, or{' '}
+          <button
+            type="button"
+            className="auth-text-button"
+            onClick={handleResend}
+            disabled={isResending || secondsLeft > 0}
+          >
+            {resendLabel}
+          </button>
+        </p>
+        <p className="auth-switch">
+          Wrong email? <Link to="/signup">Sign up again</Link>
+        </p>
+      </div>
     </div>
   )
 }

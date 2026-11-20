@@ -1,256 +1,300 @@
-/* Roadmaps get the full width for the canvas */
+/* Roadmaps: a calm dotted canvas with precise skill cards. Shared with the landing page's example. */
+
 .page:has(.roadmap) {
-  max-width: 76rem;
+  max-width: 80rem;
 }
 
 .roadmap {
   --phase: var(--work);
   display: flex;
   flex-direction: column;
-  gap: 1rem;
+  gap: var(--space-3);
 }
 
-[data-status='LEARNED'] { --status: var(--rest); }
-[data-status='LEARNING'] { --status: var(--work); }
-[data-status='PLANNED'] { --status: var(--muted); }
-
-.btn-small {
-  padding: 0.45rem 0.9rem;
-  font-size: 0.875rem;
+.roadmap > .page-header {
+  margin-bottom: var(--space-2);
 }
 
-.btn:disabled {
-  cursor: default;
-  opacity: 0.5;
+.roadmap > .auth-error {
+  margin: 0;
 }
 
-/* Roadmap picker row */
-.roadmap-bar,
-.roadmap-actions {
-  display: flex;
-  flex-wrap: wrap;
-  align-items: center;
-  gap: 0.6rem 0.9rem;
+/* Picker, in the page header */
+.roadmap-bar {
+  gap: var(--space-1);
 }
 
 .roadmap-select {
+  width: auto;
   min-width: 14rem;
-  padding: 0.5rem 0.75rem;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 0.5rem;
-  color: var(--ink);
-  font: inherit;
-  font-weight: 600;
+  margin-right: var(--space-1);
+  font-weight: 500;
 }
 
-.roadmap-select:focus-visible {
-  outline: 2px solid var(--work);
-  outline-offset: 1px;
+.roadmap-danger:hover:not(:disabled) {
+  color: var(--danger);
 }
 
 .roadmap-confirm {
   display: inline-flex;
   flex-wrap: wrap;
   align-items: center;
-  gap: 0.6rem;
+  gap: var(--space-2);
   color: var(--muted);
-  font-size: 0.875rem;
+  font-size: var(--text-s);
 }
 
 .roadmap-name-form {
   display: flex;
   flex-wrap: wrap;
   align-items: flex-end;
-  gap: 0.75rem;
-  padding: 1rem 1.25rem;
+  gap: var(--space-3);
+  padding: var(--space-4);
   background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 1rem;
+  border-radius: var(--radius-l);
 }
 
-.roadmap-name-form .auth-field {
+.roadmap-name-form .field {
   flex: 1;
   min-width: 14rem;
 }
 
 .roadmap-name-actions {
   display: flex;
-  gap: 0.5rem;
+  gap: var(--space-2);
+}
+
+/* Toolbar: one row, key on the right */
+.roadmap-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-2);
 }
 
 .status-legend {
   display: flex;
-  gap: 0.9rem;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-4);
   margin: 0 0 0 auto;
   padding: 0;
   color: var(--muted);
-  font-size: 0.8rem;
+  font-size: var(--text-xs);
   list-style: none;
 }
 
 .status-legend li {
   display: inline-flex;
   align-items: center;
-  gap: 0.35rem;
+  gap: var(--space-1);
 }
 
-/* The canvas, themed with the site's colors */
+/* Status mark: filled check = learned, half = learning, dashed ring = planned */
+.skill-mark {
+  width: 1rem;
+  height: 1rem;
+  flex-shrink: 0;
+  fill: none;
+  stroke: var(--ink);
+  stroke-width: 1.5;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+}
+
+.skill-mark-half {
+  fill: var(--ink);
+  stroke: none;
+}
+
+.skill-mark[data-status='LEARNED'] .skill-mark-ring {
+  fill: var(--accent);
+}
+
+.skill-mark[data-status='PLANNED'] .skill-mark-ring {
+  stroke: var(--muted);
+  stroke-dasharray: 2.5 2.5;
+}
+
+/* The canvas */
 .roadmap-canvas {
-  height: clamp(26rem, calc(100vh - 19rem), 52rem);
+  height: clamp(26rem, calc(100svh - 17rem), 58rem);
   overflow: hidden;
   background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 1rem;
+  border-radius: var(--radius-l);
 }
 
 .roadmap-canvas .react-flow {
   --xy-background-color: var(--surface);
-  --xy-background-pattern-color: var(--line);
-  --xy-edge-stroke: var(--muted);
-  --xy-edge-stroke-selected: var(--work);
-  --xy-edge-stroke-width: 1.5;
-  --xy-connectionline-stroke: var(--work);
+  --xy-background-pattern-color: var(--dot);
+  --xy-edge-stroke: var(--line-strong);
+  --xy-edge-stroke-selected: var(--ink);
+  --xy-edge-stroke-width: 2;
+  --xy-connectionline-stroke: var(--ink);
   --xy-connectionline-stroke-width: 1.5;
-  --xy-controls-button-background-color: var(--surface);
-  --xy-controls-button-background-color-hover: var(--bg);
+  --xy-controls-button-background-color: var(--raised);
+  --xy-controls-button-background-color-hover: var(--surface-2);
   --xy-controls-button-color: var(--ink);
   --xy-controls-button-color-hover: var(--ink);
   --xy-controls-button-border-color: var(--line);
-  --xy-controls-box-shadow: 0 1px 3px rgb(0 0 0 / 0.12);
+  --xy-controls-box-shadow: none;
   --xy-attribution-background-color: transparent;
-  --xy-handle-background-color: var(--work);
-  --xy-handle-border-color: var(--surface);
+  --xy-handle-background-color: var(--bg);
+  --xy-handle-border-color: var(--ink);
 }
 
-.roadmap-canvas .react-flow__attribution a {
-  color: var(--muted);
+.roadmap-canvas .react-flow__controls {
+  overflow: hidden;
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-s);
+}
+
+.roadmap-canvas .react-flow__controls-button {
+  width: 2rem;
+  height: 2rem;
+}
+
+.roadmap-canvas .react-flow__controls-button:focus-visible {
+  outline: 2px solid var(--focus);
+  outline-offset: -2px;
 }
 
 .roadmap-canvas .react-flow__edge.selected .react-flow__edge-path {
-  stroke-width: 2.5;
+  stroke-width: 3;
 }
 
 .roadmap-hint {
-  padding: 0.5rem 0.85rem;
+  padding: var(--space-2) var(--space-3);
   background: var(--bg);
-  border-radius: 0.5rem;
+  border-radius: var(--radius-s);
   color: var(--muted);
-  font-size: 0.875rem;
+  font-size: var(--text-s);
+}
+
+.roadmap-hint strong {
+  color: var(--ink);
+  font-weight: 500;
 }
 
 .roadmap-help {
   margin: 0;
   color: var(--muted);
-  font-size: 0.8rem;
+  font-size: var(--text-xs);
 }
 
-/* One skill block */
+/* One skill card */
 .skill-node {
-  display: flex;
-  flex-direction: column;
-  gap: 0.25rem;
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  align-items: center;
+  column-gap: var(--space-2);
   min-width: 10rem;
   max-width: 14rem;
-  padding: 0.6rem 0.9rem;
-  background: var(--surface);
-  border: 1.5px solid var(--status);
-  border-radius: 0.75rem;
-  box-shadow: 0 1px 2px rgb(0 0 0 / 0.08);
+  padding: var(--space-2) var(--space-3);
+  background: var(--bg);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--radius-m);
+  color: var(--ink);
+}
+
+.skill-node .skill-mark {
+  grid-row: 1 / 3;
+}
+
+.skill-node[data-status='LEARNED'] {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-ink);
+}
+
+.skill-node[data-status='LEARNING'] {
+  border-color: var(--ink);
 }
 
 .skill-node[data-status='PLANNED'] {
-  border-style: dashed;
+  color: var(--muted);
 }
 
 .skill-node-selected {
-  box-shadow: 0 0 0 3px color-mix(in srgb, var(--work) 35%, transparent);
+  outline: 2px solid var(--focus);
+  outline-offset: 2px;
 }
 
 .skill-name {
-  color: var(--ink);
-  font-size: 0.9rem;
-  font-weight: 600;
+  font-size: var(--text-s);
+  font-weight: 500;
+  line-height: 1.3;
   overflow-wrap: anywhere;
 }
 
 .skill-status {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  color: var(--muted);
-  font-size: 0.72rem;
-}
-
-.skill-status-dot {
-  width: 0.5rem;
-  height: 0.5rem;
-  flex-shrink: 0;
-  background: var(--status);
-  border-radius: 50%;
+  color: inherit;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  opacity: 0.8;
 }
 
 .roadmap-canvas .skill-handle {
-  width: 0.65rem;
-  height: 0.65rem;
+  width: 0.5rem;
+  height: 0.5rem;
+  border-width: 1.5px;
 }
 
-/* Editor shown when a block or arrow is selected */
+/* Popover shown when a skill or arrow is selected */
 .skill-editor {
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  gap: 0.7rem;
+  gap: var(--space-3);
   width: 16rem;
-  padding: 0.9rem 1rem;
-  background: var(--surface);
-  border: 1px solid var(--line);
-  border-radius: 0.75rem;
-  box-shadow: 0 4px 16px rgb(0 0 0 / 0.12);
+  padding: var(--space-4);
+  background: var(--raised);
+  border-radius: var(--radius-m);
+  box-shadow: var(--shadow-pop);
   color: var(--ink);
-  font-size: 0.875rem;
+  font-size: var(--text-s);
 }
 
-.skill-editor .auth-field {
+.skill-editor .field {
   align-self: stretch;
 }
 
 .status-picker {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.35rem;
+  align-self: stretch;
 }
 
-.status-picker button {
-  display: inline-flex;
-  align-items: center;
-  gap: 0.3rem;
-  padding: 0.3rem 0.55rem;
-  background: var(--bg);
-  border: 1px solid var(--line);
-  border-radius: 999px;
-  color: var(--muted);
-  font: inherit;
-  font-size: 0.78rem;
-  cursor: pointer;
+.status-picker.segmented > button {
+  flex: 1;
+  gap: var(--space-1);
+  padding: 0 var(--space-1);
+  font-size: var(--text-xs);
 }
 
-.status-picker button[aria-pressed='true'] {
-  border-color: var(--status);
-  box-shadow: inset 0 0 0 1px var(--status);
-  color: var(--ink);
-  font-weight: 600;
+.status-picker .skill-mark {
+  width: 0.875rem;
+  height: 0.875rem;
 }
 
-.status-picker button:focus-visible {
-  outline: 2px solid var(--work);
-  outline-offset: 2px;
+@media (pointer: coarse) {
+  .roadmap-canvas .react-flow__controls-button {
+    width: var(--control-h);
+    height: var(--control-h);
+  }
+
+  .roadmap-canvas .skill-handle {
+    width: 0.75rem;
+    height: 0.75rem;
+  }
 }
 
 @media (max-width: 40rem) {
+  .roadmap-bar {
+    width: 100%;
+  }
+
   .roadmap-select {
     flex: 1 1 100%;
     min-width: 0;
+    margin: 0 0 var(--space-1);
   }
 
   .status-legend {
@@ -258,10 +302,21 @@
   }
 
   .roadmap-canvas {
-    height: 30rem;
+    height: clamp(22rem, calc(100svh - 21rem), 40rem);
+  }
+
+  /* Full width at the top of the canvas so it never hides the zoom controls */
+  .roadmap-canvas .skill-panel {
+    right: 0;
+    left: 0;
+    margin: var(--space-2);
   }
 
   .skill-editor {
-    width: 13.5rem;
+    width: auto;
   }
+}
+
+.skill-editor .roadmap-danger {
+  margin-left: calc(var(--space-3) * -1);
 }

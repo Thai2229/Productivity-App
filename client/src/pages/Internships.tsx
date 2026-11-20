@@ -159,11 +159,14 @@ export default function Internships() {
 
   if (loadState === 'error') {
     return (
-      <div className="tracker tracker-empty">
-        <p>Couldn't load your jobs. Check your connection and try again.</p>
-        <button type="button" className="btn btn-secondary" onClick={retry}>
-          Try again
-        </button>
+      <div className="tracker">
+        <div className="empty">
+          <p className="empty-title">Couldn't load your jobs</p>
+          <p className="empty-text">Check your connection and try again.</p>
+          <button type="button" className="btn btn-secondary" onClick={retry}>
+            Try again
+          </button>
+        </div>
       </div>
     )
   }
@@ -184,18 +187,29 @@ export default function Internships() {
 
   return (
     <div className="tracker">
-      <header className="tracker-header">
+      <header className="page-header">
         <div>
-          <h1 className="tracker-title">Job Tracker</h1>
-          <p className="tracker-subtitle">
-            {countText}
-          </p>
+          <h1 className="page-title">Job tracker</h1>
+          <p className="page-meta">{countText}</p>
         </div>
-        {!formOpen && (
-          <button type="button" className="btn btn-primary" onClick={openNew}>
-            Add job
-          </button>
-        )}
+        <div className="page-actions">
+          <div className="segmented" role="group" aria-label="Choose a view">
+            <button type="button" aria-pressed={view === 'board'} onClick={showBoard}>
+              Board
+            </button>
+            <button type="button" aria-pressed={view === 'chart'} onClick={showChart}>
+              Chart
+            </button>
+            <button type="button" aria-pressed={view === 'analytics'} onClick={showAnalytics}>
+              Analytics
+            </button>
+          </div>
+          {!formOpen && (
+            <button type="button" className="btn btn-primary" onClick={openNew}>
+              Add job
+            </button>
+          )}
+        </div>
       </header>
 
       {formOpen && (
@@ -207,43 +221,21 @@ export default function Internships() {
         />
       )}
 
-      <div className="view-toggle" data-view={view} role="group" aria-label="Choose a view">
-        <span className="view-toggle-thumb" aria-hidden="true" />
-        <button type="button" aria-pressed={view === 'board'} onClick={showBoard}>
-          <svg viewBox="0 0 16 16" aria-hidden="true">
-            <rect x="2" y="2.5" width="12" height="11" rx="2" />
-            <path d="M6 2.5v11M10 2.5v11" />
-          </svg>
-          Board
-        </button>
-        <button type="button" aria-pressed={view === 'chart'} onClick={showChart}>
-          <svg viewBox="0 0 16 16" aria-hidden="true">
-            <path d="M2.5 2.5v11h11" />
-            <path d="M5 10.5l2.5-3 2 2 3.5-4.5" />
-          </svg>
-          Chart
-        </button>
-        <button type="button" aria-pressed={view === 'analytics'} onClick={showAnalytics}>
-          <svg viewBox="0 0 16 16" aria-hidden="true">
-            <path d="M3 13.5V9M8 13.5V3M13 13.5V6.5" />
-          </svg>
-          Analytics
-        </button>
-      </div>
-
       {view === 'chart' && internships.length > 0 && <FlowChart internships={internships} />}
 
       {view === 'chart' && internships.length === 0 && (
-        <div className="tracker-empty">
-          <p>Add a job to see where your applications go.</p>
+        <div className="empty">
+          <p className="empty-title">No flow yet</p>
+          <p className="empty-text">Add a job to see where your applications go.</p>
         </div>
       )}
 
       {view === 'analytics' && internships.length > 0 && <Analytics internships={internships} />}
 
       {view === 'analytics' && internships.length === 0 && (
-        <div className="tracker-empty">
-          <p>Add a job to see your stats.</p>
+        <div className="empty">
+          <p className="empty-title">No stats yet</p>
+          <p className="empty-text">Add a job to see your stats.</p>
         </div>
       )}
 
@@ -288,8 +280,22 @@ export default function Internships() {
           {actionError && <p className="auth-error" role="alert">{actionError}</p>}
 
           {emptyMessage && (
-            <div className="tracker-empty">
-              <p>{emptyMessage}</p>
+            <div className="empty">
+              <p className="empty-text">{emptyMessage}</p>
+              {internships.length === 0 && !formOpen && (
+                <button type="button" className="btn btn-primary" onClick={openNew}>
+                  Add job
+                </button>
+              )}
+            </div>
+          )}
+
+          {visible.length > 0 && (
+            <div className="tracker-head" aria-hidden="true">
+              <span className="tracker-head-main">Company</span>
+              <span className="tracker-head-loc">Location</span>
+              <span className="tracker-head-date">Applied</span>
+              <span className="tracker-head-stage">Stage</span>
             </div>
           )}
 
@@ -299,65 +305,62 @@ export default function Internships() {
                 <div className="tracker-main">
                   <p className="tracker-company">{row.company}</p>
                   <p className="tracker-role">{row.role}</p>
-                  <p className="tracker-meta">
-                    {row.location && <span>{row.location}</span>}
-                    {row.appliedOn && <span>Applied {formatDate(row.appliedOn)}</span>}
-                    {row.link && (
-                      <a href={row.link} target="_blank" rel="noopener noreferrer">
-                        Job posting ↗
-                      </a>
-                    )}
-                  </p>
+                  {row.link && (
+                    <a className="tracker-link" href={row.link} target="_blank" rel="noopener noreferrer">
+                      Job posting ↗
+                    </a>
+                  )}
                   {row.notes && <p className="tracker-notes">{row.notes}</p>}
                 </div>
 
-                <div className="tracker-side">
-                  <label className="stage-select">
-                    <span className="stage-dot" aria-hidden="true" />
-                    <select
-                      value={row.stage}
-                      onChange={(event) => changeStage(row, event.target.value as Stage)}
-                      aria-label={'Stage for ' + row.company}
+                <span className="tracker-loc">{row.location}</span>
+                <span className="tracker-date">{row.appliedOn && formatDate(row.appliedOn)}</span>
+
+                <label className="stage-select">
+                  <span className="stage-swatch" aria-hidden="true" />
+                  <select
+                    value={row.stage}
+                    onChange={(event) => changeStage(row, event.target.value as Stage)}
+                    aria-label={'Stage for ' + row.company}
+                  >
+                    {STAGES.map((stage) => (
+                      <option key={stage.value} value={stage.value}>
+                        {stage.label}
+                      </option>
+                    ))}
+                  </select>
+                </label>
+
+                {confirmingId === row.id && (
+                  <div className="tracker-actions">
+                    <span className="tracker-confirm">Delete?</span>
+                    <button
+                      type="button"
+                      className="btn btn-danger-outline btn-small"
+                      onClick={() => handleDelete(row.id)}
                     >
-                      {STAGES.map((stage) => (
-                        <option key={stage.value} value={stage.value}>
-                          {stage.label}
-                        </option>
-                      ))}
-                    </select>
-                  </label>
+                      Yes, delete
+                    </button>
+                    <button type="button" className="btn btn-ghost btn-small" onClick={() => setConfirmingId('')}>
+                      Cancel
+                    </button>
+                  </div>
+                )}
 
-                  {confirmingId === row.id && (
-                    <div className="tracker-actions">
-                      <span className="tracker-confirm">Delete?</span>
-                      <button
-                        type="button"
-                        className="link-btn link-btn-danger"
-                        onClick={() => handleDelete(row.id)}
-                      >
-                        Yes, delete
-                      </button>
-                      <button type="button" className="link-btn" onClick={() => setConfirmingId('')}>
-                        Cancel
-                      </button>
-                    </div>
-                  )}
-
-                  {confirmingId !== row.id && (
-                    <div className="tracker-actions">
-                      <button type="button" className="link-btn" onClick={() => openEdit(row)}>
-                        Edit
-                      </button>
-                      <button
-                        type="button"
-                        className="link-btn link-btn-danger"
-                        onClick={() => setConfirmingId(row.id)}
-                      >
-                        Delete
-                      </button>
-                    </div>
-                  )}
-                </div>
+                {confirmingId !== row.id && (
+                  <div className="tracker-actions">
+                    <button type="button" className="btn btn-ghost btn-small" onClick={() => openEdit(row)}>
+                      Edit
+                    </button>
+                    <button
+                      type="button"
+                      className="btn btn-ghost btn-small"
+                      onClick={() => setConfirmingId(row.id)}
+                    >
+                      Delete
+                    </button>
+                  </div>
+                )}
               </li>
             ))}
           </ul>

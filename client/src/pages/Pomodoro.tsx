@@ -143,17 +143,34 @@ export default function Pomodoro() {
   const progress = secondsLeft / getDuration(mode)
 
   return (
-    <div className="timer">
-      <h1 className="timer-title">Focus timer</h1>
-      <div className={'timer-card timer-' + mode}>
+    <div className={'timer timer-' + mode}>
+      <div className="timer-side">
+        <h1 className="timer-title">Focus timer</h1>
+
         <div className="phase-tabs">
           {PHASES.map((phase) => (
             <span key={phase} className={getPhaseClass(phase, mode)}>
               {getLabel(phase)}
+              <span className="phase-time">{getDuration(phase) / 60} min</span>
             </span>
           ))}
         </div>
 
+        <div className="timer-sessions">
+          <div className="session-dots">
+            {Array.from({ length: SESSIONS_PER_LONG_BREAK }, (_, index) => {
+              let dotClass = 'dot'
+              if (index < filledDots) {
+                dotClass = 'dot dot-done'
+              }
+              return <span key={index} className={dotClass} />
+            })}
+          </div>
+          <p className="timer-total">Completed: {completedSessions}</p>
+        </div>
+      </div>
+
+      <div className="timer-main">
         <TimerRing
           progress={progress}
           timeText={formatTime(secondsLeft)}
@@ -161,24 +178,13 @@ export default function Pomodoro() {
         />
 
         <div className="timer-controls">
-          <button className="btn btn-primary" onClick={handleStartPause}>
+          <button className="btn btn-primary btn-lg" onClick={handleStartPause}>
             {buttonLabel}
           </button>
-          <button className="btn btn-secondary" onClick={handleReset}>
+          <button className="btn btn-secondary btn-lg" onClick={handleReset}>
             Reset
           </button>
         </div>
-
-        <div className="session-dots">
-          {Array.from({ length: SESSIONS_PER_LONG_BREAK }, (_, index) => {
-            let dotClass = 'dot'
-            if (index < filledDots) {
-              dotClass = 'dot dot-done'
-            }
-            return <span key={index} className={dotClass} />
-          })}
-        </div>
-        <p className="timer-total">Completed: {completedSessions}</p>
       </div>
     </div>
   )

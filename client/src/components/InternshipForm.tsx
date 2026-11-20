@@ -91,8 +91,8 @@ export default function InternshipForm({ initial, onSave, onCancel }: Props) {
       <h2 className="tracker-form-title">{title}</h2>
 
       <div className="tracker-form-grid">
-        <label className="auth-field">
-          <span>Company</span>
+        <label className="field">
+          <span className="field-label">Company</span>
           <input
             value={draft.company}
             onChange={(event) => update('company', event.target.value)}
@@ -102,8 +102,8 @@ export default function InternshipForm({ initial, onSave, onCancel }: Props) {
           />
         </label>
 
-        <label className="auth-field">
-          <span>Title</span>
+        <label className="field">
+          <span className="field-label">Title</span>
           <input
             value={draft.role}
             onChange={(event) => update('role', event.target.value)}
@@ -112,8 +112,8 @@ export default function InternshipForm({ initial, onSave, onCancel }: Props) {
           />
         </label>
 
-        <label className="auth-field">
-          <span>Stage</span>
+        <label className="field">
+          <span className="field-label">Stage</span>
           <select
             value={draft.stage}
             onChange={(event) => update('stage', event.target.value as Stage)}
@@ -126,8 +126,8 @@ export default function InternshipForm({ initial, onSave, onCancel }: Props) {
           </select>
         </label>
 
-        <label className="auth-field">
-          <span>Applied on</span>
+        <label className="field">
+          <span className="field-label">Applied on</span>
           <input
             type="date"
             value={draft.appliedOn}
@@ -135,8 +135,8 @@ export default function InternshipForm({ initial, onSave, onCancel }: Props) {
           />
         </label>
 
-        <label className="auth-field">
-          <span>Location <span className="auth-hint">(optional)</span></span>
+        <label className="field">
+          <span className="field-label">Location <span className="field-hint">(optional)</span></span>
           <input
             value={draft.location}
             onChange={(event) => update('location', event.target.value)}
@@ -144,8 +144,8 @@ export default function InternshipForm({ initial, onSave, onCancel }: Props) {
           />
         </label>
 
-        <label className="auth-field">
-          <span>Job posting link <span className="auth-hint">(optional)</span></span>
+        <label className="field">
+          <span className="field-label">Job posting link <span className="field-hint">(optional)</span></span>
           <input
             type="url"
             value={draft.link}
@@ -155,8 +155,8 @@ export default function InternshipForm({ initial, onSave, onCancel }: Props) {
           />
         </label>
 
-        <label className="auth-field tracker-form-wide">
-          <span>Notes <span className="auth-hint">(optional)</span></span>
+        <label className="field tracker-form-wide">
+          <span className="field-label">Notes <span className="field-hint">(optional)</span></span>
           <textarea
             value={draft.notes}
             onChange={(event) => update('notes', event.target.value)}
