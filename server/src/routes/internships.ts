@@ -2,6 +2,7 @@ import { Router } from 'express'
 import { prisma } from '../lib/prisma.js'
 import { perUserLimit, requireUser } from '../lib/session.js'
 import { InternshipStage } from '../../generated/prisma/client.js'
+import { ACTIVE_STAGES, parseCutoff, rejectStaleJobs, type StaleJobStore } from '../lib/staleJobs.js'
 
 export const internshipsRouter = Router()
 
@@ -149,6 +150,48 @@ internshipsRouter.post('/', async (request, response) => {
     include: withHistory,
   })
   response.status(201).json({ internship })
+})
+
+// Bulk: move every in-progress application applied on or before a day to Rejected.
+// Takes only the date; the ids come from this user's own rows, never from the client.
+internshipsRouter.post('/reject-stale', async (request, response) => {
+  const cutoff = parseCutoff((request.body ?? {}).before)
+
+  if (!cutoff.ok) {
+    response.status(400).json({ error: cutoff.error })
+    return
+  }
+
+  const stages = ACTIVE_STAGES as InternshipStage[]
+  // What the transaction really moved (can be fewer than selected if rows changed meanwhile)
+  let movedIds: string[] = []
+  const store: StaleJobStore = {
+    list: (userId) =>
+      prisma.internship.findMany({
+        where: { userId },
+        select: { id: true, stage: true, appliedOn: true, createdAt: true },
+      }),
+    // One transaction: rows and history change together or not at all. userId and
+    // the stage check are repeated so a race or double submit cannot touch other rows.
+    reject: async (userId, ids) => {
+      await prisma.$transaction(async (tx) => {
+        // UPDATE ... RETURNING: a concurrent twin waits on the row lock, then no longer matches
+        // (stage is already REJECTED), so each row is moved, and logged, exactly once.
+        const moved = await tx.$queryRaw<{ id: string }[]>`
+          UPDATE "internship" SET "stage" = 'REJECTED', "updatedAt" = (now() AT TIME ZONE 'UTC')
+          WHERE "id" = ANY(${ids}) AND "userId" = ${userId} AND "stage"::text = ANY(${stages})
+          RETURNING "id"`
+        const updatedIds = moved.map((row) => row.id)
+        await tx.stageChange.createMany({
+          data: updatedIds.map((internshipId) => ({ internshipId, stage: InternshipStage.REJECTED })),
+        })
+        movedIds = updatedIds
+      })
+    },
+  }
+
+  await rejectStaleJobs(store, response.locals.userId, cutoff.day)
+  response.json({ count: movedIds.length, ids: movedIds })
 })
 
 // Edit: matching on id AND userId means someone else's id just isn't found

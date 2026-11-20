@@ -98,3 +98,18 @@ export async function updateInternship(id: string, changes: Partial<InternshipDr
 export async function deleteInternship(id: string) {
   await request<void>('/' + id, 'DELETE')
 }
+
+export async function rejectStale(before: string) {
+  return request<{ count: number; ids: string[] }>('/reject-stale', 'POST', { before })
+}
+
+// Same rule as the server: in progress, and applied (else created) on or before the cutoff UTC day
+export function staleInternships(list: Internship[], cutoffDay: string): Internship[] {
+  const active: Stage[] = ['APPLIED', 'SCREENING', 'EARLY_INTERVIEW', 'FINAL_INTERVIEW']
+  return list.filter((row) => {
+    if (!active.includes(row.stage)) {
+      return false
+    }
+    return new Date(row.appliedOn ?? row.createdAt).toISOString().slice(0, 10) <= cutoffDay
+  })
+}
