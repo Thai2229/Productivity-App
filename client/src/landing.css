@@ -56,7 +56,7 @@ html.is-landing .hero--app h1 {
   line-height: 1.05;
 }
 
-/* The open tool: a window that grows to the height of the tool in it, so no tool is cut off */
+/* The open tool: a window as tall as the tallest tool, so no tool is cut off and it never changes size */
 .app {
   display: flex;
   flex-direction: column;
@@ -87,8 +87,20 @@ html.is-landing .hero--app .app {
 
 .app__body {
   position: relative;
+  display: grid;
   min-height: 24rem;
   padding: var(--s-5);
+}
+
+.app__pane {
+  grid-area: 1 / 1;
+  min-width: 0;
+}
+
+.app__pane[data-shown='false'] {
+  /* React Flow sets visibility: visible on its nodes, which beats a hidden parent, so fade the pane as well */
+  opacity: 0;
+  visibility: hidden;
 }
 
 .app__body .landing-roadmap {

@@ -62,6 +62,17 @@ function Scaled({ base, fit = false, children }: { base: number; fit?: boolean; 
   )
 }
 
+// All six tools share one grid cell, so the window is always as tall as the tallest one;
+// the others stay laid out (visibility, not display) but out of sight, focus and the accessibility tree
+function Pane({ id, tool, children }: { id: AppCardId; tool: AppCardId; children: ReactNode }) {
+  const shown = id === tool
+  return (
+    <div className="app__pane" data-shown={shown} aria-hidden={!shown} inert={!shown}>
+      {children}
+    </div>
+  )
+}
+
 function Header() {
   return (
     <div className="wrap nav__bar">
@@ -141,21 +152,29 @@ export default function LandingSite() {
               <div className="app__head">
                 <p className="app__title">{activeCard.name}</p>
               </div>
-              <div className="app__body" key={tool}>
-                {tool === 'pomodoro' && <PomodoroPreview />}
-                {tool === 'todos' && <TodosPreview />}
-                {tool === 'calendar' && <CalendarPreview />}
-                {tool === 'jobs' && (
+              <div className="app__body">
+                <Pane id="pomodoro" tool={tool}>
+                  <PomodoroPreview still={tool !== 'pomodoro'} />
+                </Pane>
+                <Pane id="todos" tool={tool}>
+                  <TodosPreview />
+                </Pane>
+                <Pane id="calendar" tool={tool}>
+                  <CalendarPreview />
+                </Pane>
+                <Pane id="jobs" tool={tool}>
                   <Scaled base={640} fit>
                     <JobsPreview />
                   </Scaled>
-                )}
-                {tool === 'habits' && <HabitsPreview />}
-                {tool === 'roadmap' && (
+                </Pane>
+                <Pane id="habits" tool={tool}>
+                  <HabitsPreview />
+                </Pane>
+                <Pane id="roadmap" tool={tool}>
                   <Suspense fallback={<div className="landing-roadmap" />}>
                     <RoadmapExample />
                   </Suspense>
-                )}
+                </Pane>
               </div>
             </div>
             <AppCards active={tool} hovered={hovered} onHover={setHovered} onPick={pickTool} />
