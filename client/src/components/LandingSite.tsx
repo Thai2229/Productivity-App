@@ -1,4 +1,4 @@
-import { lazy, Suspense, useEffect, useRef, useState, type MouseEvent, type ReactNode } from 'react'
+import { lazy, Suspense, useEffect, useRef, useState, type ReactNode } from 'react'
 import { createPortal } from 'react-dom'
 import { Link } from 'react-router-dom'
 import { CalendarPreview, HabitsPreview, JobsPreview, PomodoroPreview, TodosPreview } from './LandingPreviews'
@@ -69,7 +69,8 @@ function Header() {
         Skip to content
       </a>
       <a className="nav__logo" href="#top">
-        <span className="mark" data-mark="ring" aria-hidden="true"></span>Productivity App
+        <span className="mark" data-mark="ring" aria-hidden="true"></span>
+        <span className="nav__name">Productivity App</span>
       </a>
       <div className="nav__actions">
         <Link className="nav__link" to="/login">
@@ -83,59 +84,12 @@ function Header() {
   )
 }
 
-function Footer({ onPick }: { onPick: (id: AppCardId) => void }) {
-  // The names pick that tool in the hero, so the page goes back up to it
-  function openTool(event: MouseEvent<HTMLAnchorElement>, id: AppCardId) {
-    event.preventDefault()
-    onPick(id)
-    window.scrollTo({ top: 0 })
-  }
-
+function Footer() {
   return (
     <div className="wrap">
-      <div className="closing__cta close--word">
-        <div className="section-head--split">
-          <div>
-            <h2 id="close-h">Sign up</h2>
-          </div>
-          <Link className="btn btn--primary" to="/signup">
-            {MAIN_ACTION}
-          </Link>
-        </div>
-        <p className="close__word" aria-hidden="true">
-          Productivity App
-        </p>
-      </div>
-      <div className="closing__links">
-        <div className="grid">
-          <div className="span-4 stack-4">
-            <a className="nav__logo" href="#top">
-              <span className="mark" data-mark="ring" aria-hidden="true"></span>Productivity App
-            </a>
-          </div>
-          <div className="span-5 start-7 footer__col">
-            <ul className="footer__tools">
-              {APP_CARDS.map((card) => (
-                <li key={card.id}>
-                  <a href={'#tool-' + card.id} onClick={(event) => openTool(event, card.id)}>
-                    {card.name}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="span-2 footer__col">
-            <ul>
-              <li>
-                <Link to="/login">Log in</Link>
-              </li>
-            </ul>
-          </div>
-        </div>
-        <div className="footer__legal">
-          <span>&copy; 2026 Productivity App</span>
-          <LegalLinks />
-        </div>
+      <div className="footer__legal">
+        <span>&copy; 2026 Productivity App</span>
+        <LegalLinks />
       </div>
     </div>
   )
@@ -177,17 +131,12 @@ export default function LandingSite() {
   return (
     <>
       {hosts && createPortal(<Header />, hosts.header)}
-      {hosts && createPortal(<Footer onPick={pickTool} />, hosts.footer)}
+      {hosts && createPortal(<Footer />, hosts.footer)}
 
       <section className="hero hero--app" data-enter aria-labelledby="hero-h">
         <div className="wrap">
           <div className="hero-text">
-            <div className="hero__top">
-              <h1 id="hero-h">Productivity App</h1>
-              <Link className="btn btn--primary" to="/signup">
-                {MAIN_ACTION}
-              </Link>
-            </div>
+            <h1 id="hero-h">Productivity App</h1>
             <div className="ui ui-app app hero__window" id="tool-window" role="region" aria-label={activeCard.name}>
               <div className="app__head">
                 <p className="app__title">{activeCard.name}</p>
@@ -214,12 +163,10 @@ export default function LandingSite() {
         </div>
       </section>
 
-      <section className="section" id="story" data-moment="letters-assemble" data-statement aria-labelledby="story-h">
+      <section className="section" id="story" aria-labelledby="story-h">
         <div className="wrap">
-          <h2 id="story-h" className="mo-la__type">
-            Why I built this
-          </h2>
-          <p className="mo-la__sub">
+          <h2 id="story-h">Why I built this</h2>
+          <p className="story__text">
             I&rsquo;m a broke college student. Every productivity app I tried put application tracking, habit streaks and
             roadmaps behind a paywall. So I built my own and made all of it free.
           </p>
