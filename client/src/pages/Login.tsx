@@ -73,9 +73,6 @@ export default function Login() {
     <div className="auth-card">
       <div className="auth-intro">
         <h1 className="auth-title">Log in</h1>
-        <p className="auth-lede">
-          Your timer, to-dos, calendar, job applications, habits and roadmaps.
-        </p>
       </div>
       <div className="auth-body">
         <GoogleButton />

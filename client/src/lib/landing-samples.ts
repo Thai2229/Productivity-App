@@ -82,14 +82,13 @@ export type AppCardId = 'pomodoro' | 'todos' | 'calendar' | 'jobs' | 'habits' | 
 export type AppCard = {
   id: AppCardId
   name: string
-  blurb: string
 }
 
 export const APP_CARDS: AppCard[] = [
-  { id: 'pomodoro', name: 'Pomodoro timer', blurb: '25 minutes on, 5 off, and a long rest after four sessions.' },
-  { id: 'todos', name: 'To-do list', blurb: 'Tasks with due dates. Tick one off and it moves to Past.' },
-  { id: 'calendar', name: 'Calendar', blurb: 'A month view with your lectures, deadlines and interviews.' },
-  { id: 'jobs', name: 'Job tracker', blurb: 'Every application, from Applied to Offer, in one flow chart.' },
-  { id: 'habits', name: 'Habit streaks', blurb: 'Check in each day and watch the streak grow.' },
-  { id: 'roadmap', name: 'Skill roadmaps', blurb: 'Skills as a flow chart, from Linux basics to OSCP.' },
+  { id: 'pomodoro', name: 'Pomodoro timer' },
+  { id: 'todos', name: 'To-do list' },
+  { id: 'calendar', name: 'Calendar' },
+  { id: 'jobs', name: 'Job tracker' },
+  { id: 'habits', name: 'Habit tracker' },
+  { id: 'roadmap', name: 'Skill roadmaps' },
 ]

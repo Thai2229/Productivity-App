@@ -86,25 +86,25 @@ function Header() {
               <div className="menu-col span-3">
                 <p className="t-label">Focus</p>
                 <a href="#tool-pomodoro">
-                  Pomodoro timer<span>25 minutes on, 5 off</span>
+                  Pomodoro timer
                 </a>
                 <a href="#tool-todos">
-                  To-do list<span>Due dates, current and past</span>
+                  To-do list
                 </a>
                 <a href="#tool-calendar">
-                  Calendar<span>A month of events</span>
+                  Calendar
                 </a>
               </div>
               <div className="menu-col span-3">
                 <p className="t-label">Career and growth</p>
                 <a href="#tool-jobs">
-                  Job tracker<span>Stages and a flow chart</span>
+                  Job tracker
                 </a>
                 <a href="#tool-habits">
-                  Habit streaks<span>Daily check-ins</span>
+                  Habit tracker
                 </a>
                 <a href="#tool-roadmap">
-                  Skill roadmaps<span>Skills in order</span>
+                  Skill roadmaps
                 </a>
               </div>
             </div>
@@ -149,8 +149,7 @@ function Footer() {
       <div className="closing__cta close--word">
         <div className="section-head--split">
           <div>
-            <h2 id="close-h">Plan your week in one account</h2>
-            <p className="t-lead">No paid tier, so there is no card to enter.</p>
+            <h2 id="close-h">Sign up</h2>
           </div>
           <Link className="btn btn--primary" to="/signup">
             {MAIN_ACTION}
@@ -166,7 +165,6 @@ function Footer() {
             <a className="nav__logo" href="#top">
               <span className="mark" data-mark="ring" aria-hidden="true"></span>Productivity App
             </a>
-            <p className="footer__lede">Study and job-hunt tools, free.</p>
           </div>
           <div className="span-3 start-7 footer__col">
             <h3>Tools</h3>
@@ -174,7 +172,7 @@ function Footer() {
               <li><a href="#tool-pomodoro">Pomodoro timer</a></li>
               <li><a href="#tool-todos">To-do list</a></li>
               <li><a href="#tool-calendar">Calendar</a></li>
-              <li><a href="#tool-habits">Habit streaks</a></li>
+              <li><a href="#tool-habits">Habit tracker</a></li>
             </ul>
           </div>
           <div className="span-3 footer__col">
@@ -232,11 +230,15 @@ export default function LandingSite() {
         <div className="wrap">
           <div className="hero-text grid hero__grid">
             <div className="span-3">
-              <h1 id="hero-h">Study and job-hunt app for students</h1>
-              <p className="hero__lead">
-                Run focus sessions, tasks, a calendar, internship applications, habit streaks and skill roadmaps from one
-                account. 6 tools, no paid tier.
-              </p>
+              <h1 id="hero-h">Productivity App</h1>
+              <ul className="hero__list">
+                <li>Pomodoro timer</li>
+                <li>To-do list</li>
+                <li>Calendar</li>
+                <li>Job tracker</li>
+                <li>Habit tracker</li>
+                <li>Skill roadmaps</li>
+              </ul>
             </div>
             <div
               className="ly-collage span-6 start-4"
@@ -288,15 +290,7 @@ export default function LandingSite() {
         <div className="wrap">
           <div className="grid">
             <div className="section-head span-5">
-              <h2 id="tools-h">
-                Timer and tracker in one window. <span className="muted">Six tools, all free.</span>
-              </h2>
-            </div>
-            <div className="span-6 start-7 stack-4">
-              <p>Pick a tool and it opens beside the list. Tick a task, check a habit or drag a skill: the window is live.</p>
-              <a className="link" href="#jobs">
-                See the job tracker
-              </a>
+              <h2 id="tools-h">Tools</h2>
             </div>
           </div>
           <div className="ui ui-app app fill" data-visual>
@@ -306,7 +300,6 @@ export default function LandingSite() {
             <div className="app__open">
               <div className="app__head">
                 <p className="app__title">{activeCard.name}</p>
-                <p>{activeCard.blurb}</p>
               </div>
               <div className="app__body" key={tool}>
                 {tool === 'pomodoro' && <PomodoroPreview />}
@@ -332,7 +325,7 @@ export default function LandingSite() {
       <section className="section" id="story" data-moment="letters-assemble" data-statement aria-labelledby="story-h">
         <div className="wrap">
           <h2 id="story-h" className="mo-la__type">
-            Nothing behind a paywall
+            Why I built this
           </h2>
           <p className="mo-la__sub">
             I&rsquo;m a broke college student. Every productivity app I tried put application tracking, habit streaks and
@@ -345,12 +338,8 @@ export default function LandingSite() {
         <div className="wrap">
           <div className="grid">
             <div className="section-head span-5">
-              <h2 id="roadmaps-h">Plan skills as a flow chart</h2>
+              <h2 id="roadmaps-h">Skill roadmaps</h2>
             </div>
-            <p className="span-6 start-7">
-              Start at the Google Cybersecurity Certificate, go on to CompTIA Security+ and then CySA+ or OSCP. Mark each
-              skill planned, learning or learned.
-            </p>
           </div>
           <div className="ui ui-shot shot fill" data-visual>
             <Suspense fallback={<div className="landing-roadmap" />}>
@@ -369,11 +358,7 @@ export default function LandingSite() {
       >
         <div className="wrap">
           <div className="section-head">
-            <h2 id="jobs-h">Track every application, stage by stage</h2>
-            <p>
-              Move an internship from Applied through Screening and two interview rounds to Offer or Rejected. The flow
-              chart shows where applications stall.
-            </p>
+            <h2 id="jobs-h">Job tracker</h2>
           </div>
           <div className="ui ui-shot shot fill" data-visual>
             <Scaled base={640} fit>

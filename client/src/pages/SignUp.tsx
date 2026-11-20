@@ -80,9 +80,6 @@ export default function SignUp() {
     <div className="auth-card">
       <div className="auth-intro">
         <h1 className="auth-title">Create an account</h1>
-        <p className="auth-lede">
-          A timer, to-do list, calendar, job tracker, habit tracker and skill roadmaps. All free.
-        </p>
       </div>
       <div className="auth-body">
         <GoogleButton />
