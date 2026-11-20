@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react'
 import FlowChart from './FlowChart'
 import { CheckIcon, FireIcon, HabitIcon, TargetIcon } from './HabitIcons'
+import HabitDetail from './HabitDetail'
 import TimerRing from './TimerRing'
 import { dayKey, daysText, monthGrid, recentDays, shiftDay, streakFor } from '../lib/habits'
 import { SAMPLE_EVENTS, SAMPLE_HABITS, SAMPLE_INTERNSHIPS, SAMPLE_TODOS } from '../lib/landing-samples'
@@ -123,9 +124,8 @@ export function JobsPreview() {
 // Visitors can tap the circles; it only changes what's on their screen
 export function HabitsPreview() {
   const days = recentDays(7)
-  const [checked, setChecked] = useState(() =>
-    SAMPLE_HABITS.map((habit) => habit.done.map((index) => days[index].key)),
-  )
+  const [checked, setChecked] = useState(() => SAMPLE_HABITS.map((habit) => habit.checks))
+  const habits = SAMPLE_HABITS.map((habit, row) => ({ ...habit, checks: checked[row] }))
 
   function toggle(row: number, key: string) {
     setChecked((current) => current.map((keys, index) => {
@@ -140,7 +140,7 @@ export function HabitsPreview() {
   }
 
   return (
-    <div className="habits-preview">
+    <div className="habits-preview habit-layout">
       <ul className="habit-rows">
         {SAMPLE_HABITS.map((habit, row) => {
           const keys = checked[row]
@@ -149,7 +149,6 @@ export function HabitsPreview() {
           if (streak === 0) {
             streakClass = 'habit-meta-item habit-meta-dull'
           }
-          const total = habit.total - habit.done.length + keys.length
           return (
             <li key={habit.id} className="habit-row">
               <span className="habit-icon" aria-hidden="true"><HabitIcon value={habit.icon} /></span>
@@ -158,7 +157,7 @@ export function HabitsPreview() {
                 <p className="habit-meta">
                   <span className="habit-meta-item">
                     <TargetIcon />
-                    {daysText(total)}
+                    {daysText(keys.length)}
                   </span>
                   <span className={streakClass}>
                     <FireIcon lit={streak > 0} />
@@ -194,6 +193,7 @@ export function HabitsPreview() {
           )
         })}
       </ul>
+      <HabitDetail habits={habits} habit={habits[0]} />
     </div>
   )
 }
