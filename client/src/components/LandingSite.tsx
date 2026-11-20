@@ -150,7 +150,7 @@ export default function LandingSite() {
             <h1 id="hero-h">Productivity App</h1>
             <div className="ui ui-app app hero__window" id="tool-window" role="region" aria-label={activeCard.name}>
               <div className="app__head">
-                <p className="app__title">{activeCard.name}</p>
+                <p className="app__title" key={tool}>{activeCard.name}</p>
               </div>
               <div className="app__body">
                 <Pane id="pomodoro" tool={tool}>

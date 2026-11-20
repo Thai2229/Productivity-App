@@ -10,8 +10,12 @@ Productivity App will include four main things that will be helpful for learning
 your looking to learning. It would look like: Google Cyber Sec -> CompTIA -> more advanced Cyber Sec certs
 
 Overview: 
-<img width="2200" height="1390" alt="screenshots-overview" src="https://github.com/user-attachments/assets/1deb8710-489f-4095-8858-839894f244a0" />
-<img width="2880" height="1800" alt="02-pomodoro" src="https://github.com/user-attachments/assets/8a4d4974-9556-4d87-8e19-e0164b548013" />
-<img width="2880" height="1800" alt="07-roadmap" src="https://github.com/user-attachments/assets/c093b6f3-77ad-4a2c-a2e6-aa7406a2b79e" />
-<img width="2880" height="1800" alt="06-habits" src="https://github.com/user-attachments/assets/8612ef5a-0705-4ae0-8e84-17a2172784fa" />
-<img width="2880" height="1800" alt="04-jobs-flow-chart" src="https://github.com/user-attachments/assets/dba523be-e2b4-43a6-b55e-5bcab158f90e" />
+<img width="1440" alt="Landing page" src="docs/screenshots/landing.webp" />
+<img width="1440" alt="Pomodoro timer" src="docs/screenshots/pomodoro.webp" />
+<img width="1440" alt="To-do list" src="docs/screenshots/todos.webp" />
+<img width="1440" alt="Calendar" src="docs/screenshots/calendar.webp" />
+<img width="1440" alt="Job tracker with the reject old applications panel" src="docs/screenshots/jobs.webp" />
+<img width="1440" alt="Job application flow chart" src="docs/screenshots/jobs-chart.webp" />
+<img width="1440" alt="Habit tracker" src="docs/screenshots/habits.webp" />
+<img width="1440" alt="Skill roadmap" src="docs/screenshots/roadmap.webp" />
+<img width="1440" alt="Log in" src="docs/screenshots/login.webp" />

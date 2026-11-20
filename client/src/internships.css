@@ -551,3 +551,107 @@
     justify-content: space-between;
   }
 }
+
+/* Reject old applications: opens on the page between rules, like the form */
+.stale-panel {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-3);
+  padding: var(--space-4) 0 var(--space-5);
+  border-bottom: 1px solid var(--line);
+}
+
+.stale-intro {
+  margin: 0;
+  color: var(--muted);
+  font-size: var(--text-s);
+}
+
+.stale-controls {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: flex-end;
+  gap: var(--space-3) var(--space-5);
+}
+
+.stale-presets {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1);
+}
+
+.stale-presets .btn[aria-pressed='true'] {
+  color: var(--ink);
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.stale-summary {
+  margin: 0;
+  font-size: var(--text-m);
+}
+
+.stale-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  border-top: 1px solid var(--line);
+}
+
+.stale-list li {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--space-3);
+  padding: var(--space-2) 0;
+  border-bottom: 1px solid var(--line);
+  font-size: var(--text-s);
+}
+
+.stale-company {
+  font-weight: 500;
+}
+
+.stale-role,
+.stale-more {
+  color: var(--muted);
+}
+
+.stale-notice {
+  margin: 0;
+  font-size: var(--text-s);
+  font-weight: 500;
+}
+
+.stale-notice:empty {
+  display: none;
+}
+
+.stale-notice:not(:empty)::before {
+  content: '';
+  display: inline-block;
+  width: 0.5rem;
+  height: 0.5rem;
+  margin-right: var(--space-2);
+  border-radius: 50%;
+  background: var(--accent);
+  box-shadow: 0 0 0 1px var(--line-strong);
+}
+
+@media (max-width: 40rem) {
+  .stale-controls {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .stale-presets .btn {
+    min-height: 2.75rem;
+  }
+
+  .stale-panel .tracker-form-actions {
+    flex-direction: column-reverse;
+  }
+
+  .stale-panel .tracker-form-actions .btn {
+    min-height: 2.75rem;
+  }
+}

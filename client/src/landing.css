@@ -83,6 +83,14 @@ html.is-landing .hero--app .app {
   margin: 0;
   font-size: var(--t-body);
   font-weight: 500;
+  animation: app-title-in 240ms var(--ease);
+}
+
+@keyframes app-title-in {
+  from {
+    opacity: 0;
+    transform: translateY(4px);
+  }
 }
 
 .app__body {
@@ -95,12 +103,20 @@ html.is-landing .hero--app .app {
 .app__pane {
   grid-area: 1 / 1;
   min-width: 0;
+  /* Both panes sit in the one cell during a fade, so the window never changes height */
+  transition:
+    opacity 240ms var(--ease),
+    transform 240ms var(--ease),
+    visibility 0s linear 0s;
 }
 
 .app__pane[data-shown='false'] {
   /* React Flow sets visibility: visible on its nodes, which beats a hidden parent, so fade the pane as well */
   opacity: 0;
   visibility: hidden;
+  transform: translateY(6px);
+  /* visibility flips only after the fade, so the outgoing pane stays visible while it fades */
+  transition-delay: 0s, 0s, 240ms;
 }
 
 .app__body .landing-roadmap {
@@ -207,9 +223,9 @@ html.is-landing .nav .nav__actions > .nav__link {
     rotate(calc(var(--o) * var(--fan-tilt) * (1 - var(--lift))))
     scale(calc(1 + var(--lift) * 0.05));
   transition:
-    transform 320ms var(--ease),
-    box-shadow 320ms var(--ease),
-    border-color var(--dur) var(--ease);
+    transform 280ms var(--ease),
+    box-shadow 280ms var(--ease),
+    border-color 280ms var(--ease);
 }
 
 .app-card[aria-pressed='true'] {
@@ -260,7 +276,7 @@ html.is-landing .app-card:focus-visible {
   font-weight: 500;
   background: var(--surface);
   border-radius: var(--r-sm);
-  transition: background-color var(--dur) var(--ease);
+  transition: background-color 280ms var(--ease);
 }
 
 .app-card[aria-pressed='true'] .app-card__action {
@@ -433,8 +449,13 @@ html.is-landing .app-card:focus-visible {
 
 @media (prefers-reduced-motion: reduce) {
   .app-card,
-  .app-card__action {
+  .app-card__action,
+  .app__pane {
     transition: none;
+  }
+
+  .app__title {
+    animation: none;
   }
 }
 
