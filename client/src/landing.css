@@ -30,98 +30,72 @@ html.landing-wait body > nav.actionbar {
   transform-origin: 0 0;
 }
 
-/* Pieces of the hero collage (628 x 716 at 1440), each a live preview shrunk by <Scaled> */
-.hp-pomo { left: 27%; top: 4%; width: 46%; }
-.hp-todos { left: 4%; top: 54%; width: 92%; }
-.hp-jobs { left: 4%; top: 5%; width: 92%; }
-.hp-habits { left: 12%; top: 54%; width: 84%; }
-.hp-cal { left: 4%; top: 8%; width: 92%; }
-
-/* One button height across the page: the dealt hero's 64px button would be a second size next to the nav's */
-html.is-landing .hero--triptych .hero__cta .btn {
-  height: var(--btn-h);
-  font-size: var(--t-body);
-}
-
 /* The statement's line under it reads in ink, like every running text */
 html.is-landing .mo-la__sub {
   color: var(--ink);
 }
 
-/* The product window: the list of tools beside the open one */
+/* The first screen: the name and the main button on one row, the open tool as one window, the hand of cards under it.
+   Every rule starts with html.is-landing because the kit's stylesheets load after this one. */
+html.is-landing main > .hero--app {
+  height: auto;
+  min-height: 100svh;
+  padding: calc(var(--nav) + var(--s-5)) 0 var(--s-5);
+  z-index: 1; /* above the story's scattered letters, which start out overlapping the fold */
+  background: var(--bg);
+}
+
+html.is-landing .hero--app > .wrap {
+  display: block;
+  height: auto;
+}
+
+html.is-landing .hero--app .hero-text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-5);
+  height: auto;
+}
+
+html.is-landing .hero--app .hero__top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--s-4) var(--s-6);
+}
+
+html.is-landing .hero--app h1 {
+  font-size: clamp(32px, 1.5vw + 22px, 48px);
+  line-height: 1.05;
+}
+
+/* The open tool: a window the height of what the screen leaves under the heading and above the cards */
 .app {
-  display: grid;
-  grid-template-columns: minmax(0, 3fr) minmax(0, 9fr);
-  grid-template-rows: minmax(0, 1fr);
-  margin-top: var(--s-7);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  min-height: 0;
   overflow: hidden;
   background: var(--bg);
   border: 1px solid var(--line);
   border-radius: var(--r-lg);
 }
 
-.app > .app__list {
-  min-width: 0;
-  padding: var(--s-4);
-  background: var(--surface);
-  border-right: 1px solid var(--line);
-}
-
-.app__tools {
-  display: flex;
-  flex-direction: column;
-  gap: var(--s-1);
-  margin: 0;
-  padding: 0;
-  list-style: none;
-}
-
-.app__tool {
-  display: block;
-  width: 100%;
-  min-height: 44px;
-  padding: 0 var(--s-3);
-  color: var(--ink);
-  font: 500 var(--t-body) / 1.5 var(--font-text);
-  text-align: left;
-  background: transparent;
-  border: 0;
-  border-radius: var(--r-sm);
-  cursor: pointer;
-}
-
-.app__tool:hover {
-  background: color-mix(in oklab, var(--ink) 7%, transparent);
-}
-
-.app__tool[aria-pressed='true'] {
-  color: var(--accent-ink);
-  background: var(--accent);
-}
-
-.app > .app__open {
-  display: flex;
-  flex-direction: column;
-  min-width: 0;
-  min-height: 0;
+html.is-landing .hero--app .app {
+  height: clamp(340px, calc(100svh - 440px), 460px);
 }
 
 .app__head {
   display: flex;
-  flex-wrap: wrap;
   align-items: baseline;
-  gap: var(--s-2) var(--s-5);
-  padding: var(--s-4) var(--s-5);
+  padding: var(--s-3) var(--s-5);
   border-bottom: 1px solid var(--line);
 }
 
 .app__title {
-  font-size: var(--t-card);
+  margin: 0;
+  font-size: var(--t-body);
   font-weight: 500;
-}
-
-.app__head p {
-  color: var(--ink);
 }
 
 .app__body {
@@ -130,36 +104,171 @@ html.is-landing .mo-la__sub {
   min-height: 0;
   padding: var(--s-5);
   overflow: hidden;
-  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 56px), transparent);
-  mask-image: linear-gradient(to bottom, #000 calc(100% - 56px), transparent);
+  -webkit-mask-image: linear-gradient(to bottom, #000 calc(100% - 48px), transparent);
+  mask-image: linear-gradient(to bottom, #000 calc(100% - 48px), transparent);
 }
 
 .app__body .landing-roadmap {
   height: 100%;
-  min-height: 320px;
-}
-
-/* One real piece of the app in a frame of its own (the flow chart, the roadmap) */
-.shot {
-  min-width: 0;
-  overflow: hidden;
-  background: var(--bg);
-  border: 1px solid var(--line);
-  border-radius: var(--r-lg);
-}
-
-.shot {
-  margin-top: var(--s-7);
-}
-
-.shot .landing-roadmap {
-  height: 100%;
   min-height: 0;
 }
 
-.shot .flow-card {
-  padding: var(--s-5);
+.app__body .flow-card {
+  padding: 0;
   border: 0;
+}
+
+html.is-landing #story {
+  overflow: clip;
+}
+
+/* The bar keeps the logo, Log in and the button. The kit hides Log in below 1024 for a menu sheet this page does not have;
+   on a phone the first screen holds the button right under the name, so the bar keeps only Log in */
+html.is-landing .nav .nav__actions {
+  margin-left: auto;
+}
+
+html.is-landing .nav .nav__actions > .nav__link {
+  display: inline-flex;
+}
+
+@media (max-width: 479px) {
+  html.is-landing .nav .nav__actions > .btn {
+    display: none;
+  }
+}
+
+/* The timer lies on its side in the wide window: the three phases and the dots left, the ring right */
+.app__body .preview-timer {
+  display: grid;
+  grid-template-columns: 13rem 16rem;
+  align-items: center;
+  justify-content: center;
+  gap: var(--s-4) var(--s-8);
+  max-width: none;
+  padding: 0;
+}
+
+.app__body .preview-timer .phase-tabs {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.app__body .preview-timer .ring {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  width: 16rem;
+  min-width: 0;
+  margin: 0;
+}
+
+.app__body .preview-timer .session-dots {
+  grid-column: 1;
+  grid-row: 2;
+}
+
+/* The hand of cards. Each card is a button: a tinted panel with a real screenshot peeking out, its name and a small action.
+   landing.css only sets the look; AppCards.tsx sets --o (place in the hand), --lean, --lift and --raised on each card. */
+.app-cards {
+  --card-w: 172px;
+  --fan-step: 188px;
+  --fan-tilt: 3.5deg;
+  --fan-drop: 3px;
+  --fan-lean: 22px;
+  position: relative;
+  height: 212px;
+}
+
+.app-card {
+  position: absolute;
+  bottom: 20px;
+  left: calc(50% - var(--card-w) / 2);
+  display: flex;
+  flex-direction: column;
+  gap: var(--s-2);
+  width: var(--card-w);
+  height: 172px;
+  padding: var(--s-2) var(--s-2) 10px;
+  color: var(--ink);
+  font: inherit;
+  text-align: left;
+  background: var(--bg);
+  border: 1px solid var(--line-strong);
+  border-radius: var(--r-md);
+  cursor: pointer;
+  transform-origin: 50% 130%;
+  transform: translateX(calc(var(--o) * var(--fan-step) + var(--lean) * var(--fan-lean)))
+    translateY(calc(var(--o) * var(--o) * var(--fan-drop) - var(--lift) * 12px - var(--raised) * 4px))
+    rotate(calc(var(--o) * var(--fan-tilt) * (1 - var(--lift))))
+    scale(calc(1 + var(--lift) * 0.05));
+  transition:
+    transform 320ms var(--ease),
+    box-shadow 320ms var(--ease),
+    border-color var(--dur) var(--ease);
+}
+
+.app-card[aria-pressed='true'] {
+  border-color: var(--ink);
+  box-shadow: 0 0 0 3px var(--accent);
+}
+
+html.is-landing .app-card:focus-visible {
+  outline: 2px solid var(--ink);
+  outline-offset: 4px;
+  border-radius: var(--r-md);
+}
+
+.app-card__media {
+  display: block;
+  flex: none;
+  height: 84px;
+  padding: var(--s-2) var(--s-2) 0;
+  overflow: hidden;
+  background: var(--surface);
+  border-radius: var(--r-sm);
+}
+
+.app-card__media img {
+  display: block;
+  width: 100%;
+  height: auto;
+  border-radius: 4px 4px 0 0;
+  box-shadow: 0 0 0 1px var(--line);
+}
+
+.app-card__name {
+  padding-inline: 2px;
+  font-size: var(--t-small);
+  font-weight: 500;
+  line-height: 1.3;
+  letter-spacing: -0.01em;
+}
+
+/* Looks like a button; the whole card is the real button */
+.app-card__action {
+  display: grid;
+  place-items: center;
+  height: 32px;
+  margin-top: auto;
+  color: var(--ink);
+  font-size: 13px;
+  font-weight: 500;
+  background: var(--surface);
+  border-radius: var(--r-sm);
+  transition: background-color var(--dur) var(--ease);
+}
+
+.app-card[aria-pressed='true'] .app-card__action {
+  background: var(--accent);
+}
+
+/* The lifted card steps out of the hand: straighter (AppCards.tsx), a little larger, and it casts a shadow */
+.app-card--lifted {
+  box-shadow: 0 16px 28px -16px color-mix(in oklab, var(--ink) 45%, transparent);
+}
+
+.app-card--lifted .app-card__action {
+  background: var(--accent);
 }
 
 /* The name set across the .wrap: sized by hand so "Productivity App" ends on the right line */
@@ -190,10 +299,6 @@ footer.closing .close__word {
 
 .preview-habit-name {
   margin: 0;
-}
-
-.todos-preview .todo-column {
-  background: var(--surface);
 }
 
 .todos-preview .todo-list {
@@ -233,55 +338,94 @@ footer.closing .close__word {
   display: none;
 }
 
-@media (max-width: 1023px) {
-  .app {
-    grid-template-columns: minmax(0, 1fr);
-  }
-
-  .app {
-    grid-template-rows: auto minmax(0, 1fr);
-  }
-
-  .app > .app__list {
-    padding: 0;
-    border-right: 0;
-    border-bottom: 1px solid var(--line);
-  }
-
-  .app__tools {
-    display: grid;
-    grid-template-columns: repeat(3, minmax(0, 1fr));
-    gap: 0;
-  }
-
-  .app__body {
-    overflow-y: auto;
-  }
-
-  .ly-collage .hp-pomo,
-  .ly-collage .hp-habits {
-    display: none;
-  }
-
-  .ly-collage .ly-piece {
-    left: 0;
-    top: 0;
-    width: 100%;
+@media (max-width: 1279px) {
+  .app-cards {
+    --card-w: 148px;
+    --fan-step: 132px;
+    --fan-lean: 16px;
   }
 }
 
+@media (max-width: 1023px) {
+  .app-cards {
+    --card-w: 132px;
+    --fan-step: 104px;
+    --fan-tilt: 4deg;
+    --fan-lean: 14px;
+  }
+}
+
+/* Phones: no fan, the cards are a row to swipe */
 @media (max-width: 639px) {
-  .app__tools {
-    grid-template-columns: repeat(2, minmax(0, 1fr));
+  html.is-landing .hero--app .hero__top {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  html.is-landing .hero--app .hero__top .btn {
+    width: 100%;
+    height: 48px;
+  }
+
+  html.is-landing .hero--app .app {
+    height: clamp(300px, calc(100svh - 450px), 420px);
   }
 
   .app__body {
-    min-height: 440px;
+    padding: var(--s-4);
   }
 
-  #roadmaps .shot {
+  .app__body .preview-timer {
+    grid-template-columns: 1fr;
+    justify-items: center;
+  }
+
+  .app__body .preview-timer .phase-tabs {
+    display: none;
+  }
+
+  .app__body .preview-timer .ring,
+  .app__body .preview-timer .session-dots {
+    grid-column: 1;
+    grid-row: auto;
+  }
+
+  .app__body .preview-timer .session-dots {
+    width: 12rem;
+  }
+
+  .app-cards {
+    display: flex;
+    gap: var(--s-3);
+    height: auto;
+    margin-inline: calc(var(--gut) * -1);
+    padding: var(--s-2) var(--gut) var(--s-3);
+    overflow-x: auto;
+    scroll-snap-type: x mandatory;
+    scroll-padding-inline: var(--gut);
+    scrollbar-width: none;
+  }
+
+  .app-cards::-webkit-scrollbar {
+    display: none;
+  }
+
+  .app-card {
+    position: relative;
+    bottom: auto;
+    left: auto;
     flex: none;
-    height: 320px;
+    scroll-snap-align: start;
+    transform: none;
+    transition: border-color var(--dur) var(--ease);
+  }
+
+  .app-card--lifted {
+    box-shadow: none;
+  }
+
+  .app-card[aria-pressed='true'] {
+    box-shadow: 0 0 0 3px var(--accent);
   }
 
   .calendar-preview {
@@ -293,6 +437,13 @@ footer.closing .close__word {
   }
 }
 
+@media (prefers-reduced-motion: reduce) {
+  .app-card,
+  .app-card__action {
+    transition: none;
+  }
+}
+
 /* React Flow's own stylesheet removes the focus outline on its nodes and edges; keep the page's ring */
 .react-flow__node.selectable:focus-visible,
 .react-flow__edge:focus-visible,
@@ -301,12 +452,9 @@ footer.closing .close__word {
   outline-offset: 2px;
 }
 
-/* The hero lists what the app has, one tool per line */
-html.is-landing .hero .hero__list {
-  list-style: none;
-  margin: 1.5rem 0 0;
-  padding: 0;
-  font-size: var(--ly-lead);
-  line-height: 1.6;
-  color: var(--ink);
+/* The footer lists the tools in two columns */
+.footer ul.footer__tools {
+  grid-auto-flow: column;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  grid-template-rows: repeat(3, auto);
 }

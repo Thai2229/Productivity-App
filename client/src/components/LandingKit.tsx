@@ -14,19 +14,8 @@ const KIT_CSS = [
 
 const KIT_SCRIPTS = ['system.js', 'layout/layout.js', 'motion/motion.js']
 
-// The palette and type, as `start.mjs css` printed them (kept after the kit's stylesheets)
-const PALETTE = `:root {
-  --p-bg: #ffffff; --p-surface: #f3f3f3; --p-ink: #232323; --p-muted: #686868;
-  --p-accent: #a1ffcb; --p-accent-ink: #232323; --p-action: #232323; --p-action-ink: #ffffff;
-  --p-inv-bg: #232323; --p-inv-surface: #303030; --p-inv-ink: #ffffff; --p-inv-muted: #a4a4a4;
-  --p-inv-accent: #a1ffcb; --p-inv-accent-ink: #232323; --p-inv-action: #a1ffcb; --p-inv-action-ink: #232323;
-  --font-display: "Host Grotesk", system-ui, sans-serif;
-  --font-text: "Host Grotesk", system-ui, sans-serif;
-  --font-mono: "JetBrains Mono", ui-monospace, "SFMono-Regular", Menlo, Consolas, monospace;
-  --display-weight: 500;
-  --display-tracking: -0.035em;
-  --display-tracking-xl: -0.04em;
-}`
+// The palette and type live in public/assets/palette.css, loaded after the kit's stylesheets.
+// It is a file, not an inline <style>, because the site's Content-Security-Policy blocks inline styles.
 
 const TITLE = 'Productivity App: free study and job-hunt app for students'
 const DESCRIPTION =
@@ -42,11 +31,11 @@ const HTML_ATTRS: Record<string, string> = {
 
 const KIT_BASE = '/assets/'
 
-// A plain import() that Vite leaves alone, since the kit's files are served as they are from public/
-const loadModule: (url: string) => Promise<{ default: { init: () => void } }> = new Function(
-  'url',
-  'return import(url)',
-) as never
+// A plain import() that Vite leaves alone, since the kit's files are served as they are from public/.
+// No new Function()/eval here: the site's Content-Security-Policy forbids it and the whole app would fail to load.
+function loadModule(url: string): Promise<{ default: { init: () => void } }> {
+  return import(/* @vite-ignore */ url)
+}
 
 // The kit's scripts start themselves the first time they load; later visits start them again
 const loadedKitScripts = new Set<string>()
@@ -81,10 +70,7 @@ export function useLandingKit() {
     footer.className = 'footer closing footer--statement'
     footer.id = 'contact'
     footer.setAttribute('aria-labelledby', 'close-h')
-    const bar = document.createElement('nav')
-    bar.className = 'actionbar'
-    bar.setAttribute('aria-label', 'Quick actions')
-    return { header, footer, bar }
+    return { header, footer }
   })
 
   useLayoutEffect(() => {
@@ -117,20 +103,15 @@ export function useLandingKit() {
     addMeta('property', 'og:image', KIT_BASE + 'share.jpg', added)
     addMeta('name', 'twitter:card', 'summary_large_image', added)
 
-    const styles = Promise.all(KIT_CSS.map((href) => addLink(href, added))).then(() => {
-      const palette = document.createElement('style')
-      palette.textContent = PALETTE
-      document.head.append(palette)
-      added.push(palette)
-    })
+    const styles = Promise.all([...KIT_CSS, 'palette.css'].map((href) => addLink(href, added)))
 
     const main = document.querySelector('main')
     const savedMainId = main?.getAttribute('id') ?? null
     main?.setAttribute('id', 'top')
 
-    const { header, footer, bar } = hosts
+    const { header, footer } = hosts
     document.body.prepend(header)
-    document.body.append(footer, bar)
+    document.body.append(footer)
 
     let cancelled = false
     styles.then(async () => {
@@ -185,7 +166,6 @@ export function useLandingKit() {
       }
       header.remove()
       footer.remove()
-      bar.remove()
     }
   }, [hosts])
 

@@ -1,16 +1,16 @@
 import { useState } from 'react'
 import { HabitIcon } from './HabitIcons'
-import { dayKey, monthGrid, monthStats, streakFor, type Habit } from '../lib/habits'
+import { dayKey, isDayComplete, monthGrid, monthStats, streakFor, type Habit } from '../lib/habits'
 
 type Props = {
   habit: Habit
-  onToggle: (habit: Habit, day: string) => void
+  habits: Habit[]
 }
 
 const WEEKDAYS = ['S', 'M', 'T', 'W', 'T', 'F', 'S']
 const WEEKDAY_NAMES = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday']
 
-export default function HabitDetail({ habit, onToggle }: Props) {
+export default function HabitDetail({ habit, habits }: Props) {
   const now = new Date()
   const [year, setYear] = useState(now.getFullYear())
   const [month, setMonth] = useState(now.getMonth())
@@ -18,7 +18,6 @@ export default function HabitDetail({ habit, onToggle }: Props) {
   const today = dayKey(now)
   const stats = monthStats(habit, year, month)
   const streak = streakFor(habit.checks)
-  const done = new Set(habit.checks)
   const isCurrentMonth = year === now.getFullYear() && month === now.getMonth()
 
   let rateText = '—'
@@ -89,38 +88,34 @@ export default function HabitDetail({ habit, onToggle }: Props) {
           </div>
         </div>
 
-        <div className="calendar-grid">
+        <div className="calendar-grid" role="list" aria-label={'All habits, ' + monthTitle}>
           {WEEKDAYS.map((name, index) => (
-            <span key={index} className="calendar-weekday"><abbr title={WEEKDAY_NAMES[index]}>{name}</abbr></span>
+            <span key={index} className="calendar-weekday" aria-hidden="true"><abbr title={WEEKDAY_NAMES[index]}>{name}</abbr></span>
           ))}
           {monthGrid(year, month).map((cell) => {
-            const checked = done.has(cell.key)
-            const future = cell.key > today
+            const complete = isDayComplete(habits, cell.key)
             let className = 'calendar-day'
+            let status = 'not all done'
             if (!cell.inMonth) {
               className = className + ' calendar-day-outside'
             }
             if (cell.key === today) {
               className = className + ' calendar-day-today'
             }
-            if (checked) {
+            if (complete) {
               className = className + ' calendar-day-done'
+              status = 'all habits done'
             }
+            const label = new Date(cell.key + 'T12:00:00').toLocaleDateString(undefined, { month: 'long', day: 'numeric' }) + ', ' + status
             return (
-              <button
-                key={cell.key}
-                type="button"
-                className={className}
-                aria-pressed={checked}
-                aria-label={habit.name + ' on ' + cell.key}
-                disabled={future || !cell.inMonth}
-                onClick={() => onToggle(habit, cell.key)}
-              >
+              <span key={cell.key} role="listitem" className={className} aria-label={label} aria-hidden={!cell.inMonth || undefined}>
                 {cell.number}
-              </button>
+              </span>
             )
           })}
         </div>
+
+        <span className="calendar-legend"><i aria-hidden="true" />All habits done</span>
       </div>
     </aside>
   )

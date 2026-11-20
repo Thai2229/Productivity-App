@@ -196,3 +196,22 @@ export function monthGrid(year: number, month: number) {
   }
   return cells
 }
+
+// A day is complete when every habit that existed that day (or was checked that day) has a check.
+// Future days and days with no habits are never complete.
+export function isDayComplete(habits: Habit[], key: string) {
+  if (key > dayKey(new Date())) {
+    return false
+  }
+  let counted = 0
+  for (const habit of habits) {
+    const checked = habit.checks.includes(key)
+    if (dayKey(new Date(habit.createdAt)) <= key || checked) {
+      counted += 1
+      if (!checked) {
+        return false
+      }
+    }
+  }
+  return counted > 0
+}

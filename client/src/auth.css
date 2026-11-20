@@ -1,29 +1,41 @@
 /* Log in, sign up, forgot / reset password, verify email.
-   Wide screens: the page name and a line about the app on the left, the form on the right, split by a hairline.
-   Narrow screens: one column. Tokens and primitives (.field, .btn, inputs) come from index.css / App.css. */
+   One compact panel, centred in the space under the navbar: title, form, links, all in one column.
+   Tokens and primitives (.field, .btn, inputs) come from index.css / App.css. */
 
 .page:has(.auth-card) {
-  max-width: 60rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  /* the rest of the viewport under the navbar (3.5rem), so the panel sits in the middle */
+  min-height: calc(100dvh - 3.5rem);
+  padding-block: var(--space-5);
 }
 
 .auth-card {
   --phase: var(--work);
   display: grid;
   gap: var(--space-5);
-  max-width: 28rem;
-  margin: 0 auto;
-  padding-top: var(--space-4);
+  width: 100%;
+  max-width: 26rem;
+  padding: var(--space-5);
+  border: 1px solid var(--line);
+  border-radius: var(--radius-l);
+}
+
+@media (min-width: 30rem) {
+  .auth-card {
+    padding: var(--space-6);
+  }
 }
 
 .auth-title {
   margin: 0;
-  font-size: var(--text-2xl);
-  line-height: 1.1;
+  font-size: var(--text-xl);
+  line-height: 1.15;
 }
 
 .auth-lede {
-  max-width: 24rem;
-  margin: var(--space-3) 0 0;
+  margin: var(--space-2) 0 0;
   color: var(--muted);
   font-size: var(--text-m);
   line-height: 1.5;
@@ -31,33 +43,6 @@
 
 .auth-body {
   min-width: 0;
-}
-
-@media (min-width: 52rem) {
-  .auth-card {
-    grid-template-columns: minmax(0, 1fr) 24rem;
-    gap: 0;
-    max-width: none;
-    margin: 0;
-    padding-top: var(--space-6);
-  }
-
-  .auth-intro {
-    padding-right: var(--space-7);
-  }
-
-  .auth-title {
-    font-size: var(--text-3xl);
-  }
-
-  .auth-lede {
-    font-size: var(--text-l);
-  }
-
-  .auth-body {
-    padding-left: var(--space-7);
-    border-left: 1px solid var(--line);
-  }
 }
 
 .auth-form {
@@ -112,6 +97,11 @@
 
 .auth-switch + .auth-switch {
   margin-top: 0;
+}
+
+.auth-card .auth-switch {
+  justify-content: center;
+  margin-top: var(--space-2);
 }
 
 .auth-switch a,
@@ -239,6 +229,14 @@
 
 .legal-links a:hover {
   color: var(--ink);
+}
+
+/* Inside the auth panel they close it off with a hairline */
+.auth-card .legal-links {
+  margin-top: var(--space-4);
+  padding-top: var(--space-4);
+  border-top: 1px solid var(--line);
+  text-align: center;
 }
 
 /* Verify email page: one wide mono field for the 6 digits */
